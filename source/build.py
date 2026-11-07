@@ -15,6 +15,10 @@ STOPS = '<stop offset="0" stop-color="#FF9124"/><stop offset=".3" stop-color="#F
 EMAIL = 'contact@nagulesgobi.com'
 E = html.escape
 
+# Cache-busting version: a short hash of the CSS and JS, so browsers fetch fresh files after every change
+import hashlib
+ASSET_V = hashlib.sha1(b''.join(open(os.path.join(HERE, 'assets', f), 'rb').read() for f in ('css/base.css', 'css/pages.css', 'js/site.js'))).hexdigest()[:8]
+
 def img(path, alt, root, cls='', lazy=True, extra=''):
     key = path.replace('.webp', '')
     w, h = SIZES.get(key, [1200, 900])
@@ -62,9 +66,9 @@ def head(title, desc, root, intro=False, canonical=''):
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{root}assets/css/base.css">
-<link rel="stylesheet" href="{root}assets/css/pages.css">
-<script src="{root}assets/js/site.js" defer></script>
+<link rel="stylesheet" href="{root}assets/css/base.css?v={ASSET_V}">
+<link rel="stylesheet" href="{root}assets/css/pages.css?v={ASSET_V}">
+<script src="{root}assets/js/site.js?v={ASSET_V}" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
