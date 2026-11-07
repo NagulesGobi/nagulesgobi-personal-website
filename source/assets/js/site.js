@@ -142,17 +142,14 @@
       canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       var mobile = W < 820;
-      // On phones the mark gets its own space at the top of the hero, aligned with the text gutter;
-      // the hero's top padding (CSS --mark-h) keeps the text clear of it.
-      var size, cx, cy;
-      if (mobile) {
-        var inner = canvas.parentNode.querySelector('.hero-inner'), gut = inner ? parseFloat(getComputedStyle(inner).paddingLeft) || 16 : 16;
-        size = Math.round(Math.min(W * 0.44, 190));
-        cx = gut + size / 2; cy = 92 + size / 2;
-        canvas.parentNode.style.setProperty('--mark-h', size + 'px');
+      // On phones the mark sits centred inside its own framed panel under the hero buttons (.hero-mark-slot)
+      var size, cx, cy, slot = mobile && canvas.parentNode.querySelector('.hero-mark-slot');
+      if (slot && slot.offsetWidth) {
+        var inr = slot.offsetParent, sw = slot.offsetWidth, sh = slot.offsetHeight;
+        size = Math.round(Math.min(sw, sh) * 0.74);
+        cx = (inr ? inr.offsetLeft : 0) + slot.offsetLeft + sw / 2; cy = (inr ? inr.offsetTop : 0) + slot.offsetTop + sh / 2;
       } else {
         size = Math.min(H * 0.7, W * 0.36, 640); cx = W * 0.75; cy = H * 0.5;
-        canvas.parentNode.style.removeProperty('--mark-h');
       }
       var ox = cx - size / 2, oy = cy - size / 2;
       canvas.style.opacity = 1;
@@ -160,10 +157,10 @@
       var off = document.createElement('canvas'); off.width = off.height = Math.ceil(size);
       var o = off.getContext('2d'); o.scale(size / 100, size / 100); o.fill(new Path2D(MARK_D));
       var data = o.getImageData(0, 0, off.width, off.height).data;
-      if (mobile) { // line the mark's visible left and top edges up with the text gutter
-        var minX = off.width, minY = off.height;
-        for (var yy = 0; yy < off.height; yy++) for (var xx = 0; xx < off.width; xx++) if (data[(yy * off.width + xx) * 4 + 3] >= 128) { if (xx < minX) minX = xx; if (yy < minY) minY = yy; }
-        ox -= minX; oy -= minY;
+      if (slot && slot.offsetWidth) { // centre the mark's visible shape (not its box) in the panel
+        var minX = off.width, minY = off.height, maxX = 0, maxY = 0;
+        for (var yy = 0; yy < off.height; yy++) for (var xx = 0; xx < off.width; xx++) if (data[(yy * off.width + xx) * 4 + 3] >= 128) { if (xx < minX) minX = xx; if (yy < minY) minY = yy; if (xx > maxX) maxX = xx; if (yy > maxY) maxY = yy; }
+        ox = cx - (minX + maxX) / 2; oy = cy - (minY + maxY) / 2;
       }
       var old = parts; parts = [];
       for (var y = 0; y < off.height; y += step) for (var x = 0; x < off.width; x += step) {
@@ -206,6 +203,7 @@
     build();
     this.start = function () { born = performance.now(); play(); };
     var rt; addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(build, 150); });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(build); addEventListener('load', build);
     new IntersectionObserver(function (e) { visible = e[0].isIntersecting; visible ? play() : pause(); }).observe(canvas);
     document.addEventListener('visibilitychange', function () { document.hidden ? pause() : play(); });
     canvas.addEventListener('pointerdown', function (e) { var r = canvas.getBoundingClientRect(); shocks.push({ x: e.clientX - r.left, y: e.clientY - r.top, r: 0, f: 9 }); });
@@ -228,9 +226,8 @@
     document.addEventListener('pointerover', function (e) {
       var t = e.target.closest('[data-cursor], a, button, summary, label, input, textarea, select');
       var lab = t && t.closest('[data-cursor]');
-      // Image previews only follow the cursor in list layouts, where the row has no image of its own
-      var pv = e.target.closest('[data-preview]');
-      if (pv && !pv.closest('[data-view="list"], .ledger')) pv = null;
+      // Hover image previews are switched off everywhere (owner's choice)
+      var pv = null;
       cur.classList.toggle('is-label', !!lab && !pv);
       cur.classList.toggle('is-link', !!t && !lab && !pv);
       cur.classList.toggle('is-preview', !!pv);
