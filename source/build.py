@@ -73,14 +73,19 @@ def head(title, desc, root, intro=False, canonical=''):
 DOCK_ICONS = {
     'index.html': 'M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z',
     'work.html': 'M4 7h16v13H4zM9 7V4h6v3M4 12h16',
-    'dotxline.html': 'M4 12a3 3 0 1 0 6 0 3 3 0 1 0-6 0M14 9l6 6M20 9l-6 6',
+    'dotxline.html': 'DXMARK',
     'about.html': 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21c1-4 4-6 8-6s7 2 8 6',
     'contact.html': 'M3 6h18v12H3zM3 7l9 6 9-6',
     'search': 'M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM21 21l-5-5',
 }
 THEME_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle class="sun" cx="12" cy="12" r="5"/><g class="rays"><path d="M12 1.5v2.2M12 20.3v2.2M1.5 12h2.2M20.3 12h2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></g><circle class="moon-cut" cx="17" cy="7" r="5"/></svg>'
 
+DX_MARK = ('<svg class="dk-dx" viewBox="0.37 0.37 87.31 87.31" aria-hidden="true"><path transform="translate(0 1.025)" '
+           'd="M63.44 36.56 L38.69 61.31 A16 16 0 1 1 38.69 38.69 L61.31 61.31 A9 9 0 0 0 76.68 54.95 L76.68 20.00" '
+           'fill="none" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/></svg>')
+
 def dock_icon(key):
+    if DOCK_ICONS[key] == 'DXMARK': return DX_MARK  # the real dotXline mark, from the dotXline brand kit
     return f'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="{DOCK_ICONS[key]}"/></svg>'
 
 def finder_items(root):
@@ -601,7 +606,7 @@ def cases():
 def dotxline():
     body = f'''<section class="page-hero dx-hero">
   <div class="wrap">
-    <span class="dx-logos" data-reveal data-hero><img class="dx-logo on-dark" src="{{root}}assets/img/apps/logo-dark.svg" alt="dotXline" width="320" height="54"><img class="dx-logo on-light" src="{{root}}assets/img/apps/logo-light.svg" alt="" width="320" height="54"></span>
+    <span class="dx-logos" data-reveal data-hero><img class="dx-logo on-dark" src="{{root}}assets/img/apps/dotxline-lockup-dark.svg" alt="dotXline" width="320" height="54"><img class="dx-logo on-light" src="{{root}}assets/img/apps/dotxline-lockup-light.svg" alt="" width="320" height="54"></span>
     <p class="kicker" data-reveal data-hero>My company · Director</p>
     <h1 data-split data-hero>Small, exact apps that just work.</h1>
     <p class="lede" data-reveal data-hero style="--d:.3s">dotXline LTD is a product company in Cardiff. We make everyday money and work feel simple, one carefully built app at a time. As Director, I lead the product and design every screen.</p>

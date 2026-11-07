@@ -966,3 +966,24 @@ html:not(.is-dark) .dx-logo.on-light { display: block; }
 /* The N-mark is the home button everywhere, so no corner logo or separate Home icon */
 .corner-logo { display: none !important; }
 @media (max-width: 820px) { .dk-mark { display: block; } .dk-mark + .dk-sep { display: none; } }
+
+/* dotXline mark in the dock: Sky on dark, Electric on light (dotXline brand rules) */
+.dk-tile svg.dk-dx { width: 62%; height: 62%; stroke: none; }
+.dk-dx path { stroke: #3DA9FF; }
+html:not(.is-dark) .dk-dx path { stroke: #1E6BFF; }
+
+/* Phones: no particle mark; the hero starts with the introduction */
+@media (max-width: 820px) {
+  .hero-canvas { display: none; }
+  .hero { padding-top: 72px !important; justify-content: flex-start; }
+}
+/* dotXline hero in the dotXline palette: Ink + Sky on dark, Mist + Electric on light */
+.dx-hero { background: #0B1220; color: #FFFFFF; }
+.dx-hero .lede, .dx-hero .hero-meta { color: rgba(255,255,255,.64); }
+.dx-hero .hero-meta b { color: #FFFFFF; }
+.dx-hero .kicker { color: #3DA9FF; } .dx-hero .kicker::before { background: #3DA9FF; }
+html:not(.is-dark) .dx-hero { background: #F2F4F8; color: #0B1220; }
+html:not(.is-dark) .dx-hero .lede, html:not(.is-dark) .dx-hero .hero-meta { color: #556070; }
+html:not(.is-dark) .dx-hero .hero-meta b { color: #0B1220; }
+html:not(.is-dark) .dx-hero .kicker { color: #1E6BFF; } html:not(.is-dark) .dx-hero .kicker::before { background: #1E6BFF; }
+@media (max-width: 820px) { .hero { padding-bottom: 104px !important; } }

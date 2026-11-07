@@ -174,3 +174,6 @@ the case study credits both.
   compressed videos (540 px, H.264) with posters, palettes and fonts from each brand guideline
   (Tockbee: Fredoka, Cocoa text on orange; Xpense: Mint and Ink, Sora). Never crop brand images.
 - Dock: the N-mark is the Home button; there is no separate Home icon or corner logo.
+- dotXline uses its "Continuum" identity from the dotXline brand kit: the mark in the dock (Sky #3DA9FF on dark,
+  Electric #1E6BFF on light), official lockups on the dotXline page, Ink #0B1220 / Mist #F2F4F8 hero.
+- Phones show no particle mark in the hero.
