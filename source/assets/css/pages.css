@@ -997,3 +997,15 @@ html:not(.is-dark) .dx-hero .kicker { color: #1E6BFF; } html:not(.is-dark) .dx-h
   .hero-mark-slot .mono { position: absolute; left: 16px; bottom: 14px; color: var(--muted); font-size: 12px; }
 }
 .cursor-preview { display: none !important; }
+
+/* dotXline (full brand kit): mark is Amber on Ink, Ember on light; Ink #0E1512 and Paper #F4F6F3 grounds */
+.dk-dx path { stroke: #F5A524; }
+html:not(.is-dark) .dk-dx path { stroke: #D97706; }
+.dx-hero { background: #0E1512; color: #FFFFFF; }
+.dx-hero .lede, .dx-hero .hero-meta { color: rgba(255,255,255,.64); }
+.dx-hero .hero-meta b { color: #FFFFFF; }
+.dx-hero .kicker { color: #F5A524; } .dx-hero .kicker::before { background: #F5A524; }
+html:not(.is-dark) .dx-hero { background: #F4F6F3; color: #0E1512; }
+html:not(.is-dark) .dx-hero .lede, html:not(.is-dark) .dx-hero .hero-meta { color: #56605B; }
+html:not(.is-dark) .dx-hero .hero-meta b { color: #0E1512; }
+html:not(.is-dark) .dx-hero .kicker { color: #9A5B00; } html:not(.is-dark) .dx-hero .kicker::before { background: #D97706; }
