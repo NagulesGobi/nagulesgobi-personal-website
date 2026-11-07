@@ -482,9 +482,9 @@
   }
 
   /* -------------------------------------------------------------- clock */
-  var clock = $('[data-clock]');
-  function tickClock() { try { clock.textContent = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/London' }).format(new Date()); } catch (_) {} }
-  if (clock) { tickClock(); setInterval(tickClock, 15000); }
+  var clocks = $$('[data-clock]');
+  function tickClock() { try { var t = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/London' }).format(new Date()); clocks.forEach(function (c) { c.textContent = t; }); } catch (_) {} }
+  if (clocks.length) { tickClock(); setInterval(tickClock, 15000); }
   $$('[data-year]').forEach(function (y) { y.textContent = new Date().getFullYear(); });
 
   /* --------------------------------------------------------------- boot */

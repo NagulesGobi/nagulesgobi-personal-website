@@ -305,8 +305,8 @@ def home():
   <div class="marquee-row outline" data-marquee="-1" data-skew="off" aria-hidden="true"><div class="marquee-track"><span>iPhone &amp; Android Apps</span><b>✦</b><span>AI-Assisted Development</span><b>✦</b><span>Websites &amp; Web Apps</span><b>✦</b><span>Design Strategy</span><b>✦</b><span>Graphic Design</span><b>✦</b></div></div>
 </section>
 
-<section class="facts" aria-label="At a glance">
-  <div class="wrap facts-row mono" data-reveal>
+<section class="glance" aria-label="At a glance">
+  <div class="wrap glance-row mono" data-reveal>
     <span><b>30</b> projects shipped</span><span><b>3</b> countries</span><span><b>6</b> years of practice</span><span><b>2</b> apps on the App Store</span><span>BSc Computing</span>
   </div>
 </section>
