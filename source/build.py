@@ -149,10 +149,12 @@ PROJECTS = [
   dict(slug='greenlife', title='Greenlife', cat='product mobile', kind='App design · Retail',
        short='An everyday shopping assistant that makes the trip faster, from building the list to checkout.',
        scene='img', image='work/greenlife.webp', preview='work/greenlife.webp'),
-  dict(slug='omnigps', title='OmniGPS', cat='product web', kind='Website design · Logistics',
-       short='A precision-driven platform for streamlined, GPS-based fleet management.', scene='omni', preview=None),
-  dict(slug='quantum-vac', title='Quantum Vac', cat='product', kind='Smart product · Interaction design',
-       short='A high-fidelity prototype for a smart vacuum, focused on interaction models and seamless device control.', scene='qv', preview=None),
+  dict(slug='puff-count', title='Puff Count', cat='product mobile', kind='App design · Health',
+       short='A mobile app that tracks nicotine consumption, with daily limits and onboarding that helps people quit vaping.',
+       scene='img', image='work/pc-cover.webp', preview='work/pc-cover.webp'),
+  dict(slug='pocket', title='Pocket', cat='product mobile', kind='iOS app design · Personal finance',
+       short='A personal wallet app for iPhone: log expenses by category, see weekly statistics and keep your balance under control.',
+       scene='img', image='work/pw-cover.webp', preview='work/pw-cover.webp'),
 ]
 P = {p['slug']: p for p in PROJECTS}
 
@@ -462,6 +464,12 @@ def case(slug, hero_kicker, title_html, lede, fact_items, cover, sections, link=
 {next_link(slug)}'''
     page(f'work/{slug}.html', f'{p["title"]} · Nagules Gobi', p['short'], 'work.html', body)
 
+def shots(items, root='{root}'):
+    """Full-width, labelled sections from a Behance board: [(label, image, alt), ...]"""
+    its = ''.join(f'<figure class="shot-row" data-reveal><figcaption><span class="mono">{i + 1:02d}</span>{label}</figcaption><div class="media" data-img>{img(src, alt, root)}</div></figure>'
+                  for i, (label, src, alt) in enumerate(items))
+    return f'<section class="case-band shots"><div class="wrap">{its}</div></section>'
+
 def cover_img(path, alt):
     return f'<div class="media case-cover" data-img><div class="plx" data-parallax="0.08">{img(path, alt, "{root}", lazy=False)}</div></div>'
 
@@ -509,12 +517,17 @@ def cases():
              f'<div class="duo">{"".join(f"<div class=\"media\" data-img>{img(x, a, chr(123)+'root'+chr(125))}</div>" for x, a in [("apps/tockbee-preview.webp", "Tockbee promo: clocked in by location"), ("apps/tockbee-itemised.webp", "Tockbee promo: itemised shift receipt")])}</div>' +
              '<p><a class="link" href="https://dotxline.com/tockbee.html" target="_blank" rel="noopener">See Tockbee on dotxline.com ↗</a></p>'))
     # Chatvertiser
-    case('chatvertiser', 'Case study · Web design · Ad tech UX', 'Advertising that starts with a <em>conversation</em>.',
-         'An AI-powered advertising platform that turns conversations into conversion tools.',
-         [('Role', 'Web and UX design, logo'), ('Industry', 'Advertising technology'), ('Deliverables', 'Web app UI and brand mark'), ('Prototype', '<a href="https://www.behance.net/gallery/224174429/Chatvertiser" target="_blank" rel="noopener">Behance ↗</a>')],
-         cover_img('work/chatvertiser.webp', 'Chatvertiser web app on a laptop'),
-         sec('Overview', '<p class="lead">One chat, the whole campaign.</p><p>The design focused on a fluid, chat-based interface that simplifies campaign creation, audience targeting and performance tracking, all through one intuitive conversational flow.</p>') +
-         sec('Design focus', points([('Campaigns by chat', 'Creating a campaign feels like describing it, not filling in a long form.'), ('Targeting in context', 'Audience choices sit inside the same conversation.'), ('Results in the flow', 'Performance tracking stays one message away.'), ('A mark to match', 'I also designed the Chatvertiser logo, a speech bubble with a pulse.')])) +
+    case('chatvertiser', 'Case study · Web app UI · Ad tech UX', 'Advertising that starts with a <em>conversation</em>.',
+         'An AI-powered advertising platform that turns conversations into conversion tools, with a customer support chat app that makes business enquiries easier.',
+         [('Role', 'Web and UX design, logo'), ('Industry', 'Advertising technology'), ('Tools', 'Figma, Illustrator, Photoshop'), ('Project', '<a href="https://www.behance.net/gallery/224174429/Chatvertiser" target="_blank" rel="noopener">Behance ↗</a>')],
+         cover_img('work/cv-cover.webp', 'Chatvertiser: simply your support system, shown on a laptop'),
+         sec('Overview', '<p class="lead">One chat, the whole campaign.</p><p>Chatvertiser is a customer support chatting application for any business. The design focused on a fluid, chat-based interface that simplifies campaign creation, audience targeting and performance tracking, all through one conversational flow.</p>') +
+         sec('Design focus', points([('Campaigns by chat', 'Creating a campaign feels like describing it, not filling in a long form.'), ('A full support desk', 'Profiles, flows, broadcasts, segments, reports, integrations and agents in one dashboard.'), ('A clear visual system', 'A violet palette (#805AD5, #7678EC, #3C348A), one typeface, a consistent icon set and reusable elements.'), ('A mark to match', 'I also designed the Chatvertiser logo, a speech bubble with a pulse.')])) +
+         shots([('Visual style: colour, type, icons and elements', 'work/cv-style.webp', 'Chatvertiser visual style: colour palette, typography, icons and UI elements'),
+                ('Dashboard', 'work/cv-dashboard.webp', 'Chatvertiser dashboard screens'),
+                ('Pop-ups and drop boxes', 'work/cv-popups.webp', 'Chatvertiser pop-ups, integration settings and drop-down menus'),
+                ('Main window', 'work/cv-main.webp', 'Chatvertiser main window with navigation and profiles'),
+                ('Chat', 'work/cv-chat.webp', 'Chatvertiser chat screen on a laptop')]) +
          f'<section class="case-band"><div class="wrap"><div class="duo"><div class="media" data-img>{img("work/chatvertiser-2.webp", "Chatvertiser support system screens", "{root}")}</div><div class="media" data-img style="display:grid;place-items:center;padding:12%;background:var(--card)">{img("brand/logo-chatvertiser-logo.webp", "Chatvertiser logo", "{root}", "mono-logo")}</div></div></div></section>')
     # Greenlife
     case('greenlife', 'Case study · App design · Retail', 'Shopping, from list to <em>checkout</em>.',
@@ -523,20 +536,31 @@ def cases():
          cover_img('work/greenlife.webp', 'Greenlife app screens with fresh produce'),
          sec('Overview', '<p class="lead">Built for the shop floor, not the sofa.</p><p>The UI focuses on simplicity, accessibility and visual clarity, so the app stays easy to use with one hand and a full basket.</p>') +
          sec('Design focus', points([('List creation', 'Build the list quickly before you leave home.'), ('In-store efficiency', 'Find what is next without hunting through menus.'), ('Accessible by default', 'Clear contrast, large targets and readable type.'), ('Fresh visual voice', 'A green, produce-led identity that feels like the food it sells.')])))
-    # OmniGPS
-    case('omnigps', 'Case study · Website design · Logistics', 'Fleet management with <em>precision</em>.',
-         'A precision-driven platform designed for streamlined GPS-based fleet management.',
-         [('Role', 'Website design'), ('Industry', 'Logistics and fleet'), ('Deliverable', 'High-fidelity prototype'), ('Prototype', '<a href="https://www.figma.com/proto/t9IoN1CckA53uq74buAnSC/OmniGPS?page-id=0%3A1&amp;node-id=31-1171&amp;starting-point-node-id=31%3A1171&amp;t=HMgvx7lLLX0UqqaT-1" target="_blank" rel="noopener">Figma ↗</a>')],
-         cover_scene(P['omnigps']),
-         sec('Overview', '<p class="lead">Every vehicle, one calm screen.</p><p>The project emphasised scalable interface systems and smooth navigation for logistics professionals who live in the dashboard all day.</p>') +
-         sec('Design focus', points([('Scalable interface system', 'Components that hold up from one van to a whole fleet.'), ('Smooth navigation', 'Fast routes between map, vehicles and reports.'), ('Built for professionals', 'Dense information, organised so it stays readable.'), ('Clickable prototype', 'The full flow is explorable in Figma.')])))
-    # Quantum Vac
-    case('quantum-vac', 'Case study · Smart product · Interaction design', 'A smart vacuum you <em>actually</em> want to control.',
-         'A high-fidelity prototype for a smart vacuum experience, focused on interaction models and seamless device control.',
-         [('Role', 'Interaction and UI design'), ('Industry', 'Smart home'), ('Deliverable', 'High-fidelity prototype'), ('Prototype', '<a href="https://www.figma.com/proto/QLHC7r67dnviP4nckmwKhn/Quantum-Vac?page-id=6%3A65&amp;type=design&amp;node-id=7-67&amp;viewport=797%2C223%2C0.06&amp;t=RI1gczhAfvg7R0VD-1&amp;scaling=scale-down&amp;starting-point-node-id=7%3A67&amp;show-proto-sidebar=1&amp;mode=design" target="_blank" rel="noopener">Figma ↗</a>')],
-         cover_scene(P['quantum-vac']),
-         sec('Overview', '<p class="lead">Hardware, made obvious.</p><p>The prototype explores interaction models for a smart vacuum and seamless device control through intuitive UI components.</p>') +
-         sec('Design focus', points([('Interaction models', 'How a person starts, pauses and steers a robot, mapped out first.'), ('Device control', 'Status and controls in components that read at a glance.'), ('Feedback', 'Progress like battery and cleaning shown as simple dials.'), ('High fidelity', 'A prototype close enough to real to test with people.')])))
+    # Puff Count
+    case('puff-count', 'Case study · App design · Health', 'Every puff, <em>counted</em>.',
+         'Puff Count is a mobile app that tracks nicotine consumption, lets people set daily limits and helps them work towards quitting vaping.',
+         [('Role', 'UX/UI design and branding'), ('Platform', 'iPhone app'), ('Tools', 'Figma, Illustrator, Photoshop'), ('Project', '<a href="https://www.behance.net/gallery/224174013/Puff-Count" target="_blank" rel="noopener">Behance ↗</a>')],
+         cover_img('work/pc-cover.webp', 'Puff Count app icon and onboarding screens on two iPhones'),
+         sec('Overview', '<p class="lead">Track it first. Then cut it down.</p><p>Puff Count tracks nicotine consumption, offers unlimited puff logging and lets people set daily limits. Onboarding asks a few short questions, one per screen, so the app starts from the person’s own goal.</p>') +
+         sec('Design focus', points([('One question per screen', 'Name, goal, the day you quit smoking, reminders and weekly spend on vaping, each on its own calm screen.'), ('Goals first', 'People choose “I want to quit vaping” or “Just curious”, so the app meets them where they are.'), ('A clear upgrade', 'Puff Count Unlimited is offered monthly or yearly with a free trial, and no ads.'), ('A bright, friendly identity', 'A bold blue palette (#1058FF, #1497FC), Poppins type and a simple P-mark app icon.')])) +
+         shots([('Wireframes', 'work/pc-wireframe.webp', 'Puff Count wireframes'),
+                ('Colour palette', 'work/pc-palette.webp', 'Puff Count colour palette: 1058FF, 1497FC, white and black'),
+                ('Typography: Poppins', 'work/pc-font.webp', 'Puff Count typography in Poppins'),
+                ('Onboarding: welcome, name and goals', 'work/pc-onboard-1.webp', 'Puff Count onboarding screens: congratulations, your name and your goals'),
+                ('Onboarding: quit date and reminders', 'work/pc-onboard-2.webp', 'Puff Count onboarding screens: when did you quit smoking and reminders'),
+                ('Weekly spend and Puff Count Unlimited', 'work/pc-onboard-3.webp', 'Puff Count screens: weekly vaping spend and the Puff Count Unlimited upgrade')]))
+    # Pocket (Personal Wallet App)
+    case('pocket', 'Case study · iOS app design · Personal finance', 'Your wallet, in your <em>pocket</em>.',
+         'Pocket is a personal wallet app for iPhone. Add expenses by category, see extended statistics for any period and keep your balance under control.',
+         [('Role', 'UI/UX design and branding'), ('Made for', 'Loofyn Hyper'), ('Team', 'With Muralikrishna Naguleswararajah'), ('Tools', 'Adobe XD, Illustrator, Photoshop'), ('Project', '<a href="https://www.behance.net/gallery/109368407/Personal-Wallet-App" target="_blank" rel="noopener">Behance ↗</a>')],
+         cover_img('work/pw-cover.webp', 'Pocket iOS wallet app icon and screens on two iPhones'),
+         sec('Overview', '<p class="lead">Every expense in a safe place.</p><p>Pocket is an iOS application for keeping a personal wallet. The flow starts with a clear welcome and login, because it is crucial to make the right first impression and to be sure your personal wallet is in a safe place.</p>') +
+         sec('Design focus', points([('Welcome, login and sign-up', 'Short, familiar forms with the Pocket mark front and centre.'), ('Statistics that compare', 'Extended statistics of your expenses for any period, compared with your average for that period.'), ('Balance at a glance', 'Add expenses in categories from food to travel, then edit or delete them when you need to.'), ('A calm, clean identity', 'A cyan and blue palette (#00B4D8, #0078B7), Circular Std type and a wallet-shaped app icon.')])) +
+         shots([('User experience: wireframes', 'work/pw-wireframe.webp', 'Pocket wireframes'),
+                ('Colour palette and type', 'work/pw-style.webp', 'Pocket colour palette and Circular Std typography'),
+                ('Welcome, login, sign-up and statistics', 'work/pw-welcome.webp', 'Pocket welcome, login, sign-up and weekly report screens'),
+                ('Wallet balance', 'work/pw-balance.webp', 'Pocket wallet balance screen'),
+                ('The full flow', 'work/pw-collage.webp', 'Pocket screens laid out together')]))
 
 # ---------------------------------------------------------------- dotXline
 def dotxline():
@@ -635,7 +659,7 @@ def gallery_section():
 </section>'''
 
 def redirect(path, target, title):
-    open(os.path.join(OUT, path), 'w').write(f'<!doctype html><html lang="en"><head><meta charset="utf-8"><title>{title}</title><meta http-equiv="refresh" content="0; url={target}"><link rel="canonical" href="https://www.nagulesgobi.com/{target.split("#")[0]}"><meta name="robots" content="noindex"></head><body><p><a href="{target}">{title}</a></p><script>location.replace("{target}" + "")</script></body></html>\n')
+    open(os.path.join(OUT, path), 'w').write(f'<!doctype html><html lang="en"><head><meta charset="utf-8"><title>{title}</title><meta http-equiv="refresh" content="0; url={target}"><link rel="canonical" href="https://www.nagulesgobi.com/{target.split("#")[0].replace("../", "")}"><meta name="robots" content="noindex"></head><body><p><a href="{target}">{title}</a></p><script>location.replace("{target}" + "")</script></body></html>\n')
 
 def brand():
     redirect('brand.html', 'work.html#brand', 'Brand and print work · Nagules Gobi')
@@ -657,7 +681,7 @@ def about():
     </figure>
     <div class="bio">
       <p class="lead" data-reveal>I design products people actually enjoy using, and I build my own.</p>
-      <p data-reveal>I’m <strong>Nagules Gobi</strong>, a product designer in the United Kingdom working across UX/UI, web and app design, and brand identity. Over six years I’ve shipped <strong>30 projects across 3 countries</strong>, from fleet dashboards and ad-tech platforms to shopping apps and logos.</p>
+      <p data-reveal>I’m <strong>Nagules Gobi</strong>, a product designer in the United Kingdom working across UX/UI, web and app design, and brand identity. Over six years I’ve shipped <strong>30 projects across 3 countries</strong>, from ad-tech platforms and health apps to shopping apps and logos.</p>
       <p data-reveal>I’m also <strong>Director of dotXline LTD</strong>, a product company in Cardiff. There I design and build Xpense, a calm iPhone expense tracker, and Tockbee, a shift and pay tracker for UK workers. Owning products end to end taught me to design for the people using them and for the team that has to ship them.</p>
       <p data-reveal>I studied for a <strong>BSc in Computing</strong>, and today I also build what I design. I use <strong>AI-assisted development</strong> to turn designs into working products quickly, then review and refine the code myself. It means I can prototype in code, test ideas with real users sooner, and talk to engineering teams in their own language.</p>
       <dl class="facts" data-reveal>
@@ -755,6 +779,8 @@ def contact():
 
 def extras():
     redirect('graphicdesigner.html', 'work.html#brand', 'Brand and print work · Nagules Gobi')
+    redirect('work/omnigps.html', '../work.html#product', 'Work · Nagules Gobi')
+    redirect('work/quantum-vac.html', '../work.html#product', 'Work · Nagules Gobi')
     open(os.path.join(OUT, 'CNAME'), 'w').write('www.nagulesgobi.com\n')
     open(os.path.join(OUT, '.nojekyll'), 'w').write('')
     pages = ['', 'work.html', 'dotxline.html', 'about.html', 'contact.html'] + [f'work/{p["slug"]}.html' for p in PROJECTS]

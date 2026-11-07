@@ -610,3 +610,11 @@ h1, h2, h3 { text-wrap: balance; }
 #product { scroll-margin-top: 70px; }
 @media (max-width: 600px) { .jump a { min-width: 0; flex: 1 1 100%; } }
 .part-head h2 { font-size: clamp(36px, 4.4vw, 64px); }
+
+/* Case studies: labelled sections from the Behance boards */
+.shots .wrap { display: grid; gap: clamp(40px, 6vw, 80px); }
+.shot-row { margin: 0; display: grid; gap: 16px; }
+.shot-row figcaption { display: flex; align-items: baseline; gap: 14px; font: 600 clamp(20px, 2vw, 26px)/1.2 var(--display); color: var(--text); }
+.shot-row figcaption .mono { color: var(--accent); font-size: 13px; }
+.shot-row .media { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); background: var(--card); }
+.shot-row .media img { width: 100%; height: auto; display: block; }

@@ -59,8 +59,8 @@ decided or built in the first session (7 November 2026).
    Launch), "Why teams hire me", scroll-scrubbed pitch paragraph, footer CTA.
 2. **Work** (`work.html`): filter chips (All, My apps, Web, Mobile, Brand) with FLIP animation,
    grid/list toggle, list view shows a cursor-following preview image.
-3. **Case studies** (`work/`): `xpense`, `tockbee`, `chatvertiser`, `greenlife`, `omnigps`,
-   `quantum-vac`. Facts row, cover with clip reveal and parallax, sections, 3D phone carousel
+3. **Case studies** (`work/`): `xpense`, `tockbee`, `chatvertiser`, `greenlife`, `puff-count`, `pocket`
+   (Nov 2026: Puff Count replaced OmniGPS, Pocket replaced Quantum Vac; their old URLs forward to work.html). Facts row, cover with clip reveal and parallax, sections, 3D phone carousel
    for the apps, "Next case study" link.
 4. **dotXline** (`dotxline.html`): company story (0 · × · 1), both apps with stacked screens,
    principles Clear / Calm / Private, link to dotxline.com.
@@ -150,3 +150,10 @@ images, no sideways scroll.
 > Read HANDOFF.md and CLAUDE.md in this repository. Then help me finish section 6: turn on
 > GitHub Pages and fix the Namecheap DNS for www.nagulesgobi.com using the built-in browser.
 > I will sign in to Namecheap myself.
+
+## 11. Behance sources (added Nov 2026)
+
+Chatvertiser, Puff Count and Pocket (Personal Wallet App) case-study images are slices of the owner's
+Behance boards: behance.net/gallery/224174429, /224174013 and /109368407. Files: `source/assets/img/work/cv-*`,
+`pc-*`, `pw-*`. Pocket is co-owned on Behance with Muralikrishna Naguleswararajah and was made for Loofyn Hyper;
+the case study credits both.
