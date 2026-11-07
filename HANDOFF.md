@@ -169,3 +169,8 @@ the case study credits both.
   Chatvertiser's unnamed display face shown in Exo 2 (labelled on the page).
 - Xpense and Tockbee cards use the coded phones; image hover previews only show in list layouts.
 - Copy: 30+ projects, 4 years of experience.
+- **Xpense and Tockbee** case studies now use the owner's brand kits (`assets/img/kit/`, `assets/video/`):
+  real Tockbee screens in exact-shape device frames, the five Xpense App Store photos as an uncropped strip,
+  compressed videos (540 px, H.264) with posters, palettes and fonts from each brand guideline
+  (Tockbee: Fredoka, Cocoa text on orange; Xpense: Mint and Ink, Sora). Never crop brand images.
+- Dock: the N-mark is the Home button; there is no separate Home icon or corner logo.

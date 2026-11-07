@@ -106,15 +106,14 @@ def chrome(root, active):
     def item(h, t):
         cur = ' aria-current="page"' if h == active else ''
         return f'<a class="dk-item" href="{root}{h}"{cur} data-label="{t}" aria-label="{t}"><span class="dk-tile">{dock_icon(h)}</span><span class="dk-tip">{t}</span></a>'
-    items = item('index.html', 'Home') + ''.join(item(h, t) for h, t in NAV)
+    items = ''.join(item(h, t) for h, t in NAV)
     return f"""<div class="curtain" aria-hidden="true"><span class="curtain-label"></span></div>
 <div class="progress" aria-hidden="true"><i></i></div>
 <div class="grain" aria-hidden="true"></div>
 <div class="cursor" aria-hidden="true"><div class="cursor-preview"></div><div class="cursor-ring"><span class="cursor-label"></span></div><div class="cursor-dot"></div></div>
-<a class="corner-logo" href="{root}index.html" aria-label="Nagules Gobi, home" data-label="Home">{logo_svg()}</a>
 <header class="dock-wrap">
   <nav class="dock" aria-label="Main" data-dock>
-    <a class="dk-item dk-mark" href="{root}index.html" aria-label="Nagules Gobi, home" data-label="Home"><span class="dk-tile"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="dkg" gradientUnits="userSpaceOnUse" cx="15" cy="8" r="113">{STOPS}</radialGradient></defs><path fill="url(#dkg)" d="{MARK100}"/></svg></span><span class="dk-tip">Nagules Gobi</span></a>
+    <a class="dk-item dk-mark" href="{root}index.html"{' aria-current="page"' if active == 'index.html' else ''} aria-label="Nagules Gobi, home" data-label="Home"><span class="dk-tile"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="dkg" gradientUnits="userSpaceOnUse" cx="15" cy="8" r="113">{STOPS}</radialGradient></defs><path fill="url(#dkg)" d="{MARK100}"/></svg></span><span class="dk-tip">Home</span></a>
     <i class="dk-sep" aria-hidden="true"></i>
     {items}
     <i class="dk-sep" aria-hidden="true"></i>
@@ -303,7 +302,7 @@ def release_xpense():
     return f'''<article class="release" style="--acc:var(--xp)" id="xpense">
       <div class="rel-info" data-reveal>
         <p class="rel-tag mono">My product · dotXline</p>
-        <div class="rel-name">{img('apps/xpense-icon.webp', '', '{root}')}<h3>Xpense</h3></div>
+        <div class="rel-name">{img('kit/xp-icon.webp', '', '{root}')}<h3>Xpense</h3></div>
         <p class="rel-sub">Every penny, in plain sight.</p>
         <dl class="rel-meta mono"><div><dt>Platform</dt><dd>iPhone</dd></div><div><dt>Built with</dt><dd>SwiftUI</dd></div><div><dt>Status</dt><dd>On the App Store</dd></div><div><dt>Role</dt><dd>Designed, built, shipped</dd></div></dl>
         <p class="rel-desc">A calm, native expense tracker. Log spending in one tap, set budgets and goals, and split costs with friends.</p>
@@ -320,7 +319,7 @@ def release_tockbee():
     return f'''<article class="release flip" style="--acc:var(--tb)" id="tockbee">
       <div class="rel-info" data-reveal>
         <p class="rel-tag mono">My product · dotXline</p>
-        <div class="rel-name">{img('apps/tockbee-icon.webp', '', '{root}')}<h3>Tockbee</h3></div>
+        <div class="rel-name">{img('kit/tb-icon.webp', '', '{root}')}<h3>Tockbee</h3></div>
         <p class="rel-sub">Every hour you work, on the record.</p>
         <dl class="rel-meta mono"><div><dt>Platform</dt><dd>iPhone and Android</dd></div><div><dt>Built with</dt><dd>React Native</dd></div><div><dt>Status</dt><dd>On the App Store</dd></div><div><dt>Role</dt><dd>Designed, built, shipped</dd></div></dl>
         <p class="rel-desc">A shift and pay tracker for UK hourly workers. It clocks you in when you arrive, works out your pay and take-home, and checks your payslip against the hours you really worked.</p>
@@ -541,40 +540,29 @@ def cases():
     case('xpense', 'Case study · My product at dotXline', 'Every penny, in <em>plain</em> sight.',
          'A calm, native expense tracker for iPhone. Log it in one tap, see where it goes, and keep a little more each month.',
          [('Role', 'Founder · designed, built, shipped'), ('Company', 'dotXline LTD'), ('Platform', 'iPhone'), ('Built with', 'SwiftUI'), ('Status', 'On the App Store')],
-         f'<div class="case-cover case-mock" data-img style="aspect-ratio:auto">{scene(P["xpense"], lazy=False)}</div>',
+         kit.XP_FONT + kit.xp_cover(),
          sec('The idea', '<p class="quote">Spending isn’t the problem. Not knowing is.</p><p>Xpense keeps every penny in plain sight, celebrates the months you keep a little more, and never makes you feel bad about the rest.</p>') +
          sec('Design decisions', points([
              ('Logged in one tap', 'Quick Add tiles open a new expense with the category already chosen. Your tiles, in your order.'),
              ('Progress, never shame', 'Spend less than last month and Xpense says so: “Nice, £12 less than September.” Spend more and it stays neutral.'),
              ('Numbers first', 'Built natively for iPhone with the calm design of iOS 26. Nothing in the way of the figure you came for.'),
              ('Private by default', 'No ads, no selling data, and receipt photos stay on your iPhone.')])) +
-         '<section class="case-band"><div class="wrap section-head"><p class="kicker" data-reveal>The screens</p><h2 data-split>Five screens, one calm flow.</h2></div>' +
-         flow([('apps/xpense-1.webp', 'Overview', 'This month at a glance, with Quick Add right under it.'),
-               ('apps/xpense-2.webp', 'New expense', 'Amount, category, done. Add a note or receipt if you like.'),
-               ('apps/xpense-3.webp', 'History', 'Every expense grouped by day. Search, filter and swipe.'),
-               ('apps/xpense-4.webp', 'Analyze', 'Category donut, month bars and month against month.'),
-               ('apps/xpense-5.webp', 'Shared', 'Groups for flats and trips. Settle up in a tap.')]) + '</section>' +
+         kit.xp_sections() +
          sec('Principles', points([('Clear', 'We say the number. “£3.40 logged to Food.” Plain, specific, no guessing.'), ('Calm', 'Quiet interfaces that stay out of your way and respect your attention.'), ('Private', 'No ads. No tracking you across other companies’ apps.'), ('Built to ship', 'Designed and built inside my own company, with every detail owned end to end.')]) +
              '<p><a class="link" href="https://dotxline.com/xpense.html" target="_blank" rel="noopener">See Xpense on dotxline.com ↗</a></p>'))
     # Tockbee
     case('tockbee', 'Case study · My product at dotXline', 'Every hour you work, on the <em>record</em>.',
          'Tockbee keeps your own record of every hour you work, so you can check your payslip and sort out missing pay.',
          [('Role', 'Founder · designed, built, shipped'), ('Company', 'dotXline LTD'), ('Platform', 'iPhone and Android'), ('Built with', 'React Native'), ('Status', 'On the App Store')],
-         f'<div class="case-cover case-mock" data-img style="aspect-ratio:auto">{scene(P["tockbee"], lazy=False)}</div>',
+         kit.TB_FONT + kit.tb_cover(),
          sec('The problem', '<p class="quote">Every hour you work should show up on your payslip.</p><p>Tockbee keeps an honest record on your phone and nobody else’s, so checking your pay takes a minute instead of an argument.</p>') +
          sec('How it works', points([
              ('Arrive. You’re clocked in.', 'By location at a work site or by joining your work Wi-Fi. Every automatic clock-in sends a notification with Undo.'),
              ('Every minute counts', 'Overtime, weekend and night rates and unpaid breaks, worked out as you go.'),
              ('Check it against your payslip', 'Copy in what your payslip says and Tockbee shows any hours or pay that went missing.'),
              ('Your timesheet, ready to share', 'A PDF or CSV with every shift and how it was recorded.')])) +
-         '<section class="case-band"><div class="wrap section-head"><p class="kicker" data-reveal>The screens</p><h2 data-split>From clock-in to payslip check.</h2></div>' +
-         flow([('apps/tockbee-today.webp', 'Today', 'The running shift, also on the Lock Screen and Dynamic Island.'),
-               ('apps/tockbee-shifts.webp', 'Shifts', 'Times, breaks and how each shift was recorded.'),
-               ('apps/tockbee-pay.webp', 'Pay', 'Gross, overtime and estimated take-home.'),
-               ('apps/tockbee-payslip.webp', 'Payslip check', 'Possibly underpaid? You’ll know.'),
-               ('apps/tockbee-export.webp', 'Export', 'Your timesheet as PDF or CSV.')]) + '</section>' +
+         kit.tb_sections() +
          sec('Honest by design', '<p class="lead">Tax is an estimate, and the app says so.</p><p>Tockbee calls it <strong>estimated take-home</strong>: after PAYE (including Scottish rates), National Insurance, student loan and pension. Your payslip stays the official figure. And Tockbee collects no data at all.</p>' +
-             f'<div class="duo">{"".join(f"<div class=\"media\" data-img>{img(x, a, chr(123)+'root'+chr(125))}</div>" for x, a in [("apps/tockbee-preview.webp", "Tockbee promo: clocked in by location"), ("apps/tockbee-itemised.webp", "Tockbee promo: itemised shift receipt")])}</div>' +
              '<p><a class="link" href="https://dotxline.com/tockbee.html" target="_blank" rel="noopener">See Tockbee on dotxline.com ↗</a></p>'))
     # Chatvertiser
     case('chatvertiser', 'Case study · Web app UI · Ad tech UX', 'Advertising that starts with a <em>conversation</em>.',
@@ -632,7 +620,7 @@ def dotxline():
 </section>
 <section class="wrap app-sec">
   <div>
-    <div class="app-id" data-reveal>{img('apps/xpense-icon.webp', '', '{root}')}<div><b>Xpense</b><br><span style="color:var(--muted)">by dotXline</span></div></div>
+    <div class="app-id" data-reveal>{img('kit/xp-icon.webp', '', '{root}')}<div><b>Xpense</b><br><span style="color:var(--muted)">by dotXline</span></div></div>
     <h2 data-split>Every penny, in plain sight.</h2>
     <div class="body" data-reveal><p>A calm, native iPhone expense tracker. Log spending, set budgets and goals, and split costs with friends.</p><div class="tags"><span>iPhone</span><span>SwiftUI</span><span>On the App Store</span><span>No ads</span></div><p class="btn-row"><a class="btn" href="{{root}}work/xpense.html" data-magnetic data-label="Xpense"><span>Read the case study</span></a>{store_btn('xpense', 'Xpense')}</p></div>
   </div>
@@ -640,7 +628,7 @@ def dotxline():
 </section>
 <section class="wrap app-sec">
   <div>
-    <div class="app-id" data-reveal>{img('apps/tockbee-icon.webp', '', '{root}')}<div><b>Tockbee</b><br><span style="color:var(--muted)">by dotXline</span></div></div>
+    <div class="app-id" data-reveal>{img('kit/tb-icon.webp', '', '{root}')}<div><b>Tockbee</b><br><span style="color:var(--muted)">by dotXline</span></div></div>
     <h2 data-split>Every hour you work, on the record.</h2>
     <div class="body" data-reveal><p>Tockbee clocks you in when you arrive at work, works out your pay and take-home, and checks your payslip against the hours you really worked.</p><div class="tags"><span>iPhone and Android</span><span>React Native</span><span>On the App Store</span><span>No account, no tracking</span></div><p class="btn-row"><a class="btn" href="{{root}}work/tockbee.html" data-magnetic data-label="Tockbee"><span>Read the case study</span></a>{store_btn('tockbee', 'Tockbee')}</p></div>
   </div>

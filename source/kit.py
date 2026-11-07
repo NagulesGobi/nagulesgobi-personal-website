@@ -220,3 +220,62 @@ def pc_card_inner():
 def pw_card_inner():
     sc = pw_screens()
     return f'<div class="ks-mini">{sc[0]}{sc[4]}</div>'
+
+# ------------------------------------------------------------------ brand-kit media (Xpense, Tockbee)
+def device(src, alt, caption='', w=600, h=1304):
+    """A real app screenshot in a thin device bezel that matches its exact shape: never cropped."""
+    cap = f'<figcaption>{E(caption)}</figcaption>' if caption else ''
+    return (f'<figure class="kit-device" data-reveal><div class="kd-bezel"><img src="{{root}}assets/img/kit/{src}" alt="{E(alt)}" '
+            f'width="{w}" height="{h}" loading="lazy" decoding="async"></div>{cap}</figure>')
+
+def devices(items, label='Screens'):
+    return f'<div class="kit-block"><p class="kit-label mono">{E(label)}</p><div class="kit-phones kit-devices">{"".join(items)}</div></div>'
+
+def video(name, caption, w=540, h=960):
+    return (f'<figure class="kit-video" data-reveal><div class="kv-frame" style="aspect-ratio:{w}/{h}"><video controls playsinline preload="none" '
+            f'poster="{{root}}assets/img/kit/{name}-poster.webp" width="{w}" height="{h}"><source src="{{root}}assets/video/{name}.mp4" type="video/mp4"></video></div>'
+            f'<figcaption>{E(caption)}</figcaption></figure>')
+
+def videos(items, label='In motion'):
+    return f'<div class="kit-block"><p class="kit-label mono">{E(label)}</p><div class="kit-videos">{"".join(items)}</div></div>'
+
+def store_strip(n, alt_prefix, label='App Store photos'):
+    imgs = ''.join(f'<img src="{{root}}assets/img/kit/xp-store-{i}.webp" alt="{E(alt_prefix)} {i} of {n}" width="640" height="1387" loading="lazy" decoding="async">' for i in range(1, n + 1))
+    return f'<div class="kit-block"><p class="kit-label mono">{E(label)}</p><div class="kit-strip" tabindex="0" aria-label="{E(label)}, scroll sideways">{imgs}</div></div>'
+
+def palette_jobs(colors, label='Colour palette'):
+    cards = ''.join(f'<div class="kp-sw" data-reveal style="--d:{i * .05:.2f}s"><i style="background:#{hx}"></i><b>{E(name)}</b><span class="mono">#{hx.upper()}</span><small>{E(job)}</small></div>'
+                    for i, (hx, name, job) in enumerate(colors))
+    return f'<div class="kit-block"><p class="kit-label mono">{E(label)}</p><div class="kp-grid">{cards}</div></div>'
+
+TB_FONT = '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&amp;display=swap">'
+XP_FONT = '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&amp;display=swap">'
+
+def tb_cover():
+    phones = (device('tb-today.webp', 'Tockbee Today screen: on shift at Riverside Care Home, 1:33:28, Clock out') +
+              device('tb-pay.webp', 'Tockbee Pay screen: £458.20 this week before tax'))
+    return stage(f'<div class="ks-brand tb-brand"><img src="{{root}}assets/img/kit/tb-icon.webp" alt="" width="240" height="240"><b>tockbee</b><span>Every hour you work, on the record.</span></div><div class="ks-phones">{phones}</div>', 'tb-stage')
+
+def tb_sections():
+    screens = [('tb-today.webp', 'Today', 'Today: the running shift, clocked in by location'), ('tb-shifts.webp', 'Shifts', 'Shifts: every shift, its breaks and how it was recorded'),
+               ('tb-sites.webp', 'Sites', 'Sites: work places that clock you in when you arrive'), ('tb-pay.webp', 'Pay', 'Pay: base pay, goal and estimated take-home'),
+               ('tb-payslip.webp', 'Payslip check', 'Payslip check: possibly underpaid, £12.71 less than your log'), ('tb-export.webp', 'Export', 'Export: a PDF timesheet or CSV spreadsheet'),
+               ('tb-review.webp', 'Year in review', 'Year in review: tax year so far and your busiest month')]
+    return (section('From clock-in to payslip check.', devices([device(s, a, c) for s, c, a in screens], 'The app, screen by screen'), 'Real screens', '#FF7A2F')
+            + section('In motion.', videos([video('tb-preview', 'App preview'), video('tb-receipt', 'Receipt ad: an itemised shift'), video('tb-onehour', 'Ad: one hour short')]), 'Videos', '#FF7A2F')
+            + section('The brand.', palette_jobs([('FF7A2F', 'Tangerine', 'Brand colour, app icon, Clock in'), ('2A1712', 'Cocoa', 'Text and primary buttons'), ('FFF6E8', 'Cream', 'Light backgrounds'),
+                                                  ('FFB627', 'Sunshine', 'Highlights, this week’s earnings'), ('FF4F5A', 'Coral', 'Live: you’re on shift now'), ('C2361F', 'Rust', 'Links and overtime figures'),
+                                                  ('1F7A44', 'Leaf', 'Functional only: paid, matches payslip')])
+                      + typeface('"Fredoka", system-ui, sans-serif', 'Fredoka', weights='SemiBold 600 · wordmark and titles, lowercase', tint='#FF7A2F')
+                      + '<p class="kit-note">Text on Tangerine, Sunshine or Coral is always Cocoa. Coral only ever means “on shift right now”. No bees, anywhere.</p>', 'From the brand kit', '#FF7A2F'))
+
+def xp_cover():
+    return f'<div class="kit-stage xp-stage" data-img><div class="ks-brand xp-brand"><img src="{{root}}assets/img/kit/xp-icon.webp" alt="" width="240" height="240"><b>Xpense</b><span>Every penny, in plain sight.</span></div><div class="kit-strip on-stage" tabindex="0" aria-label="Xpense App Store photos, scroll sideways">{"".join(f"<img src=\'{{root}}assets/img/kit/xp-store-{i}.webp\' alt=\'Xpense App Store photo {i} of 5\' width=\'640\' height=\'1387\' decoding=\'async\'>" for i in range(1, 6))}</div></div>'
+
+def xp_sections():
+    return (section('In motion.', videos([video('xp-preview', 'App preview, 29 seconds', 540, 1170), video('xp-cup', 'Ad: the cup', 540, 1170)]), 'Videos', '#0F9D7A')
+            + section('The brand: Mint and Ink.',
+                      '<div class="kit-block xp-logo"><p class="kit-label mono">The icon</p><div class="xl-row"><img src="{root}assets/img/kit/xp-icon.webp" alt="Xpense app icon" width="240" height="240"><p>“Less than last month.” Two rounded bars: last month on top, faint; this month below, shorter; and the amber between them is what you kept. Three layers, so iOS gives it Liquid Glass depth.</p></div></div>'
+                      + palette_jobs([('0F9D7A', 'Mint', 'Logo, icon, chart fills'), ('0A7D61', 'Mint Dark', 'Buttons and links'), ('E3F5EE', 'Mint Light', 'Tinted wells, selection'),
+                                      ('0E1512', 'Ink', 'Text, dark backgrounds'), ('F5A524', 'Amber', 'Celebrations and progress'), ('F4F6F3', 'Paper', 'Light background')])
+                      + typeface('"Sora", system-ui, sans-serif', 'Sora', weights='SemiBold · section headings, with SF Pro for the app', tint='#0F9D7A'), 'From the brand kit', '#0F9D7A'))
