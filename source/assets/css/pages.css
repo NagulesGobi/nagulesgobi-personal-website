@@ -597,3 +597,16 @@ h1, h2, h3 { text-wrap: balance; }
   .hero { justify-content: flex-start; padding-top: calc(92px + var(--mark-h, min(44vw, 190px)) * .86 + 26px); }
   .hero .hint { display: none; }
 }
+
+/* Work page: one page, two sections */
+.jump { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 36px; }
+.jump a { display: grid; grid-template-columns: auto 1fr; column-gap: 14px; align-items: baseline; min-width: 240px; padding: 18px 22px; border: 1px solid var(--line); border-radius: 18px; text-decoration: none; background: var(--card); transition: border-color .3s, transform .4s var(--ease); }
+.jump a:hover { border-color: var(--accent); transform: translateY(-2px); }
+.jump .mono { color: var(--accent); grid-row: span 2; }
+.jump a { font: 600 22px/1.15 var(--display); }
+.jump small { font: 400 14px/1.4 var(--body); color: var(--muted); }
+.part-head { margin-bottom: 40px; }
+.brand-part { border-top: 1px solid var(--line); scroll-margin-top: 70px; }
+#product { scroll-margin-top: 70px; }
+@media (max-width: 600px) { .jump a { min-width: 0; flex: 1 1 100%; } }
+.part-head h2 { font-size: clamp(36px, 4.4vw, 64px); }

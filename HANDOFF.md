@@ -64,7 +64,7 @@ decided or built in the first session (7 November 2026).
    for the apps, "Next case study" link.
 4. **dotXline** (`dotxline.html`): company story (0 · × · 1), both apps with stacked screens,
    principles Clear / Calm / Private, link to dotxline.com.
-5. **Brand** (`brand.html`): 29 real pieces from the old site in a masonry gallery with filters
+5. **Brand** (merged into `work.html#brand` in Nov 2026; `brand.html` and `graphicdesigner.html` now forward there): 29 real pieces from the old site in a masonry gallery with filters
    (Logos and identity, Campaigns, Print, Packaging) and a full-screen lightbox (keys, swipe).
 6. **About** (`about.html`): portrait, bio, facts, five-step process ending in "Build",
    six capability cards.

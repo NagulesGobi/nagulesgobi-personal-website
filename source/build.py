@@ -21,7 +21,7 @@ def img(path, alt, root, cls='', lazy=True, extra=''):
             f'{" loading=\"lazy\"" if lazy else ""} decoding="async"{f" class=\"{cls}\"" if cls else ""}{extra}>')
 
 # ------------------------------------------------------------------ partials
-NAV = [('work.html', 'Work'), ('dotxline.html', 'dotXline'), ('brand.html', 'Brand'), ('about.html', 'About'), ('contact.html', 'Contact')]
+NAV = [('work.html', 'Work'), ('dotxline.html', 'dotXline'), ('about.html', 'About'), ('contact.html', 'Contact')]
 
 def logo_svg():
     return (f'<svg class="logo-svg" viewBox="{LOGO_VB}" role="img" aria-label="Nagules Gobi"><defs><radialGradient id="ngg" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="87">{STOPS}</radialGradient></defs>'
@@ -334,12 +334,12 @@ def home():
     </div>
     <ol class="ledger">{ledger}
     </ol>
-    <p class="ledger-foot" data-reveal><a class="link" href="{{root}}work.html" data-label="Work">All work <span aria-hidden="true">→</span></a><a class="link" href="{{root}}brand.html" data-label="Brand">Brand and print work <span aria-hidden="true">→</span></a></p>
+    <p class="ledger-foot" data-reveal><a class="link" href="{{root}}work.html" data-label="Work">All work <span aria-hidden="true">→</span></a><a class="link" href="{{root}}work.html#brand" data-label="Brand">Brand and print work <span aria-hidden="true">→</span></a></p>
   </div>
 </section>
 
 <section class="logos" aria-label="Brands I have designed for">
-  <div class="wrap"><p class="kicker">Brands I’ve designed identities for</p><a href="{{root}}brand.html">See all brand work →</a></div>
+  <div class="wrap"><p class="kicker">Brands I’ve designed identities for</p><a href="{{root}}work.html#brand">See all brand work →</a></div>
   <div class="logo-row" data-marquee="1" data-speed="0.5" data-skew="off"><div class="logo-track">{logos}</div></div>
 </section>
 
@@ -395,23 +395,17 @@ def work_index():
         <div class="wcard-meta"><h3>{p['title']}</h3><span class="tags">{p['kind']}</span></div>
         <p>{p['short']}</p>
       </a>'''
-    for slug, title, kind, image, cat in [('brand.html', 'Brand identities', '21 logos and identity systems', 'brand/allura.webp', 'brand'),
-                                          ('brand.html#campaigns', 'Campaigns and print', 'Ads, posters and book covers', 'brand/viviendo-del-trade.webp', 'brand')]:
-        cards += f'''
-      <a class="wcard" href="{{root}}{slug}" data-cat="{cat}" data-cursor="View" data-preview="{{root}}assets/img/{image}" data-label="Brand">
-        <div class="media" data-img>{img(image, title, '{root}')}</div>
-        <div class="wcard-meta"><h3>{title}</h3><span class="tags">{kind}</span></div>
-        <p>{'Logos and visual identities for brands in health, insurance, education, gaming and retail.' if cat == 'brand' and 'identities' in title else 'Social ads, a school fundraising campaign, posters, a book cover and packaging.'}</p>
-      </a>'''
     body = f'''<section class="page-hero">
   <div class="glow" aria-hidden="true"></div>
   <div class="wrap">
     <p class="kicker" data-reveal data-hero>Work · 2019 to now</p>
     <h1 data-split data-hero>Selected <em>work</em></h1>
-    <p class="lede" data-reveal data-hero style="--d:.3s">Products I designed for clients, the apps I build with dotXline, and the brands I gave a visual voice. Filter by type, or switch to the list and hover a project to preview it.</p>
+    <p class="lede" data-reveal data-hero style="--d:.3s">Two kinds of work on one page: the products and apps I design and build, and the brands, campaigns and print I give a visual voice.</p>
+    <nav class="jump" data-reveal data-hero style="--d:.45s" aria-label="Sections on this page"><a href="#product"><span class="mono">01</span>Product work<small>{len(PROJECTS)} case studies</small></a><a href="#brand"><span class="mono">02</span>Brand and print<small>{len(GALLERY)} pieces</small></a></nav>
   </div>
 </section>
-<section class="section" style="padding-top:0">
+<section class="section work-part" id="product" style="padding-top:0">
+  <div class="wrap"><div class="section-head part-head"><p class="kicker" data-reveal>01 · Product work</p><h2 class="two-tone" data-split>Apps and websites. <span class="dim">Case studies from idea to launch.</span></h2></div></div>
   <div class="wrap" id="work-list" data-view="grid">
     <div class="filters" data-reveal>
       <div class="chipset" data-filter-group="work-grid" role="group" aria-label="Filter projects">
@@ -419,15 +413,15 @@ def work_index():
         <button class="chip" type="button" data-filter="apps" aria-pressed="false">My apps<sup></sup></button>
         <button class="chip" type="button" data-filter="web" aria-pressed="false">Web<sup></sup></button>
         <button class="chip" type="button" data-filter="mobile" aria-pressed="false">Mobile<sup></sup></button>
-        <button class="chip" type="button" data-filter="brand" aria-pressed="false">Brand<sup></sup></button>
       </div>
       <div class="toggle" data-view-toggle="work-list" role="group" aria-label="Layout"><button type="button" data-view="grid" aria-pressed="true">Grid</button><button type="button" data-view="list" aria-pressed="false">List</button></div>
     </div>
     <div class="wgrid" id="work-grid">{cards}
     </div>
   </div>
-</section>'''
-    page('work.html', 'Work · Nagules Gobi', 'Case studies and selected product, app and brand design work by Nagules Gobi.', 'work.html', body)
+</section>
+{gallery_section()}'''
+    page('work.html', 'Work · Nagules Gobi', 'Product and app case studies, plus logos, identities, campaigns and print design by Nagules Gobi.', 'work.html', body, lightbox=True)
 
 # ---------------------------------------------------------------- case pages
 def facts(items):
@@ -612,7 +606,7 @@ GALLERY = [
   ('whitsunday-kombi', 'Whitsunday Kombi', 'Logo', 'identity', False), ('cupid-theory-rect', 'Cupid Theory', 'Logo on colour', 'identity', False),
   ('logo-chatvertiser-logo', 'Chatvertiser', 'Logo', 'identity', True),
 ]
-def brand():
+def gallery_section():
     items = ''
     for k, title, kind, cat, logo in GALLERY:
         key = ('logo/' + k[5:]) if logo else ('brand/' + k)
@@ -620,17 +614,13 @@ def brand():
         pad = ' style="padding:14% 10%;background:var(--card)"' if logo else ''
         cls = ' class="mono-logo"' if logo else ''
         items += f'<button class="gitem" type="button" data-cat="{cat}" data-full="{src}" data-title="{E(title)}" data-kind="{E(kind)}" data-cursor="Open"{pad}><img{cls} src="{src}" alt="{E(title)}, {E(kind.lower())}" width="{w}" height="{h}" loading="lazy" decoding="async"><span class="gcap"><b>{E(title)}</b><span>{E(kind)}</span></span></button>'
-    n = len(GALLERY)
-    body = f'''<section class="page-hero">
-  <div class="glow" aria-hidden="true"></div>
-  <div class="wrap">
-    <p class="kicker" data-reveal data-hero>Graphic and brand design</p>
-    <h1 data-split data-hero>Every pixel shaped with <em>purpose</em>.</h1>
-    <p class="lede" data-reveal data-hero style="--d:.3s">Alongside product work, I create bold visual identities and branding that help businesses stand out, connect with their audience and grow with confidence. {n} pieces below. Tap any of them to view it full screen.</p>
-  </div>
-</section>
-<section class="section" style="padding-top:0" id="campaigns">
-  <div class="wrap">
+    return f'''<section class="section work-part brand-part" id="brand">
+  <div class="wrap"><div class="section-head part-head">
+    <p class="kicker" data-reveal>02 · Brand and print</p>
+    <h2 class="two-tone" data-split>Every pixel shaped with purpose. <span class="dim">Logos, campaigns, print and packaging.</span></h2>
+    <p data-reveal>Alongside product work, I create visual identities and campaigns that help businesses stand out. {len(GALLERY)} pieces. Tap any of them to view it full screen.</p>
+  </div></div>
+  <div class="wrap" id="campaigns">
     <div class="filters" data-reveal>
       <div class="chipset" data-filter-group="gallery" role="group" aria-label="Filter brand work">
         <button class="chip" type="button" data-filter="all" aria-pressed="true">All<sup></sup></button>
@@ -643,7 +633,12 @@ def brand():
     <div class="masonry" id="gallery">{items}</div>
   </div>
 </section>'''
-    page('brand.html', 'Brand Design · Nagules Gobi', 'Logos, identities, campaigns and print design by Nagules Gobi.', 'brand.html', body, lightbox=True)
+
+def redirect(path, target, title):
+    open(os.path.join(OUT, path), 'w').write(f'<!doctype html><html lang="en"><head><meta charset="utf-8"><title>{title}</title><meta http-equiv="refresh" content="0; url={target}"><link rel="canonical" href="https://www.nagulesgobi.com/{target.split("#")[0]}"><meta name="robots" content="noindex"></head><body><p><a href="{target}">{title}</a></p><script>location.replace("{target}" + "")</script></body></html>\n')
+
+def brand():
+    redirect('brand.html', 'work.html#brand', 'Brand and print work · Nagules Gobi')
 
 # ---------------------------------------------------------------- about
 def about():
@@ -759,10 +754,10 @@ def contact():
     page('contact.html', 'Contact · Nagules Gobi', 'Hire Nagules Gobi for a product design role or project.', 'contact.html', body, cta='Prefer a call? Let’s talk it through.')
 
 def extras():
-    open(os.path.join(OUT, 'graphicdesigner.html'), 'w').write('<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Brand Design · Nagules Gobi</title><meta http-equiv="refresh" content="0; url=brand.html"><link rel="canonical" href="https://www.nagulesgobi.com/brand.html"></head><body><p>This page has moved to <a href="brand.html">Brand design</a>.</p></body></html>\n')
+    redirect('graphicdesigner.html', 'work.html#brand', 'Brand and print work · Nagules Gobi')
     open(os.path.join(OUT, 'CNAME'), 'w').write('www.nagulesgobi.com\n')
     open(os.path.join(OUT, '.nojekyll'), 'w').write('')
-    pages = ['', 'work.html', 'dotxline.html', 'brand.html', 'about.html', 'contact.html'] + [f'work/{p["slug"]}.html' for p in PROJECTS]
+    pages = ['', 'work.html', 'dotxline.html', 'about.html', 'contact.html'] + [f'work/{p["slug"]}.html' for p in PROJECTS]
     open(os.path.join(OUT, 'sitemap.xml'), 'w').write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + ''.join(f'  <url><loc>https://www.nagulesgobi.com/{p}</loc></url>\n' for p in pages) + '</urlset>\n')
     open(os.path.join(OUT, 'robots.txt'), 'w').write('User-agent: *\nAllow: /\nSitemap: https://www.nagulesgobi.com/sitemap.xml\n')
     four = head('Page not found · Nagules Gobi', 'This page does not exist.', '/') + chrome('/', '') + '<main id="main"><section class="page-hero" style="min-height:80vh"><div class="glow" aria-hidden="true"></div><div class="wrap"><p class="kicker">404</p><h1 data-split data-hero>This page <em>doesn’t</em> exist.</h1><div class="btns" style="margin-top:40px"><a class="btn" href="/index.html"><span>Back to home</span></a><a class="btn btn-ghost" href="/work.html"><span>See my work</span></a></div></div></section></main></body></html>\n'
