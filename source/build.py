@@ -227,6 +227,8 @@ def release_xpense():
             </div>
             <p class="xp-qh">Quick Add</p>
             <div class="xp-grid">{tiles}</div>
+            <p class="xp-qh">Recent</p>
+            <ul class="xp-recent" data-recent><li><i style="--c:#F59E0B"></i><span><b>Lunch with Sam</b><small>Food · Today</small></span><em>£12.40</em></li><li><i style="--c:#3B82F6"></i><span><b>Train to work</b><small>Transport · Today</small></span><em>£8.20</em></li></ul>
             <div class="xp-toast" data-toast role="status" aria-live="polite"></div>
           </div>
           <div class="ph-tabs xp-tabs" aria-hidden="true"><span class="on">Home</span><span>History</span><span>Analyze</span><span>Shared</span></div>

@@ -142,10 +142,11 @@
       canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       var mobile = W < 820;
-      var size = mobile ? Math.min(W * 0.78, 420) : Math.min(H * 0.7, W * 0.36, 640);
-      var cx = mobile ? W * 0.62 : W * 0.75, cy = mobile ? Math.max(size * 0.42, 150) : H * 0.5;
+      // On phones the mark becomes a faint watermark tucked off the right edge, clear of the header
+      var size = mobile ? Math.min(W * 0.92, 440) : Math.min(H * 0.7, W * 0.36, 640);
+      var cx = mobile ? W * 0.86 : W * 0.75, cy = mobile ? H * 0.46 : H * 0.5;
       var ox = cx - size / 2, oy = cy - size / 2;
-      canvas.style.opacity = mobile ? .3 : 1;
+      canvas.style.opacity = mobile ? .14 : 1;
       var step = Math.max(5, Math.round(size / 92));
       var off = document.createElement('canvas'); off.width = off.height = Math.ceil(size);
       var o = off.getContext('2d'); o.scale(size / 100, size / 100); o.fill(new Path2D(MARK_D));
@@ -510,7 +511,8 @@
   document.querySelectorAll('[data-xpense]').forEach(function (app) {
     var BUDGET = 1600, BASE = 1248.60, total = BASE, shown = BASE, raf = 0, toastT = 0, idleT = 0, visible = false, touched = false;
     var tEl = app.querySelector('[data-total]'), left = app.querySelector('[data-left]'), bar = app.querySelector('[data-bar]'),
-        used = app.querySelector('[data-used]'), toast = app.querySelector('[data-toast]'), tiles = app.querySelectorAll('.xp-tile');
+        used = app.querySelector('[data-used]'), toast = app.querySelector('[data-toast]'), tiles = app.querySelectorAll('.xp-tile'),
+        recent = app.querySelector('[data-recent]');
     function paint(v) {
       tEl.textContent = gbp(v);
       var pct = v / BUDGET * 100, rem = BUDGET - v;
@@ -532,6 +534,12 @@
       if (total + amt > BUDGET + 120) { total = BASE; tween(total); say('New month. <b>Fresh budget.</b>'); return; }
       total = Math.round((total + amt) * 100) / 100; tween(total);
       say('<b>' + gbp(amt) + '</b> logged to ' + cat + '.');
+      if (recent) {
+        var li = document.createElement('li');
+        li.innerHTML = '<i style="--c:' + tile.style.getPropertyValue('--c') + '"></i><span><b>' + cat + '</b><small>Quick Add · Just now</small></span><em>' + gbp(amt) + '</em>';
+        recent.insertBefore(li, recent.firstChild);
+        while (recent.children.length > 3) recent.removeChild(recent.lastChild);
+      }
     }
     tiles.forEach(function (t) { t.addEventListener('click', function () { touched = true; log(t); }); });
     // Gentle self-demo until someone taps
