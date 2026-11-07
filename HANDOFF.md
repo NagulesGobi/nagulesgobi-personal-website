@@ -52,10 +52,10 @@ decided or built in the first session (7 November 2026).
 
 ## 4. Pages
 
-1. **Home** (`index.html`): intro loader (mark draws, 0–100% counter, curtain lifts, once per
+1. **Home** (`index.html`, redesigned Nov 2026: hero "I design the app. Then I build it and ship it.", mono facts strip, **Shipped** section with working Xpense and Tockbee demos and App Store buttons, client work ledger, logos, services, How I build, pitch). Before that: intro loader (mark draws, 0–100% counter, curtain lifts, once per
    visit), particle N-mark hero with portrait chip, marquee of disciplines, stats (30 / 3 / 6),
    pinned horizontal "Selected work" with six panels, dotXline ventures strip, client logo
-   marquee, services with spotlight borders, **How I build** (Design → Prototype → Build →
+   marquee, services with spotlight borders, **How I build** (Design → Develop → Refine →
    Launch), "Why teams hire me", scroll-scrubbed pitch paragraph, footer CTA.
 2. **Work** (`work.html`): filter chips (All, My apps, Web, Mobile, Brand) with FLIP animation,
    grid/list toggle, list view shows a cursor-following preview image.
@@ -115,8 +115,8 @@ images, no sideways scroll.
   Wordmark: "NAGULESGOBI" in Barlow Semi Condensed 600, tracking 0.06, near-black or white.
 - **Gradient:** radial from the mark's top-left: `#FF9124` 0, `#FF4A2C` .3, `#FF2440` .55,
   `#FF008E` 1 (radius 1.45 × square).
-- **Neutrals:** ink `#1A1A1A`, paper `#F2F2F2`, card `#FFFFFF`; dark theme bg `#141414`,
-  card `#1F1F1F`.
+- **Neutrals (Nov 2026 refresh):** warm paper `#F3EFE7`, card `#FBF9F4`, ink `#15130F`; dark theme bg `#12110F`,
+  card `#1C1B18`. Mono labels in IBM Plex Mono.
 - **Small accent text:** `#D6143A` on light, `#FF5C6E` on dark (WCAG AA). The bright gradient is
   only for large type, graphics and the logo.
 - **Type:** display Barlow Semi Condensed 500–700, body Barlow 400–600 (Google Fonts, OFL).

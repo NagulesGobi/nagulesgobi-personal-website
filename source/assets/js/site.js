@@ -494,3 +494,90 @@
   setupWork(); requestAnimationFrame(frame); armReveals();
   runIntro(function () { startHero(); if (field) field.start(); });
 })();
+
+/* ======================================================= live app demos
+   Xpense: tap a Quick Add tile and the month total, budget bar and toast update.
+   Tockbee: a running shift timer; Clock out saves the shift, Clock in starts a new one. */
+(function () {
+  var gbp = function (n) { return '£' + n.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); };
+  var RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function onView(el, cb) {
+    if (!('IntersectionObserver' in window)) return cb(true);
+    new IntersectionObserver(function (e) { cb(e[0].isIntersecting); }, { threshold: 0.35 }).observe(el);
+  }
+
+  /* ------------------------------------------------------------ Xpense */
+  document.querySelectorAll('[data-xpense]').forEach(function (app) {
+    var BUDGET = 1600, BASE = 1248.60, total = BASE, shown = BASE, raf = 0, toastT = 0, idleT = 0, visible = false, touched = false;
+    var tEl = app.querySelector('[data-total]'), left = app.querySelector('[data-left]'), bar = app.querySelector('[data-bar]'),
+        used = app.querySelector('[data-used]'), toast = app.querySelector('[data-toast]'), tiles = app.querySelectorAll('.xp-tile');
+    function paint(v) {
+      tEl.textContent = gbp(v);
+      var pct = v / BUDGET * 100, rem = BUDGET - v;
+      bar.style.width = Math.min(100, pct).toFixed(1) + '%';
+      used.textContent = Math.round(pct) + '% used';
+      left.textContent = rem >= 0 ? gbp(rem) + ' left of £1,600 budget' : gbp(-rem) + ' over your £1,600 budget';
+      left.classList.toggle('over', rem < 0);
+    }
+    function tween(to) {
+      cancelAnimationFrame(raf);
+      if (RM) { shown = to; paint(to); return; }
+      var from = shown, t0 = performance.now();
+      (function step(now) { var k = Math.min(1, (now - t0) / 650), e = 1 - Math.pow(1 - k, 3); shown = from + (to - from) * e; paint(shown); if (k < 1) raf = requestAnimationFrame(step); })(t0);
+    }
+    function say(html) { clearTimeout(toastT); toast.innerHTML = html; toast.classList.add('show'); toastT = setTimeout(function () { toast.classList.remove('show'); }, 1900); }
+    function log(tile) {
+      var amt = parseFloat(tile.dataset.amt), cat = tile.dataset.cat;
+      tile.classList.add('tap'); setTimeout(function () { tile.classList.remove('tap'); }, 180);
+      if (total + amt > BUDGET + 120) { total = BASE; tween(total); say('New month. <b>Fresh budget.</b>'); return; }
+      total = Math.round((total + amt) * 100) / 100; tween(total);
+      say('<b>' + gbp(amt) + '</b> logged to ' + cat + '.');
+    }
+    tiles.forEach(function (t) { t.addEventListener('click', function () { touched = true; log(t); }); });
+    // Gentle self-demo until someone taps
+    function auto() { clearTimeout(idleT); if (!visible || touched || RM) return; idleT = setTimeout(function () { log(tiles[Math.floor(Math.random() * tiles.length)]); auto(); }, 2600); }
+    onView(app, function (v) { visible = v; v ? auto() : clearTimeout(idleT); });
+    paint(BASE);
+  });
+
+  /* ----------------------------------------------------------- Tockbee */
+  document.querySelectorAll('[data-tockbee]').forEach(function (app) {
+    var RATE = 12.71, WEEK0 = 458.20, HOURS0 = 36 * 3600 + 3 * 60, GOAL = 500;   // £12.71 an hour, from the app's own sample week
+    var q = function (s) { return app.querySelector(s); };
+    var timer = q('[data-timer]'), week = q('[data-week]'), hours = q('[data-hours]'), shifts = q('[data-shifts]'), bar = q('[data-bar]'), goal = q('[data-goal]'),
+        chip = q('[data-chip]'), chipT = q('[data-chip-text]'), since = q('[data-since]'), btn = q('[data-btn]'), btnT = q('[data-btn-text]');
+    // counted = seconds of the running shift already included in the sample week (1:33:28 for the first shift, 0 after)
+    var startAt = Date.now() - 5608 * 1000, counted = 5608, on = true, bankedSec = 0, bankedPay = 0, nShifts = 5;
+    var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+    var runSec = function () { return Math.floor((Date.now() - startAt) / 1000); };
+    function render() {
+      var sec = on ? runSec() : 0, fresh = on ? Math.max(0, sec - counted) : 0;
+      if (on) timer.textContent = Math.floor(sec / 3600) + ':' + pad(Math.floor(sec / 60) % 60) + ':' + pad(sec % 60);
+      var pay = WEEK0 + bankedPay + fresh * RATE / 3600, totalSec = HOURS0 + bankedSec + fresh;
+      week.textContent = gbp(pay);
+      hours.textContent = Math.floor(totalSec / 3600) + 'h ' + pad(Math.floor(totalSec / 60) % 60) + 'm';
+      shifts.textContent = nShifts + ' shifts';
+      bar.style.width = Math.min(100, pay / GOAL * 100).toFixed(1) + '%';
+      goal.textContent = pay < GOAL ? gbp(GOAL - pay) + ' to your £500.00 goal' : 'Goal reached. Nice week.';
+    }
+    btn.addEventListener('click', function () {
+      var now = new Date(), hm = pad(now.getHours()) + ':' + pad(now.getMinutes());
+      if (on) {
+        var sec = runSec(), fresh = Math.max(0, sec - counted);
+        bankedSec += fresh; bankedPay += fresh * RATE / 3600; on = false;
+        app.classList.add('off'); chip.classList.add('saved');
+        chipT.textContent = 'Shift saved · ' + Math.floor(sec / 3600) + 'h ' + pad(Math.floor(sec / 60) % 60) + 'm · ' + gbp(sec * RATE / 3600);
+        since.textContent = 'Clocked out ' + hm; btnT.textContent = 'Clock in';
+      } else {
+        on = true; startAt = Date.now(); counted = 0; nShifts += 1;
+        app.classList.remove('off'); chip.classList.remove('saved');
+        chipT.textContent = 'On shift at Riverside Care Home';
+        since.textContent = 'Clocked in ' + hm + ' by you'; btnT.textContent = 'Clock out';
+      }
+      render();
+    });
+    var iv = 0;
+    onView(app, function (v) { clearInterval(iv); if (v) { render(); iv = setInterval(render, 1000); } });
+    render();
+  });
+})();

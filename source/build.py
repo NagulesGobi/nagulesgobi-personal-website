@@ -51,8 +51,8 @@ def head(title, desc, root, intro=False, canonical=''):
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://www.nagulesgobi.com/assets/brand/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#F2F2F2" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#141414" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F3EFE7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#12110F" media="(prefers-color-scheme: dark)">
 <link rel="canonical" href="https://www.nagulesgobi.com/{canonical}">
 <link rel="icon" href="{root}favicon.ico" sizes="48x48">
 <link rel="icon" href="{root}favicon.svg" type="image/svg+xml">
@@ -60,7 +60,7 @@ def head(title, desc, root, intro=False, canonical=''):
 <link rel="manifest" href="{root}site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{root}assets/css/base.css">
 <link rel="stylesheet" href="{root}assets/css/pages.css">
 <script src="{root}assets/js/site.js" defer></script>
@@ -172,21 +172,111 @@ def preview_attr(p, root):
     return ''
 
 # ---------------------------------------------------------------- home page
-def home():
-    panels = ''
-    for i, p in enumerate(PROJECTS):
-        panels += f'''
-      <article class="panel" data-cursor="View">
-        <a class="panel-media" href="{{root}}work/{p['slug']}.html" data-tilt data-label="{p['title']}" aria-label="{p['title']} case study">{scene(p)}<span class="glare" aria-hidden="true"></span></a>
-        <div class="panel-body">
-          <p class="tag"><span>{i + 1:02d}</span>{p['kind']}</p>
-          <h3>{p['title']}</h3>
-          <p>{p['short']}</p>
-          <a class="link" href="{{root}}work/{p['slug']}.html" data-label="{p['title']}">Read the case study <span aria-hidden="true">→</span></a>
+# App Store links. Placeholders point at each app's page on dotxline.com until the real
+# App Store links are added: replace these two URLs and rebuild.
+APP_STORE = {
+    'xpense': 'https://dotxline.com/xpense.html',
+    'tockbee': 'https://dotxline.com/tockbee.html',
+}
+APPLE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.37 12.6c-.02-2.2 1.8-3.26 1.88-3.31-1.03-1.5-2.62-1.7-3.18-1.73-1.35-.14-2.64.8-3.33.8-.69 0-1.74-.78-2.87-.76-1.47.02-2.83.86-3.59 2.18-1.53 2.66-.39 6.6 1.1 8.76.73 1.06 1.6 2.25 2.73 2.2 1.1-.04 1.51-.71 2.84-.71 1.32 0 1.7.71 2.86.69 1.18-.02 1.93-1.08 2.65-2.14.84-1.22 1.18-2.41 1.2-2.47-.03-.01-2.3-.88-2.32-3.5zM14.2 6.13c.6-.73 1.01-1.75.9-2.76-.87.04-1.92.58-2.54 1.31-.56.65-1.05 1.68-.92 2.68.97.07 1.96-.49 2.56-1.23z"/></svg>'
+
+def store_btn(slug, name):
+    return (f'<a class="store" href="{APP_STORE[slug]}" target="_blank" rel="noopener" aria-label="Download {name} on the App Store">'
+            f'{APPLE}<span><small>Download on the</small>App Store</span></a>')
+
+def status_bar(t='9:41'):
+    return (f'<div class="ph-status"><span>{t}</span><i class="ph-island"></i><span class="ph-sig">'
+            '<svg viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5" width="3" height="7" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>'
+            '<svg viewBox="0 0 26 12"><rect x=".5" y=".5" width="22" height="11" rx="3" fill="none" stroke="currentColor"/><rect x="2" y="2" width="17" height="8" rx="2"/><rect x="23.5" y="4" width="2" height="4" rx="1"/></svg></span></div>')
+
+XP_TILES = [  # name, amount, colour, icon path
+    ('Food', 12.40, '#F59E0B', 'M7 3v8M5 3v4a2 2 0 0 0 4 0V3M7 11v10M16 3c-2 0-3 2-3 5s1 4 3 4v9'),
+    ('Transport', 8.20, '#3B82F6', 'M4 16V9l2-4h12l2 4v7M4 16h16M4 16v2M20 16v2M7 13h.01M17 13h.01'),
+    ('Fuel', 45.00, '#EF4444', 'M5 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M4 21h12M15 9h2l2 2v6a1.5 1.5 0 0 0 3 0V8l-3-3M8 7h4'),
+    ('Subs', 10.99, '#A855F7', 'M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3M18 3v4h-4M6 21v-4h4'),
+    ('Shopping', 24.00, '#EC4899', 'M5 8h14l-1 13H6L5 8zM9 8V6a3 3 0 0 1 6 0v2'),
+    ('Groceries', 64.15, '#22C55E', 'M3 4h2l2.5 11h10L20 7H6.2M9 20h.01M17 20h.01'),
+    ('Bills', 71.00, '#EAB308', 'M13 2 4 14h7l-1 8 9-12h-7l1-8z'),
+    ('Fun', 18.50, '#38BDF8', 'M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7L12 3z'),
+]
+
+def release_xpense():
+    tiles = ''.join(f'<button type="button" class="xp-tile" data-cat="{n}" data-amt="{a:.2f}" style="--c:{c}"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="{d}"/></svg></i><span>{n}</span></button>' for n, a, c, d in XP_TILES)
+    return f'''<article class="release" style="--acc:var(--xp)" id="xpense">
+      <div class="rel-info" data-reveal>
+        <p class="rel-tag mono">My product · dotXline</p>
+        <div class="rel-name">{img('apps/xpense-icon.webp', '', '{root}')}<h3>Xpense</h3></div>
+        <p class="rel-sub">Every penny, in plain sight.</p>
+        <dl class="rel-meta mono"><div><dt>Platform</dt><dd>iPhone</dd></div><div><dt>Built with</dt><dd>SwiftUI</dd></div><div><dt>Status</dt><dd>On the App Store</dd></div><div><dt>Role</dt><dd>Designed, built, shipped</dd></div></dl>
+        <p class="rel-desc">A calm, native expense tracker. Log spending in one tap, set budgets and goals, and split costs with friends.</p>
+        <ul class="rel-points"><li>Quick Add tiles log an expense in one tap</li><li>Progress, never shame: it notices when you spend less</li><li>No ads, and receipt photos stay on your iPhone</li></ul>
+        <div class="rel-ctas">{store_btn('xpense', 'Xpense')}<a class="link" href="{{root}}work/xpense.html" data-label="Xpense">Read the case study <span aria-hidden="true">→</span></a></div>
+      </div>
+      <div class="rel-stage xp-stage" data-reveal style="--d:.1s">
+        <div class="phone xp-app" data-xpense role="group" aria-label="Working demo of the Xpense overview screen">
+          {status_bar()}
+          <div class="xp-body">
+            <p class="xp-h">Overview</p><p class="xp-sub">Good evening</p>
+            <div class="xp-card">
+              <span class="xp-l">Spent in October</span>
+              <b class="xp-total" data-total>£1,248.60</b>
+              <span class="xp-left" data-left>£351.40 left of £1,600 budget</span>
+              <div class="xp-bar"><i data-bar></i></div>
+              <div class="xp-row"><span data-used>78% used</span><span>9 days to go</span></div>
+              <button type="button" class="xp-add" tabindex="-1" aria-hidden="true">+ Add Expense</button>
+            </div>
+            <p class="xp-qh">Quick Add</p>
+            <div class="xp-grid">{tiles}</div>
+            <div class="xp-toast" data-toast role="status" aria-live="polite"></div>
+          </div>
+          <div class="ph-tabs xp-tabs" aria-hidden="true"><span class="on">Home</span><span>History</span><span>Analyze</span><span>Shared</span></div>
         </div>
-      </article>'''
+        <p class="demo-hint mono" aria-hidden="true">Tap a tile to log it</p>
+      </div>
+    </article>'''
+
+def release_tockbee():
+    return f'''<article class="release flip" style="--acc:var(--tb)" id="tockbee">
+      <div class="rel-info" data-reveal>
+        <p class="rel-tag mono">My product · dotXline</p>
+        <div class="rel-name">{img('apps/tockbee-icon.webp', '', '{root}')}<h3>Tockbee</h3></div>
+        <p class="rel-sub">Every hour you work, on the record.</p>
+        <dl class="rel-meta mono"><div><dt>Platform</dt><dd>iPhone and Android</dd></div><div><dt>Built with</dt><dd>React Native</dd></div><div><dt>Status</dt><dd>On the App Store</dd></div><div><dt>Role</dt><dd>Designed, built, shipped</dd></div></dl>
+        <p class="rel-desc">A shift and pay tracker for UK hourly workers. It clocks you in when you arrive, works out your pay and take-home, and checks your payslip against the hours you really worked.</p>
+        <ul class="rel-points"><li>Clocks you in by location or your work Wi-Fi</li><li>Overtime, weekend and night rates worked out as you go</li><li>No account and no data collected</li></ul>
+        <div class="rel-ctas">{store_btn('tockbee', 'Tockbee')}<a class="link" href="{{root}}work/tockbee.html" data-label="Tockbee">Read the case study <span aria-hidden="true">→</span></a></div>
+      </div>
+      <div class="rel-stage tb-stage" data-reveal style="--d:.1s">
+        <div class="phone tb-app" data-tockbee role="group" aria-label="Working demo of the Tockbee today screen">
+          {status_bar('09:41')}
+          <div class="tb-body">
+            <div class="tb-top"><b>tockbee</b><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg></div>
+            <span class="tb-chip" data-chip><i></i><span data-chip-text>On shift at Riverside Care Home</span></span>
+            <b class="tb-timer" data-timer>1:33:28</b>
+            <span class="tb-since" data-since>Clocked in 07:58 by location</span>
+            <button type="button" class="tb-btn" data-btn><span data-btn-text>Clock out</span></button>
+            <div class="tb-week">
+              <span>This week so far</span>
+              <b data-week>£458.20</b>
+              <div class="xp-row"><span data-hours>36h 03m</span><span data-shifts>5 shifts</span></div>
+              <div class="tb-bar"><i data-bar></i></div>
+              <span class="tb-goal" data-goal>£41.80 to your £500.00 goal</span>
+            </div>
+          </div>
+          <div class="ph-tabs tb-tabs" aria-hidden="true"><span class="on">Today</span><span>Shifts</span><span>Sites</span><span>Pay</span></div>
+        </div>
+        <p class="demo-hint mono" aria-hidden="true">Live timer · tap Clock out</p>
+      </div>
+    </article>'''
+
+
+def home():
     logos = ''.join(f'<img class="mono-logo" src="{{root}}assets/img/brand/logo-{k}.webp" alt="{t}" width="{SIZES["logo/" + k][0]}" height="{SIZES["logo/" + k][1]}" loading="lazy">'
                     for k, t in [('hanek', 'Hanek'), ('phinaturals', 'PhiNaturals'), ('nation-insure', 'Nation Insure'), ('mr-physics', 'Mr Physics'), ('chatvertiser-logo', 'Chatvertiser'), ('cupid-theory', 'Cupid Theory')])
+    client = [p for p in PROJECTS if 'apps' not in p['cat']]
+    ledger = ''.join(f'''
+      <li data-reveal style="--d:{i * .06:.2f}s"><a href="{{root}}work/{p['slug']}.html"{preview_attr(p, '{root}')} data-label="{p['title']}">
+        <span class="lg-n">{i + 1:02d}</span><span class="lg-t">{p['title']}</span><span class="lg-k">{p['kind']}</span><span class="lg-s">{p['short']}</span><span class="lg-a" aria-hidden="true">→</span></a></li>''' for i, p in enumerate(client))
     body = f'''<div class="intro-screen" aria-hidden="true">
   <svg class="intro-mark" viewBox="0 0 100 100"><defs><radialGradient id="ngi" gradientUnits="userSpaceOnUse" cx="15" cy="8" r="113">{STOPS}</radialGradient></defs><path pathLength="1" d="{MARK100}"/></svg>
   <div class="intro-count"><span data-intro-count>000</span><i>%</i></div>
@@ -195,74 +285,54 @@ def home():
 <section class="hero" id="top">
   <canvas class="hero-canvas" aria-hidden="true"></canvas>
   <div class="wrap hero-inner">
-    <p class="me-chip" data-reveal data-hero>{img('me/portrait.webp', 'Portrait of Nagules Gobi', '{root}', lazy=False)}<span>Hi, I’m <b>Nagules Gobi</b>. Product designer who also builds. Director of dotXline LTD.</span></p>
-    <h1 data-split data-hero>Product design that people <em>actually</em> enjoy using.</h1>
-    <p class="lede" data-reveal data-hero style="--d:.35s">I design web and mobile products and brand identities, then build them with code and AI-assisted development. I turn complex ideas into clear, intuitive products that real people can use, not just look at.</p>
+    <p class="me-chip" data-reveal data-hero>{img('me/portrait.webp', 'Portrait of Nagules Gobi', '{root}', lazy=False)}<span>Hi, I’m <b>Nagules Gobi</b>. UX/UI designer who builds the apps too. Director of dotXline LTD.</span></p>
+    <h1 class="two-tone" data-split data-hero>I design the app. <span class="dim">Then I build it and ship it.</span></h1>
+    <p class="lede" data-reveal data-hero style="--d:.35s">I design web and mobile products, then build them myself with SwiftUI, React Native and AI-assisted development. Thirty projects across three countries, and two apps of my own on the App Store.</p>
     <div class="btns" data-reveal data-hero style="--d:.5s">
-      <a class="btn" href="{{root}}work.html" data-magnetic data-label="Work"><span>See my work</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-      <a class="btn btn-ghost" href="{{root}}contact.html" data-magnetic data-label="Contact"><span>Hire me</span></a>
+      <a class="btn" href="#shipped"><span>See what I’ve shipped</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a>
+      <a class="btn btn-ghost" href="{{root}}contact.html" data-label="Contact"><span>Hire me</span></a>
     </div>
   </div>
   <div class="wrap hero-foot" data-reveal data-hero style="--d:.7s">
-    <span class="scroll-cue"><i aria-hidden="true"></i>Scroll to explore</span>
-    <span class="hint">Move your cursor over the mark, or click it</span>
-    <span class="clock">London <time data-clock>--:--</time></span>
+    <span class="mono">UX/UI design · App development · Brand identity</span>
+    <span class="hint">Move over the mark, or click it</span>
+    <span class="clock mono">London <time data-clock>--:--</time></span>
   </div>
 </section>
 
 <section class="marquee" aria-label="Disciplines">
-  <div class="marquee-row" data-marquee="1"><div class="marquee-track"><span>Product Design</span><b>✦</b><span>UX/UI</span><b>✦</b><span>Web Design</span><b>✦</b><span>App Design</span><b>✦</b><span>Brand Identity</span><b>✦</b></div></div>
-  <div class="marquee-row outline" data-marquee="-1" aria-hidden="true"><div class="marquee-track"><span>Design Strategy</span><b>✦</b><span>Prototyping in Code</span><b>✦</b><span>AI-Assisted Development</span><b>✦</b><span>Graphic Design</span><b>✦</b></div></div>
+  <div class="marquee-row" data-marquee="1" data-skew="off"><div class="marquee-track"><span>UX/UI Design</span><b>✦</b><span>App Development</span><b>✦</b><span>Product Design</span><b>✦</b><span>Web Development</span><b>✦</b><span>Brand Identity</span><b>✦</b></div></div>
+  <div class="marquee-row outline" data-marquee="-1" data-skew="off" aria-hidden="true"><div class="marquee-track"><span>iPhone &amp; Android Apps</span><b>✦</b><span>AI-Assisted Development</span><b>✦</b><span>Websites &amp; Web Apps</span><b>✦</b><span>Design Strategy</span><b>✦</b><span>Graphic Design</span><b>✦</b></div></div>
 </section>
 
-<section class="stats" aria-label="At a glance">
-  <div class="wrap stats-row">
-    <div data-reveal><strong data-count="30">30</strong><span>projects shipped</span></div>
-    <div data-reveal style="--d:.1s"><strong data-count="3">3</strong><span>countries</span></div>
-    <div data-reveal style="--d:.2s"><strong data-count="6">6</strong><span>years of practice</span></div>
+<section class="facts" aria-label="At a glance">
+  <div class="wrap facts-row mono" data-reveal>
+    <span><b>30</b> projects shipped</span><span><b>3</b> countries</span><span><b>6</b> years of practice</span><span><b>2</b> apps on the App Store</span><span>BSc Computing</span>
   </div>
 </section>
 
-<section class="work hwork" id="work" aria-label="Selected work">
-  <div class="work-sticky">
-    <div class="wrap work-head">
-      <div>
-        <p class="kicker" data-reveal>Selected work</p>
-        <h2 data-split>Design that helps users, one product at a time.</h2>
-      </div>
-      <div class="work-meter" aria-hidden="true"><span data-work-index>01</span><i><b data-work-bar></b></i><span>{len(PROJECTS):02d}</span></div>
-    </div>
-    <div class="work-track">{panels}
-    </div>
-  </div>
-</section>
-
-<section class="section">
+<section class="shipped" id="shipped">
   <div class="wrap">
     <div class="section-head">
-      <p class="kicker" data-reveal>I also build my own products</p>
-      <h2 data-split>Director of dotXline LTD. Designer of every app it ships.</h2>
-      <p data-reveal>dotXline is my product company in Cardiff. We make everyday money and work feel simple, one carefully built app at a time.</p>
+      <p class="kicker" data-reveal>Shipped</p>
+      <h2 class="two-tone" data-split>Designed by me. Built by me. <span class="dim">Live on the App Store.</span></h2>
+      <p data-reveal>Xpense and Tockbee are the apps of dotXline LTD, my product company in Cardiff. I designed every screen and built both of them. The phones below are working code, not screenshots: try them.</p>
     </div>
-    <div class="ventures">
-      <a class="venture company" href="{{root}}dotxline.html" data-reveal data-cursor="Open" data-label="dotXline">
-        <img class="dx" src="{{root}}assets/img/apps/logo-dark.svg" alt="dotXline" width="240" height="40">
-        <div><h3>Small, exact apps that just work.</h3><p>A product company I direct, from the first idea to the App Store.</p></div>
-        <span class="v-link">About dotXline</span>
-      </a>
-      <a class="venture xp" href="{{root}}work/xpense.html" data-reveal style="--d:.1s" data-cursor="Open" data-label="Xpense">
-        <div class="v-top">{img('apps/xpense-icon.webp', '', '{root}')}<b>Xpense</b></div>
-        <div><h3>Every penny, in plain sight.</h3><p>A calm, native iPhone expense tracker.</p></div>
-        <span class="v-link">Case study</span>
-        <div class="v-shot">{img('apps/xpense-2.webp', 'Xpense new expense screen', '{root}')}</div>
-      </a>
-      <a class="venture tb" href="{{root}}work/tockbee.html" data-reveal style="--d:.2s" data-cursor="Open" data-label="Tockbee">
-        <div class="v-top">{img('apps/tockbee-icon.webp', '', '{root}')}<b>Tockbee</b></div>
-        <div><h3>Every hour you work, on the record.</h3><p>A shift and pay tracker for UK hourly workers.</p></div>
-        <span class="v-link">Case study</span>
-        <div class="v-shot">{img('apps/tockbee-today.webp', 'Tockbee today screen', '{root}')}</div>
-      </a>
+    {release_xpense()}
+    {release_tockbee()}
+    <p class="shipped-foot" data-reveal><a class="link" href="{{root}}dotxline.html" data-label="dotXline">About dotXline LTD <span aria-hidden="true">→</span></a></p>
+  </div>
+</section>
+
+<section class="section" id="work">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="kicker" data-reveal>Client work</p>
+      <h2 class="two-tone" data-split>Products I designed for teams. <span class="dim">Web, mobile and brand.</span></h2>
     </div>
+    <ol class="ledger">{ledger}
+    </ol>
+    <p class="ledger-foot" data-reveal><a class="link" href="{{root}}work.html" data-label="Work">All work <span aria-hidden="true">→</span></a><a class="link" href="{{root}}brand.html" data-label="Brand">Brand and print work <span aria-hidden="true">→</span></a></p>
   </div>
 </section>
 
@@ -271,7 +341,7 @@ def home():
   <div class="logo-row" data-marquee="1" data-speed="0.5" data-skew="off"><div class="logo-track">{logos}</div></div>
 </section>
 
-<section class="section alt" id="services">
+<section class="section" id="services">
   <div class="wrap">
     <div class="section-head">
       <p class="kicker" data-reveal>What I do</p>
@@ -279,24 +349,9 @@ def home():
     </div>
     <div class="services" data-spot>
       <div class="service" data-reveal><svg class="ico" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="18" pathLength="1"/><circle cx="24" cy="24" r="10" pathLength="1"/><path d="M24 24 40 8M34 8h6v6" pathLength="1"/></svg><span class="num">Strategy</span><h3>Product design strategy</h3><p>Intuitive, user-focused design strategy rooted in research and aligned with business goals.</p></div>
-      <div class="service" data-reveal style="--d:.08s"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true"><rect x="5" y="9" width="30" height="24" rx="3" pathLength="1"/><rect x="30" y="18" width="13" height="22" rx="3" pathLength="1"/><path d="M5 15h30" pathLength="1"/></svg><span class="num">Interfaces</span><h3>Web &amp; app design</h3><p>From first concept to high-fidelity design, turning complex ideas into seamless digital experiences.</p></div>
+      <div class="service" data-reveal style="--d:.08s"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true"><rect x="5" y="9" width="30" height="24" rx="3" pathLength="1"/><rect x="30" y="18" width="13" height="22" rx="3" pathLength="1"/><path d="M5 15h30" pathLength="1"/></svg><span class="num">Design + build</span><h3>Web &amp; app design and development</h3><p>From first concept to high-fidelity design, then built into working websites and iPhone and Android apps.</p></div>
       <div class="service" data-reveal style="--d:.16s"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true"><path d="M8 14h32M8 24h32M8 34h32" pathLength="1"/><circle cx="17" cy="14" r="4" pathLength="1"/><circle cx="31" cy="24" r="4" pathLength="1"/><circle cx="21" cy="34" r="4" pathLength="1"/></svg><span class="num">Usability</span><h3>UI/UX optimisation</h3><p>Better usability and performance through engaging, accessible interfaces.</p></div>
       <div class="service" data-reveal style="--d:.24s"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 5 41 15v18L24 43 7 33V15Z" pathLength="1"/><path d="M24 5v38M7 15l34 18M41 15 7 33" pathLength="1"/></svg><span class="num">Identity</span><h3>Brand identity</h3><p>Helping brands find their visual voice and build a consistent presence that resonates.</p></div>
-    </div>
-  </div>
-</section>
-
-<section class="section">
-  <div class="wrap">
-    <div class="section-head">
-      <p class="kicker" data-reveal>Why teams hire me</p>
-      <h2 data-split>A designer who has shipped his <em>own</em> products.</h2>
-    </div>
-    <div class="why" data-spot>
-      <div class="why-card" data-reveal><span class="big">2 apps</span><h3>Founder’s view</h3><p>As Director of dotXline LTD, I take Xpense and Tockbee from first idea to finished app, so I design with the whole product in mind.</p></div>
-      <div class="why-card" data-reveal style="--d:.08s"><span class="big">Code</span><h3>Designs and builds</h3><p>I take my own designs into working code with AI-assisted development, and a BSc in Computing means I review what gets built.</p></div>
-      <div class="why-card" data-reveal style="--d:.16s"><span class="big">30+</span><h3>Range</h3><p>Thirty projects across three countries in six years: dashboards, mobile apps, websites, logos, campaigns and print.</p></div>
-      <div class="why-card" data-reveal style="--d:.24s"><span class="big">UX + UI</span><h3>Brand to pixel</h3><p>I can shape the strategy, design the interface and give it a visual identity, so the product feels like one thing.</p></div>
     </div>
   </div>
 </section>
@@ -310,8 +365,8 @@ def home():
     </div>
     <ol class="build-steps" data-spot>
       <li class="why-card" data-reveal><span class="big">Design</span><h3>Research and design</h3><p>User flows, wireframes and high-fidelity UI in Figma, grounded in what people actually need.</p></li>
-      <li class="why-card" data-reveal style="--d:.08s"><span class="big">Prototype</span><h3>Prototype in code</h3><p>Interactive prototypes that behave like the real thing, so ideas get tested with real taps and real data.</p></li>
-      <li class="why-card" data-reveal style="--d:.16s"><span class="big">Build</span><h3>AI-assisted development</h3><p>I build front ends and full apps with AI coding tools, and check every change against the design and the brief.</p></li>
+      <li class="why-card" data-reveal style="--d:.08s"><span class="big">Develop</span><h3>Real apps, not just prototypes</h3><p>Working iPhone, Android and web apps, built in SwiftUI and React Native from the design, with real screens and real data.</p></li>
+      <li class="why-card" data-reveal style="--d:.16s"><span class="big">Refine</span><h3>AI-assisted development</h3><p>I build with AI coding tools, then review the code and check every change against the design and the brief.</p></li>
       <li class="why-card" data-reveal style="--d:.24s"><span class="big">Launch</span><h3>Take it to users</h3><p>At dotXline I take products from idea to launch-ready apps. For teams, I hand over clean code or clean specs.</p></li>
     </ol>
     <p class="build-note" data-reveal>This portfolio is an example: designed and built by me with AI-assisted development, including the particle logo, page transitions and every animation.</p>
@@ -325,7 +380,7 @@ def home():
   </div>
 </section>
 '''
-    page('index.html', 'Nagules Gobi · Product Designer', 'Nagules Gobi is a UK product designer who also builds with code and AI-assisted development, and Director of dotXline LTD.', 'index.html', body, intro=True)
+    page('index.html', 'Nagules Gobi · UX/UI Designer and App Developer', 'Nagules Gobi is a UK UX/UI designer who builds and ships his own apps, Xpense and Tockbee, and Director of dotXline LTD.', 'index.html', body, intro=True)
 
 # ---------------------------------------------------------------- work index
 def work_index():
@@ -403,6 +458,7 @@ def case(slug, hero_kicker, title_html, lede, fact_items, cover, sections, link=
     <h1 data-split data-hero>{title_html}</h1>
     <p class="lede" data-reveal data-hero style="--d:.3s">{lede}</p>
     {facts(fact_items)}
+    {('<p class="case-store" data-reveal>' + store_btn(slug, p['title']) + '</p>') if slug in APP_STORE else ''}
   </div>
 </section>
 {cover}
@@ -420,7 +476,7 @@ def cases():
     # Xpense
     case('xpense', 'Case study · My product at dotXline', 'Every penny, in <em>plain</em> sight.',
          'A calm, native expense tracker for iPhone. Log it in one tap, see where it goes, and keep a little more each month.',
-         [('Role', 'Founder · product and UI design'), ('Company', 'dotXline LTD'), ('Platform', 'iPhone, native'), ('Status', 'Coming soon')],
+         [('Role', 'Founder · designed, built, shipped'), ('Company', 'dotXline LTD'), ('Platform', 'iPhone'), ('Built with', 'SwiftUI'), ('Status', 'On the App Store')],
          f'<div class="case-cover case-mock" data-img style="aspect-ratio:auto">{scene(P["xpense"], lazy=False)}</div>',
          sec('The idea', '<p class="quote">Spending isn’t the problem. Not knowing is.</p><p>Xpense keeps every penny in plain sight, celebrates the months you keep a little more, and never makes you feel bad about the rest.</p>') +
          sec('Design decisions', points([
@@ -439,7 +495,7 @@ def cases():
     # Tockbee
     case('tockbee', 'Case study · My product at dotXline', 'Every hour you work, on the <em>record</em>.',
          'Tockbee keeps your own record of every hour you work, so you can check your payslip and sort out missing pay.',
-         [('Role', 'Founder · product and UI design'), ('Company', 'dotXline LTD'), ('Platform', 'iPhone and Android'), ('For', 'UK hourly and shift workers')],
+         [('Role', 'Founder · designed, built, shipped'), ('Company', 'dotXline LTD'), ('Platform', 'iPhone and Android'), ('Built with', 'React Native'), ('Status', 'On the App Store')],
          f'<div class="case-cover case-mock" data-img style="aspect-ratio:auto">{scene(P["tockbee"], lazy=False)}</div>',
          sec('The problem', '<p class="quote">Every hour you work should show up on your payslip.</p><p>Tockbee keeps an honest record on your phone and nobody else’s, so checking your pay takes a minute instead of an argument.</p>') +
          sec('How it works', points([
@@ -511,7 +567,7 @@ def dotxline():
   <div>
     <div class="app-id" data-reveal>{img('apps/xpense-icon.webp', '', '{root}')}<div><b>Xpense</b><br><span style="color:var(--muted)">by dotXline</span></div></div>
     <h2 data-split>Every penny, in plain sight.</h2>
-    <div class="body" data-reveal><p>A calm, native iPhone expense tracker. Log spending, set budgets and goals, and split costs with friends.</p><div class="tags"><span>iPhone</span><span>Coming soon</span><span>No ads</span></div><p><a class="btn" href="{{root}}work/xpense.html" data-magnetic data-label="Xpense"><span>Read the case study</span></a></p></div>
+    <div class="body" data-reveal><p>A calm, native iPhone expense tracker. Log spending, set budgets and goals, and split costs with friends.</p><div class="tags"><span>iPhone</span><span>SwiftUI</span><span>On the App Store</span><span>No ads</span></div><p class="btn-row"><a class="btn" href="{{root}}work/xpense.html" data-magnetic data-label="Xpense"><span>Read the case study</span></a>{store_btn('xpense', 'Xpense')}</p></div>
   </div>
   <div class="stack" data-reveal>{''.join(f'<div class="shot">{img(x, "Xpense screen", "{root}")}</div>' for x in ['apps/xpense-3.webp', 'apps/xpense-1.webp', 'apps/xpense-4.webp'])}</div>
 </section>
@@ -519,7 +575,7 @@ def dotxline():
   <div>
     <div class="app-id" data-reveal>{img('apps/tockbee-icon.webp', '', '{root}')}<div><b>Tockbee</b><br><span style="color:var(--muted)">by dotXline</span></div></div>
     <h2 data-split>Every hour you work, on the record.</h2>
-    <div class="body" data-reveal><p>Tockbee clocks you in when you arrive at work, works out your pay and take-home, and checks your payslip against the hours you really worked.</p><div class="tags"><span>iPhone and Android</span><span>UK shift workers</span><span>No account, no tracking</span></div><p><a class="btn" href="{{root}}work/tockbee.html" data-magnetic data-label="Tockbee"><span>Read the case study</span></a></p></div>
+    <div class="body" data-reveal><p>Tockbee clocks you in when you arrive at work, works out your pay and take-home, and checks your payslip against the hours you really worked.</p><div class="tags"><span>iPhone and Android</span><span>React Native</span><span>On the App Store</span><span>No account, no tracking</span></div><p class="btn-row"><a class="btn" href="{{root}}work/tockbee.html" data-magnetic data-label="Tockbee"><span>Read the case study</span></a>{store_btn('tockbee', 'Tockbee')}</p></div>
   </div>
   <div class="stack" data-reveal>{''.join(f'<div class="shot">{img(x, "Tockbee screen", "{root}")}</div>' for x in ['apps/tockbee-shifts.webp', 'apps/tockbee-today.webp', 'apps/tockbee-payslip.webp'])}</div>
 </section>
@@ -639,7 +695,7 @@ def about():
       <div class="service" data-reveal style="--d:.06s"><span class="num">Interfaces</span><h3>Web &amp; app design</h3><p>Concept to high-fidelity design for web, iPhone and Android.</p></div>
       <div class="service" data-reveal style="--d:.12s"><span class="num">Usability</span><h3>UI/UX optimisation</h3><p>Engaging, accessible interfaces that perform better.</p></div>
       <div class="service" data-reveal style="--d:.18s"><span class="num">Identity</span><h3>Brand identity</h3><p>Logos and visual systems that give a product its voice.</p></div>
-      <div class="service" data-reveal style="--d:.24s"><span class="num">Prototyping</span><h3>Prototypes in code</h3><p>Interactive prototypes that feel real, ready to test with users.</p></div>
+      <div class="service" data-reveal style="--d:.24s"><span class="num">Apps</span><h3>App development</h3><p>iPhone, Android and web apps designed and built end to end, like Xpense and Tockbee.</p></div>
       <div class="service" data-reveal style="--d:.3s"><span class="num">Building</span><h3>AI-assisted development</h3><p>Designs turned into working front ends and apps, reviewed and refined by me.</p></div>
     </div>
   </div>
