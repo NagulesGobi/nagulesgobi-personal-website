@@ -14,7 +14,7 @@ decided or built in the first session (7 November 2026).
   - **Tockbee**: shift and pay tracker for UK hourly workers, iPhone and Android.
     "Every hour you work, on the record."
 - **Education:** BSc in Computing.
-- **Experience claim (from his old site):** 30 projects across 3 countries in 6 years.
+- **Experience claim (from his old site):** 30+ projects across 3 countries in 4 years (owner corrected this in Nov 2026).
 - **Contact:** contact@nagulesgobi.com. Old site said "Based in London, UK"; dotXline is in
   Cardiff. The new site says "United Kingdom" generally and "Cardiff" for dotXline.
   **Open question:** which city he wants shown.
@@ -157,3 +157,15 @@ Chatvertiser, Puff Count and Pocket (Personal Wallet App) case-study images are 
 Behance boards: behance.net/gallery/224174429, /224174013 and /109368407. Files: `source/assets/img/work/cv-*`,
 `pc-*`, `pw-*`. Pocket is co-owned on Behance with Muralikrishna Naguleswararajah and was made for Loofyn Hyper;
 the case study credits both.
+
+## 12. Nov 2026 additions
+
+- **Header** is now a floating dock (`chrome()` in build.py; styles under "Dock header" in pages.css):
+  icons magnify on hover like the macOS Dock; on phones it sits at the bottom. The full logo sits top-left.
+- **Search**: ⌘K / Ctrl+K or "/" opens a palette of pages, case studies and home-page demos (`finder_items()`).
+- **Case-study kit** (`source/kit.py`): Puff Count, Pocket and Chatvertiser use coded palettes, type specimens,
+  wireframes and app screens rebuilt from the Behance boards, not pasted screenshots. Only the Puff Count app
+  icon (`work/pc-icon.webp`) is an image. Fonts: Poppins (exact), Pocket's Circular Std shown in DM Sans,
+  Chatvertiser's unnamed display face shown in Exo 2 (labelled on the page).
+- Xpense and Tockbee cards use the coded phones; image hover previews only show in list layouts.
+- Copy: 30+ projects, 4 years of experience.

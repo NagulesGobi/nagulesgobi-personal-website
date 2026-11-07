@@ -228,7 +228,9 @@
     document.addEventListener('pointerover', function (e) {
       var t = e.target.closest('[data-cursor], a, button, summary, label, input, textarea, select');
       var lab = t && t.closest('[data-cursor]');
+      // Image previews only follow the cursor in list layouts, where the row has no image of its own
       var pv = e.target.closest('[data-preview]');
+      if (pv && !pv.closest('[data-view="list"], .ledger')) pv = null;
       cur.classList.toggle('is-label', !!lab && !pv);
       cur.classList.toggle('is-link', !!t && !lab && !pv);
       cur.classList.toggle('is-preview', !!pv);
@@ -601,5 +603,84 @@
     var iv = 0;
     onView(app, function (v) { clearInterval(iv); if (v) { render(); iv = setInterval(render, 1000); } });
     render();
+  });
+})();
+
+/* ===================================================== dock + search palette */
+(function () {
+  var doc = document.documentElement;
+  var RM = matchMedia('(prefers-reduced-motion: reduce)').matches, FINE = matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  /* Dock magnification: items near the pointer grow, like the macOS Dock */
+  var dock = document.querySelector('[data-dock]');
+  if (dock && FINE && !RM) {
+    var items = Array.prototype.slice.call(dock.querySelectorAll('.dk-item')), raf = 0, px = null;
+    function apply() {
+      raf = 0;
+      items.forEach(function (it) {
+        var s = 1;
+        if (px !== null) { var r = it.getBoundingClientRect(), c = r.left + r.width / 2, d = Math.abs(px - c); s = 1 + 0.42 * Math.max(0, 1 - d / 110); }
+        it.style.setProperty('--s', s.toFixed(3));
+      });
+    }
+    dock.addEventListener('pointermove', function (e) { if (innerWidth <= 820) return; px = e.clientX; dock.classList.add('live'); if (!raf) raf = requestAnimationFrame(apply); });
+    dock.addEventListener('pointerleave', function () { px = null; dock.classList.remove('live'); if (!raf) raf = requestAnimationFrame(apply); });
+  }
+
+  /* Search palette */
+  var finder = document.querySelector('.finder');
+  if (!finder) return;
+  var input = finder.querySelector('input'), list = finder.querySelector('.fd-list'), empty = finder.querySelector('.fd-empty');
+  var rows = Array.prototype.slice.call(list.querySelectorAll('li[role="option"]')), groups = Array.prototype.slice.call(list.querySelectorAll('.fd-group'));
+  var lastFocus = null, idx = 0;
+  function visible() { return rows.filter(function (r) { return !r.hidden; }); }
+  function mark(i) {
+    var v = visible(); if (!v.length) return;
+    idx = (i + v.length) % v.length;
+    rows.forEach(function (r) { r.classList.remove('on'); r.removeAttribute('aria-selected'); });
+    v[idx].classList.add('on'); v[idx].setAttribute('aria-selected', 'true');
+    v[idx].scrollIntoView({ block: 'nearest' });
+  }
+  function filter() {
+    var q = input.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+    rows.forEach(function (r) { var t = (r.firstElementChild.getAttribute('data-text') || '').toLowerCase(); r.hidden = !q.every(function (w) { return t.indexOf(w) > -1; }); });
+    groups.forEach(function (g) { var n = g.nextElementSibling, any = false; while (n && !n.classList.contains('fd-group')) { if (!n.hidden) any = true; n = n.nextElementSibling; } g.hidden = !any; });
+    empty.hidden = visible().length > 0;
+    mark(0);
+  }
+  function open() {
+    if (!finder.hidden) return;
+    lastFocus = document.activeElement; finder.hidden = false; input.value = ''; filter();
+    doc.style.overflow = 'hidden'; setTimeout(function () { input.focus(); }, 20);
+  }
+  function close() {
+    if (finder.hidden) return;
+    finder.hidden = true; doc.style.overflow = '';
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  document.querySelectorAll('[data-finder-open]').forEach(function (b) { b.addEventListener('click', open); });
+  finder.querySelectorAll('[data-finder-close]').forEach(function (b) { b.addEventListener('click', close); });
+  input.addEventListener('input', filter);
+  finder.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') { e.preventDefault(); close(); }
+    else if (e.key === 'ArrowDown') { e.preventDefault(); mark(idx + 1); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); mark(idx - 1); }
+    else if (e.key === 'Enter') { var v = visible()[idx]; if (v) { e.preventDefault(); v.firstElementChild.click(); } }
+    else if (e.key === 'Tab') { e.preventDefault(); input.focus(); }
+  });
+  rows.forEach(function (r) {
+    r.addEventListener('pointermove', function () { var v = visible(), i = v.indexOf(r); if (i > -1 && i !== idx) mark(i); });
+    var a = r.firstElementChild;
+    a.addEventListener('click', function () {
+      if (a.hasAttribute('data-theme-toggle')) { var t = document.querySelector('.dock .theme-btn'); close(); if (t) t.click(); return; }
+      // same-page hash links: close first so the page can scroll
+      var url = new URL(a.href, location.href);
+      if (url.pathname === location.pathname && url.hash) close();
+    });
+  });
+  document.addEventListener('keydown', function (e) {
+    var typing = /input|textarea|select/i.test((e.target.tagName || '')) || e.target.isContentEditable;
+    if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) { e.preventDefault(); finder.hidden ? open() : close(); }
+    else if (e.key === '/' && !typing && finder.hidden) { e.preventDefault(); open(); }
   });
 })();

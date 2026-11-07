@@ -2,6 +2,7 @@
 """Builds the multi-page Nagules Gobi portfolio into ./out from shared partials.
 Content comes only from nagulesgobi.com and dotxline.com."""
 import json, os, re, html, shutil
+import kit
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.normpath(os.path.join(HERE, '..'))  # the website is published from the repository root
@@ -69,26 +70,69 @@ def head(title, desc, root, intro=False, canonical=''):
 <a class="skip" href="#main">Skip to content</a>
 '''
 
+DOCK_ICONS = {
+    'index.html': 'M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z',
+    'work.html': 'M4 7h16v13H4zM9 7V4h6v3M4 12h16',
+    'dotxline.html': 'M4 12a3 3 0 1 0 6 0 3 3 0 1 0-6 0M14 9l6 6M20 9l-6 6',
+    'about.html': 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21c1-4 4-6 8-6s7 2 8 6',
+    'contact.html': 'M3 6h18v12H3zM3 7l9 6 9-6',
+    'search': 'M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM21 21l-5-5',
+}
+THEME_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle class="sun" cx="12" cy="12" r="5"/><g class="rays"><path d="M12 1.5v2.2M12 20.3v2.2M1.5 12h2.2M20.3 12h2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></g><circle class="moon-cut" cx="17" cy="7" r="5"/></svg>'
+
+def dock_icon(key):
+    return f'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="{DOCK_ICONS[key]}"/></svg>'
+
+def finder_items(root):
+    items = [('Pages', 'Home', 'Shipped apps, client work and how I build', 'index.html'),
+             ('Pages', 'Work', 'Product case studies, brand and print', 'work.html'),
+             ('Pages', 'Brand and print', '29 logos, campaigns, print and packaging pieces', 'work.html#brand'),
+             ('Pages', 'dotXline', 'My product company in Cardiff', 'dotxline.html'),
+             ('Pages', 'About', 'Story, process and capabilities', 'about.html'),
+             ('Pages', 'Contact', 'Hire me for a role or a project', 'contact.html')]
+    items += [('Case studies', p['title'], p['kind'], f"work/{p['slug']}.html") for p in PROJECTS]
+    items += [('On the home page', 'Try Xpense', 'Working demo: tap a tile to log an expense', 'index.html#xpense'),
+              ('On the home page', 'Try Tockbee', 'Working demo: a live shift timer', 'index.html#tockbee'),
+              ('On the home page', 'How I build', 'Design, develop, refine, launch', 'index.html#build')]
+    out, last = '', None
+    for g, t, sub, h in items:
+        if g != last: out += f'<li class="fd-group" role="presentation">{g}</li>'; last = g
+        out += f'<li role="option"><a href="{root}{h}" data-label="{E(t)}" data-text="{E((t + " " + sub + " " + g).lower())}"><b>{E(t)}</b><span>{E(sub)}</span><i aria-hidden="true">↵</i></a></li>'
+    out += f'<li class="fd-group" role="presentation">Actions</li><li role="option"><a href="mailto:{EMAIL}" data-text="email contact hire mail {EMAIL}"><b>Email me</b><span>{EMAIL}</span><i aria-hidden="true">↵</i></a></li>'
+    out += '<li role="option"><button type="button" data-theme-toggle data-text="theme dark light mode switch"><b>Switch theme</b><span>Light or dark</span><i aria-hidden="true">↵</i></button></li>'
+    return out
+
 def chrome(root, active):
-    links = ''.join(f'<a href="{root}{h}"{" aria-current=\"page\"" if h == active else ""}><span data-text="{t}">{t}</span></a>' for h, t in NAV)
-    mlinks = ''.join(f'<a href="{root}{h}" style="--i:{i}"{" aria-current=\"page\"" if h == active else ""}><small>0{i + 1}</small><span>{t}</span></a>' for i, (h, t) in enumerate([('index.html', 'Home')] + NAV))
-    return f'''<div class="curtain" aria-hidden="true"><span class="curtain-label"></span></div>
+    def item(h, t):
+        cur = ' aria-current="page"' if h == active else ''
+        return f'<a class="dk-item" href="{root}{h}"{cur} data-label="{t}" aria-label="{t}"><span class="dk-tile">{dock_icon(h)}</span><span class="dk-tip">{t}</span></a>'
+    items = item('index.html', 'Home') + ''.join(item(h, t) for h, t in NAV)
+    return f"""<div class="curtain" aria-hidden="true"><span class="curtain-label"></span></div>
 <div class="progress" aria-hidden="true"><i></i></div>
 <div class="grain" aria-hidden="true"></div>
 <div class="cursor" aria-hidden="true"><div class="cursor-preview"></div><div class="cursor-ring"><span class="cursor-label"></span></div><div class="cursor-dot"></div></div>
-<header class="head">
-  <div class="wrap head-row">
-    <a class="logo" href="{root}index.html" aria-label="Nagules Gobi, home" data-label="Home">{logo_svg()}</a>
-    <nav class="nav" aria-label="Main">{links}</nav>
-    <button class="theme-btn" type="button" aria-label="Switch between light and dark theme"><svg viewBox="0 0 24 24" aria-hidden="true"><circle class="sun" cx="12" cy="12" r="5"/><g class="rays"><path d="M12 1.5v2.2M12 20.3v2.2M1.5 12h2.2M20.3 12h2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></g><circle class="moon-cut" cx="17" cy="7" r="5"/></svg></button>
-    <a class="btn btn-sm hire" href="{root}contact.html" data-magnetic data-label="Contact"><span class="pulse" aria-hidden="true"></span><span>Hire me</span></a>
-    <button class="menu-btn" type="button" aria-label="Open the menu" aria-expanded="false" aria-controls="menu"><i></i><i></i></button>
-  </div>
+<a class="corner-logo" href="{root}index.html" aria-label="Nagules Gobi, home" data-label="Home">{logo_svg()}</a>
+<header class="dock-wrap">
+  <nav class="dock" aria-label="Main" data-dock>
+    <a class="dk-item dk-mark" href="{root}index.html" aria-label="Nagules Gobi, home" data-label="Home"><span class="dk-tile"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="dkg" gradientUnits="userSpaceOnUse" cx="15" cy="8" r="113">{STOPS}</radialGradient></defs><path fill="url(#dkg)" d="{MARK100}"/></svg></span><span class="dk-tip">Nagules Gobi</span></a>
+    <i class="dk-sep" aria-hidden="true"></i>
+    {items}
+    <i class="dk-sep" aria-hidden="true"></i>
+    <button class="dk-item" type="button" data-finder-open aria-label="Search the site (Command K)" aria-haspopup="dialog"><span class="dk-tile">{dock_icon('search')}</span><span class="dk-tip">Search <kbd>⌘K</kbd></span></button>
+    <button class="dk-item theme-btn" type="button" aria-label="Switch between light and dark theme"><span class="dk-tile">{THEME_SVG}</span><span class="dk-tip">Theme</span></button>
+    <a class="dk-hire" href="{root}contact.html" data-label="Contact"><span class="pulse" aria-hidden="true"></span>Hire me</a>
+  </nav>
 </header>
-<nav class="menu" id="menu" aria-label="Menu" hidden>{mlinks}
-  <div class="menu-foot"><a class="btn" href="{root}contact.html" style="font-size:17px" data-label="Contact"><span>Hire me</span></a></div>
-</nav>
-'''
+<div class="finder" role="dialog" aria-modal="true" aria-label="Search the site" hidden>
+  <div class="fd-backdrop" data-finder-close></div>
+  <div class="fd-panel">
+    <label class="fd-field"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="{DOCK_ICONS['search']}"/></svg><input type="text" placeholder="Search pages, case studies and demos" autocomplete="off" spellcheck="false" aria-label="Search" aria-controls="fd-list"><kbd>Esc</kbd></label>
+    <ul class="fd-list" id="fd-list" role="listbox">{finder_items(root)}</ul>
+    <p class="fd-empty" hidden>Nothing matches. Try “app”, “brand” or “contact”.</p>
+    <div class="fd-foot mono"><span>↑ ↓ to move</span><span>↵ to open</span><span>⌘K or / to search</span></div>
+  </div>
+</div>
+"""
 
 def footer(root, cta='Have a product people should love? Let’s build it.'):
     return f'''<section class="foot-cta">
@@ -139,10 +183,10 @@ def page(path, title, desc, active, body, intro=False, lightbox=False, cta=None)
 PROJECTS = [
   dict(slug='xpense', title='Xpense', cat='product apps mobile', kind='iPhone app · dotXline', badge='My product',
        short='A calm, native iPhone expense tracker. Log spending, set budgets and goals, and split costs with friends.',
-       scene='app', shots=['apps/xpense-1.webp', 'apps/xpense-3.webp'], tone='x-scene', preview='apps/xpense-preview.webp'),
+       scene='code', html=lambda: '<div class="ks-mini">' + xp_phone(False) + '</div>', tone='x-scene', preview=None),
   dict(slug='tockbee', title='Tockbee', cat='product apps mobile', kind='iPhone and Android app · dotXline', badge='My product',
        short='A shift and pay tracker for UK hourly workers. It clocks you in at work, works out your pay and checks your payslip.',
-       scene='app', shots=['apps/tockbee-today.webp', 'apps/tockbee-pay.webp'], tone='t-scene', preview='apps/tockbee-preview.webp'),
+       scene='code', html=lambda: '<div class="ks-mini">' + tb_phone(False) + '</div>', tone='t-scene', preview=None),
   dict(slug='chatvertiser', title='Chatvertiser', cat='product web', kind='Web design · Ad tech UX',
        short='An AI-powered advertising platform that turns conversations into conversion tools.',
        scene='img', image='work/chatvertiser.webp', preview='work/chatvertiser.webp'),
@@ -151,10 +195,10 @@ PROJECTS = [
        scene='img', image='work/greenlife.webp', preview='work/greenlife.webp'),
   dict(slug='puff-count', title='Puff Count', cat='product mobile', kind='App design · Health',
        short='A mobile app that tracks nicotine consumption, with daily limits and onboarding that helps people quit vaping.',
-       scene='img', image='work/pc-cover.webp', preview='work/pc-cover.webp'),
+       scene='code', html=lambda: kit.pc_card_inner(), tone='pc-stage', preview=None),
   dict(slug='pocket', title='Pocket', cat='product mobile', kind='iOS app design · Personal finance',
        short='A personal wallet app for iPhone: log expenses by category, see weekly statistics and keep your balance under control.',
-       scene='img', image='work/pw-cover.webp', preview='work/pw-cover.webp'),
+       scene='code', html=lambda: kit.pw_card_inner(), tone='pw-stage', preview=None),
 ]
 P = {p['slug']: p for p in PROJECTS}
 
@@ -162,6 +206,8 @@ def scene(p, root='{root}', lazy=True):
     s = p['scene']
     if s == 'img':
         return f'<div class="scene img-scene">{img(p["image"], p["title"] + " design preview", root, "cover", lazy)}<span class="scene-title">{p["title"]}</span></div>'
+    if s == 'code':
+        return f'<div class="scene kit-scene {p["tone"]}">{p["html"]()}<span class="scene-title">{p["title"]}</span></div>'
     if s == 'app':
         shots = ''.join(f'<div class="phone-shot">{img(x, p["title"] + " screen", root, lazy=lazy)}</div>' for x in p['shots'])
         return f'<div class="scene app-scene {p["tone"]}">{shots}<span class="scene-title">{p["title"]}</span></div>'
@@ -202,20 +248,9 @@ XP_TILES = [  # name, amount, colour, icon path
     ('Fun', 18.50, '#38BDF8', 'M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7L12 3z'),
 ]
 
-def release_xpense():
+def xp_phone(interactive=True):
     tiles = ''.join(f'<button type="button" class="xp-tile" data-cat="{n}" data-amt="{a:.2f}" style="--c:{c}"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="{d}"/></svg></i><span>{n}</span></button>' for n, a, c, d in XP_TILES)
-    return f'''<article class="release" style="--acc:var(--xp)" id="xpense">
-      <div class="rel-info" data-reveal>
-        <p class="rel-tag mono">My product · dotXline</p>
-        <div class="rel-name">{img('apps/xpense-icon.webp', '', '{root}')}<h3>Xpense</h3></div>
-        <p class="rel-sub">Every penny, in plain sight.</p>
-        <dl class="rel-meta mono"><div><dt>Platform</dt><dd>iPhone</dd></div><div><dt>Built with</dt><dd>SwiftUI</dd></div><div><dt>Status</dt><dd>On the App Store</dd></div><div><dt>Role</dt><dd>Designed, built, shipped</dd></div></dl>
-        <p class="rel-desc">A calm, native expense tracker. Log spending in one tap, set budgets and goals, and split costs with friends.</p>
-        <ul class="rel-points"><li>Quick Add tiles log an expense in one tap</li><li>Progress, never shame: it notices when you spend less</li><li>No ads, and receipt photos stay on your iPhone</li></ul>
-        <div class="rel-ctas">{store_btn('xpense', 'Xpense')}<a class="link" href="{{root}}work/xpense.html" data-label="Xpense">Read the case study <span aria-hidden="true">→</span></a></div>
-      </div>
-      <div class="rel-stage xp-stage" data-reveal style="--d:.1s">
-        <div class="phone xp-app" data-xpense role="group" aria-label="Working demo of the Xpense overview screen">
+    h = f'''        <div class="phone xp-app" data-xpense role="group" aria-label="Working demo of the Xpense overview screen">
           {status_bar()}
           <div class="xp-body">
             <p class="xp-h">Overview</p><p class="xp-sub">Good evening</p>
@@ -235,23 +270,13 @@ def release_xpense():
           </div>
           <div class="ph-tabs xp-tabs" aria-hidden="true"><span class="on">Home</span><span>History</span><span>Analyze</span><span>Shared</span></div>
         </div>
-        <p class="demo-hint mono" aria-hidden="true">Tap a tile to log it</p>
-      </div>
-    </article>'''
+'''
+    if not interactive:
+        h = h.replace(' data-xpense', ' aria-hidden="true"').replace('<button', '<span').replace('</button>', '</span>').replace(' tabindex="-1"', '')
+    return h
 
-def release_tockbee():
-    return f'''<article class="release flip" style="--acc:var(--tb)" id="tockbee">
-      <div class="rel-info" data-reveal>
-        <p class="rel-tag mono">My product · dotXline</p>
-        <div class="rel-name">{img('apps/tockbee-icon.webp', '', '{root}')}<h3>Tockbee</h3></div>
-        <p class="rel-sub">Every hour you work, on the record.</p>
-        <dl class="rel-meta mono"><div><dt>Platform</dt><dd>iPhone and Android</dd></div><div><dt>Built with</dt><dd>React Native</dd></div><div><dt>Status</dt><dd>On the App Store</dd></div><div><dt>Role</dt><dd>Designed, built, shipped</dd></div></dl>
-        <p class="rel-desc">A shift and pay tracker for UK hourly workers. It clocks you in when you arrive, works out your pay and take-home, and checks your payslip against the hours you really worked.</p>
-        <ul class="rel-points"><li>Clocks you in by location or your work Wi-Fi</li><li>Overtime, weekend and night rates worked out as you go</li><li>No account and no data collected</li></ul>
-        <div class="rel-ctas">{store_btn('tockbee', 'Tockbee')}<a class="link" href="{{root}}work/tockbee.html" data-label="Tockbee">Read the case study <span aria-hidden="true">→</span></a></div>
-      </div>
-      <div class="rel-stage tb-stage" data-reveal style="--d:.1s">
-        <div class="phone tb-app" data-tockbee role="group" aria-label="Working demo of the Tockbee today screen">
+def tb_phone(interactive=True):
+    h = f'''        <div class="phone tb-app" data-tockbee role="group" aria-label="Working demo of the Tockbee today screen">
           {status_bar('09:41')}
           <div class="tb-body">
             <div class="tb-top"><b>tockbee</b><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg></div>
@@ -269,6 +294,41 @@ def release_tockbee():
           </div>
           <div class="ph-tabs tb-tabs" aria-hidden="true"><span class="on">Today</span><span>Shifts</span><span>Sites</span><span>Pay</span></div>
         </div>
+'''
+    if not interactive:
+        h = h.replace(' data-tockbee', ' aria-hidden="true"').replace('<button', '<span').replace('</button>', '</span>').replace(' tabindex="-1"', '')
+    return h
+
+def release_xpense():
+    return f'''<article class="release" style="--acc:var(--xp)" id="xpense">
+      <div class="rel-info" data-reveal>
+        <p class="rel-tag mono">My product · dotXline</p>
+        <div class="rel-name">{img('apps/xpense-icon.webp', '', '{root}')}<h3>Xpense</h3></div>
+        <p class="rel-sub">Every penny, in plain sight.</p>
+        <dl class="rel-meta mono"><div><dt>Platform</dt><dd>iPhone</dd></div><div><dt>Built with</dt><dd>SwiftUI</dd></div><div><dt>Status</dt><dd>On the App Store</dd></div><div><dt>Role</dt><dd>Designed, built, shipped</dd></div></dl>
+        <p class="rel-desc">A calm, native expense tracker. Log spending in one tap, set budgets and goals, and split costs with friends.</p>
+        <ul class="rel-points"><li>Quick Add tiles log an expense in one tap</li><li>Progress, never shame: it notices when you spend less</li><li>No ads, and receipt photos stay on your iPhone</li></ul>
+        <div class="rel-ctas">{store_btn('xpense', 'Xpense')}<a class="link" href="{{root}}work/xpense.html" data-label="Xpense">Read the case study <span aria-hidden="true">→</span></a></div>
+      </div>
+      <div class="rel-stage xp-stage" data-reveal style="--d:.1s">
+        {xp_phone()}
+        <p class="demo-hint mono" aria-hidden="true">Tap a tile to log it</p>
+      </div>
+    </article>'''
+
+def release_tockbee():
+    return f'''<article class="release flip" style="--acc:var(--tb)" id="tockbee">
+      <div class="rel-info" data-reveal>
+        <p class="rel-tag mono">My product · dotXline</p>
+        <div class="rel-name">{img('apps/tockbee-icon.webp', '', '{root}')}<h3>Tockbee</h3></div>
+        <p class="rel-sub">Every hour you work, on the record.</p>
+        <dl class="rel-meta mono"><div><dt>Platform</dt><dd>iPhone and Android</dd></div><div><dt>Built with</dt><dd>React Native</dd></div><div><dt>Status</dt><dd>On the App Store</dd></div><div><dt>Role</dt><dd>Designed, built, shipped</dd></div></dl>
+        <p class="rel-desc">A shift and pay tracker for UK hourly workers. It clocks you in when you arrive, works out your pay and take-home, and checks your payslip against the hours you really worked.</p>
+        <ul class="rel-points"><li>Clocks you in by location or your work Wi-Fi</li><li>Overtime, weekend and night rates worked out as you go</li><li>No account and no data collected</li></ul>
+        <div class="rel-ctas">{store_btn('tockbee', 'Tockbee')}<a class="link" href="{{root}}work/tockbee.html" data-label="Tockbee">Read the case study <span aria-hidden="true">→</span></a></div>
+      </div>
+      <div class="rel-stage tb-stage" data-reveal style="--d:.1s">
+        {tb_phone()}
         <p class="demo-hint mono" aria-hidden="true">Live timer · tap Clock out</p>
       </div>
     </article>'''
@@ -291,7 +351,7 @@ def home():
   <div class="wrap hero-inner">
     <p class="me-chip" data-reveal data-hero>{img('me/portrait.webp', 'Portrait of Nagules Gobi', '{root}', lazy=False)}<span>Hi, I’m <b>Nagules Gobi</b>. UX/UI designer who builds the apps too. Director of dotXline LTD.</span></p>
     <h1 class="two-tone" data-split data-hero>I design the app. <span class="dim">Then I build it and ship it.</span></h1>
-    <p class="lede" data-reveal data-hero style="--d:.35s">I design web and mobile products, then build them myself with SwiftUI, React Native and AI-assisted development. Thirty projects across three countries, and two apps of my own on the App Store.</p>
+    <p class="lede" data-reveal data-hero style="--d:.35s">I design web and mobile products, then build them myself with SwiftUI, React Native and AI-assisted development. 30+ projects across three countries, and two apps of my own on the App Store.</p>
     <div class="btns" data-reveal data-hero style="--d:.5s">
       <a class="btn" href="#shipped"><span>See what I’ve shipped</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a>
       <a class="btn btn-ghost" href="{{root}}contact.html" data-label="Contact"><span>Hire me</span></a>
@@ -311,7 +371,7 @@ def home():
 
 <section class="glance" aria-label="At a glance">
   <div class="wrap glance-row mono" data-reveal>
-    <span><b>30</b> projects shipped</span><span><b>3</b> countries</span><span><b>6</b> years of practice</span><span><b>2</b> apps on the App Store</span><span>BSc Computing</span>
+    <span><b>30+</b> projects shipped</span><span><b>3</b> countries</span><span><b>4</b> years of experience</span><span><b>2</b> apps on the App Store</span><span>BSc Computing</span>
   </div>
 </section>
 
@@ -520,14 +580,10 @@ def cases():
     case('chatvertiser', 'Case study · Web app UI · Ad tech UX', 'Advertising that starts with a <em>conversation</em>.',
          'An AI-powered advertising platform that turns conversations into conversion tools, with a customer support chat app that makes business enquiries easier.',
          [('Role', 'Web and UX design, logo'), ('Industry', 'Advertising technology'), ('Tools', 'Figma, Illustrator, Photoshop'), ('Project', '<a href="https://www.behance.net/gallery/224174429/Chatvertiser" target="_blank" rel="noopener">Behance ↗</a>')],
-         cover_img('work/cv-cover.webp', 'Chatvertiser: simply your support system, shown on a laptop'),
+         kit.CV_FONT + kit.cv_cover(),
          sec('Overview', '<p class="lead">One chat, the whole campaign.</p><p>Chatvertiser is a customer support chatting application for any business. The design focused on a fluid, chat-based interface that simplifies campaign creation, audience targeting and performance tracking, all through one conversational flow.</p>') +
          sec('Design focus', points([('Campaigns by chat', 'Creating a campaign feels like describing it, not filling in a long form.'), ('A full support desk', 'Profiles, flows, broadcasts, segments, reports, integrations and agents in one dashboard.'), ('A clear visual system', 'A violet palette (#805AD5, #7678EC, #3C348A), one typeface, a consistent icon set and reusable elements.'), ('A mark to match', 'I also designed the Chatvertiser logo, a speech bubble with a pulse.')])) +
-         shots([('Visual style: colour, type, icons and elements', 'work/cv-style.webp', 'Chatvertiser visual style: colour palette, typography, icons and UI elements'),
-                ('Dashboard', 'work/cv-dashboard.webp', 'Chatvertiser dashboard screens'),
-                ('Pop-ups and drop boxes', 'work/cv-popups.webp', 'Chatvertiser pop-ups, integration settings and drop-down menus'),
-                ('Main window', 'work/cv-main.webp', 'Chatvertiser main window with navigation and profiles'),
-                ('Chat', 'work/cv-chat.webp', 'Chatvertiser chat screen on a laptop')]) +
+         kit.cv_sections() +
          f'<section class="case-band"><div class="wrap"><div class="duo"><div class="media" data-img>{img("work/chatvertiser-2.webp", "Chatvertiser support system screens", "{root}")}</div><div class="media" data-img style="display:grid;place-items:center;padding:12%;background:var(--card)">{img("brand/logo-chatvertiser-logo.webp", "Chatvertiser logo", "{root}", "mono-logo")}</div></div></div></section>')
     # Greenlife
     case('greenlife', 'Case study · App design · Retail', 'Shopping, from list to <em>checkout</em>.',
@@ -540,33 +596,24 @@ def cases():
     case('puff-count', 'Case study · App design · Health', 'Every puff, <em>counted</em>.',
          'Puff Count is a mobile app that tracks nicotine consumption, lets people set daily limits and helps them work towards quitting vaping.',
          [('Role', 'UX/UI design and branding'), ('Platform', 'iPhone app'), ('Tools', 'Figma, Illustrator, Photoshop'), ('Project', '<a href="https://www.behance.net/gallery/224174013/Puff-Count" target="_blank" rel="noopener">Behance ↗</a>')],
-         cover_img('work/pc-cover.webp', 'Puff Count app icon and onboarding screens on two iPhones'),
+         kit.PC_FONT + kit.pc_cover(),
          sec('Overview', '<p class="lead">Track it first. Then cut it down.</p><p>Puff Count tracks nicotine consumption, offers unlimited puff logging and lets people set daily limits. Onboarding asks a few short questions, one per screen, so the app starts from the person’s own goal.</p>') +
          sec('Design focus', points([('One question per screen', 'Name, goal, the day you quit smoking, reminders and weekly spend on vaping, each on its own calm screen.'), ('Goals first', 'People choose “I want to quit vaping” or “Just curious”, so the app meets them where they are.'), ('A clear upgrade', 'Puff Count Unlimited is offered monthly or yearly with a free trial, and no ads.'), ('A bright, friendly identity', 'A bold blue palette (#1058FF, #1497FC), Poppins type and a simple P-mark app icon.')])) +
-         shots([('Wireframes', 'work/pc-wireframe.webp', 'Puff Count wireframes'),
-                ('Colour palette', 'work/pc-palette.webp', 'Puff Count colour palette: 1058FF, 1497FC, white and black'),
-                ('Typography: Poppins', 'work/pc-font.webp', 'Puff Count typography in Poppins'),
-                ('Onboarding: welcome, name and goals', 'work/pc-onboard-1.webp', 'Puff Count onboarding screens: congratulations, your name and your goals'),
-                ('Onboarding: quit date and reminders', 'work/pc-onboard-2.webp', 'Puff Count onboarding screens: when did you quit smoking and reminders'),
-                ('Weekly spend and Puff Count Unlimited', 'work/pc-onboard-3.webp', 'Puff Count screens: weekly vaping spend and the Puff Count Unlimited upgrade')]))
+         kit.pc_sections())
     # Pocket (Personal Wallet App)
     case('pocket', 'Case study · iOS app design · Personal finance', 'Your wallet, in your <em>pocket</em>.',
          'Pocket is a personal wallet app for iPhone. Add expenses by category, see extended statistics for any period and keep your balance under control.',
          [('Role', 'UI/UX design and branding'), ('Made for', 'Loofyn Hyper'), ('Team', 'With Muralikrishna Naguleswararajah'), ('Tools', 'Adobe XD, Illustrator, Photoshop'), ('Project', '<a href="https://www.behance.net/gallery/109368407/Personal-Wallet-App" target="_blank" rel="noopener">Behance ↗</a>')],
-         cover_img('work/pw-cover.webp', 'Pocket iOS wallet app icon and screens on two iPhones'),
+         kit.PW_FONT + kit.pw_cover(),
          sec('Overview', '<p class="lead">Every expense in a safe place.</p><p>Pocket is an iOS application for keeping a personal wallet. The flow starts with a clear welcome and login, because it is crucial to make the right first impression and to be sure your personal wallet is in a safe place.</p>') +
          sec('Design focus', points([('Welcome, login and sign-up', 'Short, familiar forms with the Pocket mark front and centre.'), ('Statistics that compare', 'Extended statistics of your expenses for any period, compared with your average for that period.'), ('Balance at a glance', 'Add expenses in categories from food to travel, then edit or delete them when you need to.'), ('A calm, clean identity', 'A cyan and blue palette (#00B4D8, #0078B7), Circular Std type and a wallet-shaped app icon.')])) +
-         shots([('User experience: wireframes', 'work/pw-wireframe.webp', 'Pocket wireframes'),
-                ('Colour palette and type', 'work/pw-style.webp', 'Pocket colour palette and Circular Std typography'),
-                ('Welcome, login, sign-up and statistics', 'work/pw-welcome.webp', 'Pocket welcome, login, sign-up and weekly report screens'),
-                ('Wallet balance', 'work/pw-balance.webp', 'Pocket wallet balance screen'),
-                ('The full flow', 'work/pw-collage.webp', 'Pocket screens laid out together')]))
+         kit.pw_sections())
 
 # ---------------------------------------------------------------- dotXline
 def dotxline():
     body = f'''<section class="page-hero dx-hero">
   <div class="wrap">
-    <img class="dx-logo" src="{{root}}assets/img/apps/logo-dark.svg" alt="dotXline" width="320" height="54" data-reveal data-hero>
+    <span class="dx-logos" data-reveal data-hero><img class="dx-logo on-dark" src="{{root}}assets/img/apps/logo-dark.svg" alt="dotXline" width="320" height="54"><img class="dx-logo on-light" src="{{root}}assets/img/apps/logo-light.svg" alt="" width="320" height="54"></span>
     <p class="kicker" data-reveal data-hero>My company · Director</p>
     <h1 data-split data-hero>Small, exact apps that just work.</h1>
     <p class="lede" data-reveal data-hero style="--d:.3s">dotXline LTD is a product company in Cardiff. We make everyday money and work feel simple, one carefully built app at a time. As Director, I lead the product and design every screen.</p>
@@ -681,7 +728,7 @@ def about():
     </figure>
     <div class="bio">
       <p class="lead" data-reveal>I design products people actually enjoy using, and I build my own.</p>
-      <p data-reveal>I’m <strong>Nagules Gobi</strong>, a product designer in the United Kingdom working across UX/UI, web and app design, and brand identity. Over six years I’ve shipped <strong>30 projects across 3 countries</strong>, from ad-tech platforms and health apps to shopping apps and logos.</p>
+      <p data-reveal>I’m <strong>Nagules Gobi</strong>, a product designer in the United Kingdom working across UX/UI, web and app design, and brand identity. Over four years I’ve shipped <strong>30+ projects across 3 countries</strong>, from ad-tech platforms and health apps to shopping apps and logos.</p>
       <p data-reveal>I’m also <strong>Director of dotXline LTD</strong>, a product company in Cardiff. There I design and build Xpense, a calm iPhone expense tracker, and Tockbee, a shift and pay tracker for UK workers. Owning products end to end taught me to design for the people using them and for the team that has to ship them.</p>
       <p data-reveal>I studied for a <strong>BSc in Computing</strong>, and today I also build what I design. I use <strong>AI-assisted development</strong> to turn designs into working products quickly, then review and refine the code myself. It means I can prototype in code, test ideas with real users sooner, and talk to engineering teams in their own language.</p>
       <dl class="facts" data-reveal>
@@ -689,7 +736,7 @@ def about():
         <div><dt>Company</dt><dd>Director, dotXline LTD</dd></div>
         <div><dt>Builds with</dt><dd>Code and AI-assisted development</dd></div>
         <div><dt>Education</dt><dd>BSc in Computing</dd></div>
-        <div><dt>Experience</dt><dd>6 years · 30 projects</dd></div>
+        <div><dt>Experience</dt><dd>4 years · 30+ projects</dd></div>
         <div><dt>Open to</dt><dd>Roles and freelance</dd></div>
       </dl>
       <p data-reveal><a class="btn" href="{{root}}contact.html" data-magnetic data-label="Contact"><span>Hire me</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></p>
