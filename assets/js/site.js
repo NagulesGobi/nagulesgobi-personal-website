@@ -142,15 +142,29 @@
       canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       var mobile = W < 820;
-      // On phones the mark becomes a faint watermark tucked off the right edge, clear of the header
-      var size = mobile ? Math.min(W * 0.92, 440) : Math.min(H * 0.7, W * 0.36, 640);
-      var cx = mobile ? W * 0.86 : W * 0.75, cy = mobile ? H * 0.46 : H * 0.5;
+      // On phones the mark gets its own space at the top of the hero, aligned with the text gutter;
+      // the hero's top padding (CSS --mark-h) keeps the text clear of it.
+      var size, cx, cy;
+      if (mobile) {
+        var inner = canvas.parentNode.querySelector('.hero-inner'), gut = inner ? parseFloat(getComputedStyle(inner).paddingLeft) || 16 : 16;
+        size = Math.round(Math.min(W * 0.44, 190));
+        cx = gut + size / 2; cy = 92 + size / 2;
+        canvas.parentNode.style.setProperty('--mark-h', size + 'px');
+      } else {
+        size = Math.min(H * 0.7, W * 0.36, 640); cx = W * 0.75; cy = H * 0.5;
+        canvas.parentNode.style.removeProperty('--mark-h');
+      }
       var ox = cx - size / 2, oy = cy - size / 2;
-      canvas.style.opacity = mobile ? .14 : 1;
-      var step = Math.max(5, Math.round(size / 92));
+      canvas.style.opacity = 1;
+      var step = mobile ? 4 : Math.max(5, Math.round(size / 92));
       var off = document.createElement('canvas'); off.width = off.height = Math.ceil(size);
       var o = off.getContext('2d'); o.scale(size / 100, size / 100); o.fill(new Path2D(MARK_D));
       var data = o.getImageData(0, 0, off.width, off.height).data;
+      if (mobile) { // line the mark's visible left and top edges up with the text gutter
+        var minX = off.width, minY = off.height;
+        for (var yy = 0; yy < off.height; yy++) for (var xx = 0; xx < off.width; xx++) if (data[(yy * off.width + xx) * 4 + 3] >= 128) { if (xx < minX) minX = xx; if (yy < minY) minY = yy; }
+        ox -= minX; oy -= minY;
+      }
       var old = parts; parts = [];
       for (var y = 0; y < off.height; y += step) for (var x = 0; x < off.width; x += step) {
         if (data[(y * off.width + x) * 4 + 3] < 128) continue;

@@ -591,3 +591,9 @@ h1, h2, h3 { text-wrap: balance; }
 .xp-tile { padding: calc(var(--pw) * .024) 0 calc(var(--pw) * .02); }
 .xp-recent { overflow: visible; }
 @media (max-width: 600px) { .app-sec h2 { font-size: 40px; } .app-sec .body { font-size: 17px; } .btn-row .btn { padding: 0 20px; } }
+
+/* Phones: the particle mark sits in its own space above the hero text */
+@media (max-width: 819px) {
+  .hero { justify-content: flex-start; padding-top: calc(92px + var(--mark-h, min(44vw, 190px)) * .86 + 26px); }
+  .hero .hint { display: none; }
+}
