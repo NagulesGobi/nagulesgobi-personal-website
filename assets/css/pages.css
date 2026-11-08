@@ -1114,3 +1114,19 @@ html:not(.is-dark) .dx-logo.on-light { display: block; }
 }
 /* max-width must start from a number, not "none", or the fold snaps instead of animating */
 .dock .dk-item, .dock .dk-sep { max-width: 80px; }
+/* Opening: smooth and unhurried. The fast hover timing (.live) only touches transforms,
+   never the sizes, so entering the dock no longer makes it pop open. */
+.dock { --open: cubic-bezier(.22, 1, .36, 1); transition: padding .6s var(--open), gap .6s var(--open), border-radius .6s var(--open), box-shadow .6s var(--open); }
+.dock .dk-item, .dock .dk-sep, .dock .dk-hire {
+  transition: width .6s var(--open), height .6s var(--open), max-width .6s var(--open), margin .6s var(--open), padding .6s var(--open), opacity .4s ease .12s, transform .32s cubic-bezier(.25,1.35,.4,1); }
+.dock.live > * {
+  transition: width .6s var(--open), height .6s var(--open), max-width .6s var(--open), margin .6s var(--open), padding .6s var(--open), opacity .4s ease .12s, transform .14s cubic-bezier(.2,.8,.3,1); }
+.dock.live .dk-tile { transition: transform .14s cubic-bezier(.2,.8,.3,1), background .25s, border-radius .6s var(--open); }
+@media (prefers-reduced-motion: reduce) { .dock, .dock > *, .dock .dk-tile { transition: none !important; } }
+/* beat the older .dock.live .dk-item rule (width .07s) so opening stays slow and smooth */
+.dock.live .dk-item, .dock.live .dk-sep, .dock.live .dk-hire {
+  transition: width .6s var(--open), height .6s var(--open), max-width .6s var(--open), margin .6s var(--open), padding .6s var(--open), opacity .4s ease .12s, transform .14s cubic-bezier(.2,.8,.3,1); }
+/* folding back keeps its own gentle ease-in-out, icons fade out first */
+.dock.mini .dk-item, .dock.mini .dk-sep, .dock.mini .dk-hire {
+  transition: width .75s cubic-bezier(.65,0,.35,1), height .75s cubic-bezier(.65,0,.35,1), max-width .75s cubic-bezier(.65,0,.35,1), margin .75s cubic-bezier(.65,0,.35,1), padding .75s cubic-bezier(.65,0,.35,1), opacity .3s ease, transform .32s ease; }
+@media (prefers-reduced-motion: reduce) { .dock .dk-item, .dock .dk-sep, .dock .dk-hire { transition: none !important; } }
