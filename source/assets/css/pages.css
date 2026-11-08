@@ -1087,3 +1087,17 @@ html:not(.is-dark) .dx-logo.on-light { display: block; }
 .gl-flow .gl-lane span.end { border-radius: 99px; }
 .gl-flow .gl-lane i { font-style: normal; color: var(--muted); }
 @media (max-width: 600px) { .gl-flow .gl-lane { grid-template-columns: 1fr; gap: 8px; } }
+
+/* Dock minimise (iOS style): scrolling down folds the dock into a round N-mark button;
+   scrolling up, hovering, focusing or tapping the button opens it again (site.js toggles .mini) */
+.dock { transition: padding .45s var(--ease), gap .45s var(--ease), border-radius .45s var(--ease), box-shadow .45s var(--ease); }
+.dock .dk-item, .dock .dk-sep, .dock .dk-hire { transition: width .45s var(--ease), height .45s var(--ease), max-width .45s var(--ease), margin .45s var(--ease), padding .45s var(--ease), opacity .3s, transform .32s cubic-bezier(.25,1.35,.4,1); }
+.dk-hire { max-width: 160px; overflow: hidden; white-space: nowrap; }
+.dock.mini { gap: 0; padding: 5px; border-radius: 999px; }
+.dock.mini > :not(.dk-mark) { width: 0; max-width: 0; margin: 0; padding-left: 0; padding-right: 0; opacity: 0; overflow: hidden; pointer-events: none; }
+.dock.mini .dk-sep { margin: 0; }
+.dock.mini .dk-mark { display: block; }
+.dock.mini .dk-mark .dk-tile { border-radius: 50%; }
+.dock.mini .dk-mark .dk-tip, .dock.mini .dk-item[aria-current="page"]::after { display: none; }
+.dk-mark .dk-tile { transition: border-radius .45s var(--ease), transform .32s cubic-bezier(.25,1.35,.4,1), background .25s; }
+@media (prefers-reduced-motion: reduce) { .dock, .dock > *, .dk-mark .dk-tile { transition: none !important; } }

@@ -629,6 +629,25 @@
   var doc = document.documentElement;
   var RM = matchMedia('(prefers-reduced-motion: reduce)').matches, FINE = matchMedia('(hover: hover) and (pointer: fine)').matches;
 
+  /* Dock minimise: fold into the round N-mark on scroll down, open on scroll up, hover, focus or tap */
+  var mdock = document.querySelector('[data-dock]');
+  if (mdock) {
+    var lastY = scrollY, acc = 0;
+    var mark = mdock.querySelector('.dk-mark');
+    var openedAt = 0;
+    function setMini(on) { if (!on && mdock.classList.contains('mini')) openedAt = Date.now(); mdock.classList.toggle('mini', on); }
+    addEventListener('scroll', function () {
+      var y = scrollY, dy = y - lastY; lastY = y;
+      if (y < 120) { acc = 0; setMini(false); return; }
+      if (mdock.matches(':hover') || mdock.contains(document.activeElement)) return;
+      acc = (dy > 0) === (acc > 0) ? acc + dy : dy;
+      if (acc > 40) setMini(true); else if (acc < -40) setMini(false);
+    }, { passive: true });
+    mdock.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') setMini(false); });
+    mdock.addEventListener('focusin', function () { setMini(false); });
+    if (mark) mark.addEventListener('click', function (e) { if (mdock.classList.contains('mini') || Date.now() - openedAt < 400) { e.preventDefault(); setMini(false); } });
+  }
+
   /* Dock: liquid-glass magnification. The slot sizes are fixed while hovered (CSS), so the
      item boxes never move; tiles scale and slide with transforms only, which cannot feed back. */
   var dock = document.querySelector('[data-dock]');
