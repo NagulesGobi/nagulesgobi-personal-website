@@ -644,7 +644,7 @@
       var dr = dock.getBoundingClientRect(); dock.style.setProperty('--mx', (px - dr.left) + 'px');
       var extra = kids.map(function (k) {
         var t = k.classList.contains('dk-item') && k.querySelector('.dk-tile'); if (!t) return 0;
-        var r = k.getBoundingClientRect(), d = px - (r.left + r.width / 2), f = Math.exp(-(d * d) / (2 * 46 * 46)), ts = 1 + 0.26 * f;
+        var r = k.getBoundingClientRect(), d = px - (r.left + r.width / 2), f = Math.exp(-(d * d) / (2 * 46 * 46)), ts = 1 + 0.2 * f;
         t.style.setProperty('--ts', ts.toFixed(3)); return r.width * (ts - 1);
       });
       kids.forEach(function (k, i) {

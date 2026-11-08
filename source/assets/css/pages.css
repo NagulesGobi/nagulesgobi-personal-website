@@ -1015,7 +1015,9 @@ html:not(.is-dark) .dx-logo.on-light { display: block; }
   .dock:hover .dk-item { --s: 1.12; }
   /* Liquid-glass feel: site.js sets --ts (scale) and --tx (slide) per icon from the pointer.
      Transforms only, scaled from the centre, so the dock never resizes or crops an icon. */
-  .dock { position: relative; }
+  .dock { position: relative; transition: padding .3s var(--ease); }
+  /* breathing room around the magnified icons: the dock grows its padding once on entry and holds it */
+  .dock:hover { padding: 13px 15px; }
   .dock::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .3s;
     background: radial-gradient(120px 80px at var(--mx, 50%) 30%, rgba(255,255,255,.16), transparent 70%); mix-blend-mode: soft-light; }
   .dock:hover::after { opacity: 1; }
