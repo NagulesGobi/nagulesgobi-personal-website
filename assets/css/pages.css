@@ -1011,8 +1011,12 @@ html:not(.is-dark) .dx-logo.on-light { display: block; }
 /* Dock: steady zoom. Hovering the dock lifts every icon a little; the icon under the pointer grows more */
 @media (hover: hover) and (pointer: fine) and (min-width: 821px) and (prefers-reduced-motion: no-preference) {
   .dk-item { transition: width .3s var(--ease), height .3s var(--ease); }
-  .dock:hover .dk-item { --s: 1.1; }
-  .dock .dk-item:hover, .dock .dk-item:focus-visible { --s: 1.38; }
+  /* the whole dock grows once on entry and holds that size until the pointer leaves it */
+  .dock:hover .dk-item { --s: 1.12; }
+  /* only the tile under the pointer grows, by scaling, so its neighbours never move */
+  .dk-tile { transition: transform .22s var(--ease), background .25s; transform-origin: 50% 0; }
+  .dock .dk-item:hover .dk-tile, .dock .dk-item:focus-visible .dk-tile { transform: scale(1.22); }
+  .dock .dk-item:hover { z-index: 2; }
 }
 
 /* ---------- Greenlife screens (grocery shopping app) ---------- */
