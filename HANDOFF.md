@@ -188,5 +188,5 @@ the case study credits both.
 - App fans on dotXline stay inside their column on hover. "Read the case study" and the App Store badge are the same height and shape.
 - Chatvertiser: the wide logo sits in `.logo-panel`, never cropped.
 - Custom cursor: the press scale is part of the JS transform, so the ring no longer jumps away on click.
-- Dock: magnification is CSS only (`.dock:hover` sizes every icon to 1.12 and holds it; only the hovered tile scales (transform), so nothing else moves); the old distance-based JS made it jiggle.
+- Dock: slots grow once to 1.12 on hover and hold (CSS); site.js then scales each tile by distance from the pointer (Gaussian, max 1.26, from the centre) and slides the others aside with transforms only, plus a glass highlight that follows the pointer. The dock never resizes and nothing is cropped.
 - Greenlife is now a coded kit like Puff Count and Pocket (`kit.gl_*`): Behance 109365235, made for Loofyn Hyper with Muralikrishna Naguleswararajah, palette #09B44D #7DAF25 #748A9D #404E5A, Acumin (shown as Archivo Narrow), user flow, login, onboarding, store, product, cart, live chat, order placed.

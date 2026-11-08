@@ -629,7 +629,34 @@
   var doc = document.documentElement;
   var RM = matchMedia('(prefers-reduced-motion: reduce)').matches, FINE = matchMedia('(hover: hover) and (pointer: fine)').matches;
 
-  /* Dock magnification is pure CSS (.dock:hover), so nothing is measured while items resize */
+  /* Dock: liquid-glass magnification. The slot sizes are fixed while hovered (CSS), so the
+     item boxes never move; tiles scale and slide with transforms only, which cannot feed back. */
+  var dock = document.querySelector('[data-dock]');
+  if (dock && FINE && !RM) {
+    var kids = Array.prototype.slice.call(dock.children), raf = 0, px = null;
+    function dockApply() {
+      raf = 0;
+      if (px === null || innerWidth <= 820) {
+        dock.style.removeProperty('--mx');
+        kids.forEach(function (k) { k.style.removeProperty('--tx'); var t = k.querySelector('.dk-tile'); if (t) t.style.removeProperty('--ts'); });
+        return;
+      }
+      var dr = dock.getBoundingClientRect(); dock.style.setProperty('--mx', (px - dr.left) + 'px');
+      var extra = kids.map(function (k) {
+        var t = k.classList.contains('dk-item') && k.querySelector('.dk-tile'); if (!t) return 0;
+        var r = k.getBoundingClientRect(), d = px - (r.left + r.width / 2), f = Math.exp(-(d * d) / (2 * 46 * 46)), ts = 1 + 0.26 * f;
+        t.style.setProperty('--ts', ts.toFixed(3)); return r.width * (ts - 1);
+      });
+      kids.forEach(function (k, i) {
+        var before = 0, after = 0;
+        for (var j = 0; j < kids.length; j++) { if (j < i) before += extra[j]; else if (j > i) after += extra[j]; }
+        k.style.setProperty('--tx', ((before - after) * 0.24).toFixed(2) + 'px');
+      });
+    }
+    dock.addEventListener('pointermove', function (e) { px = e.clientX; dock.classList.add('live'); if (!raf) raf = requestAnimationFrame(dockApply); });
+    dock.addEventListener('pointerleave', function () { px = null; dock.classList.remove('live'); if (!raf) raf = requestAnimationFrame(dockApply); });
+  }
+
 
   /* Search palette */
   var finder = document.querySelector('.finder');

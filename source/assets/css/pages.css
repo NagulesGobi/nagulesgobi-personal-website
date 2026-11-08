@@ -1013,10 +1013,17 @@ html:not(.is-dark) .dx-logo.on-light { display: block; }
   .dk-item { transition: width .3s var(--ease), height .3s var(--ease); }
   /* the whole dock grows once on entry and holds that size until the pointer leaves it */
   .dock:hover .dk-item { --s: 1.12; }
-  /* only the tile under the pointer grows, by scaling, so its neighbours never move */
-  .dk-tile { transition: transform .22s var(--ease), background .25s; transform-origin: 50% 0; }
-  .dock .dk-item:hover .dk-tile, .dock .dk-item:focus-visible .dk-tile { transform: scale(1.22); }
+  /* Liquid-glass feel: site.js sets --ts (scale) and --tx (slide) per icon from the pointer.
+     Transforms only, scaled from the centre, so the dock never resizes or crops an icon. */
+  .dock { position: relative; }
+  .dock::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .3s;
+    background: radial-gradient(120px 80px at var(--mx, 50%) 30%, rgba(255,255,255,.16), transparent 70%); mix-blend-mode: soft-light; }
+  .dock:hover::after { opacity: 1; }
+  .dock > * { transform: translateX(var(--tx, 0px)); transition: transform .32s cubic-bezier(.25,1.35,.4,1); }
+  .dk-tile { transform: scale(var(--ts, 1)); transform-origin: 50% 50%; transition: transform .32s cubic-bezier(.25,1.35,.4,1), background .25s; }
+  .dock.live > *, .dock.live .dk-tile { transition-duration: .14s; transition-timing-function: cubic-bezier(.2,.8,.3,1); }
   .dock .dk-item:hover { z-index: 2; }
+  .dock .dk-item:focus-visible .dk-tile { --ts: 1.18; }
 }
 
 /* ---------- Greenlife screens (grocery shopping app) ---------- */
