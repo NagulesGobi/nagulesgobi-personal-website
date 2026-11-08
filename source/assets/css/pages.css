@@ -1006,3 +1006,5 @@ html:not(.is-dark) .dx-logo.on-light { display: block; }
 /* Home hero: a softer ring around the portrait, with the brand colour carried by the headline instead */
 .me-chip img { border: 2px solid var(--card); box-shadow: 0 0 0 1.5px color-mix(in srgb, #FF4A2C 38%, transparent); }
 .two-tone .dim em .wi { color: transparent; }
+/* Hero headline keeps three short lines so the mark has room beside it */
+.hero h1.two-tone .dim em { display: block; }

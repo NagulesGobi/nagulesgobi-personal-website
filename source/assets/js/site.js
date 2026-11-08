@@ -167,7 +167,7 @@
           var cs = getComputedStyle(hin), right = hin.getBoundingClientRect().right - cr.left - parseFloat(cs.paddingRight || 0);
           var left = Math.max(txr + 48, W * 0.5);
           if (isFinite(top) && right - left > 160) {
-            size = Math.min(bot - top, right - left, 640); cx = (left + right) / 2; cy = (top + bot) / 2;
+            cx = clamp((left + right) / 2, txr + 24 + size / 2, W - 64 - size / 2); cy = (top + bot) / 2; // keep the original size
           }
         }
       }

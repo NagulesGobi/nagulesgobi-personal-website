@@ -358,8 +358,8 @@ def home():
   <canvas class="hero-canvas" aria-hidden="true"></canvas>
   <div class="wrap hero-inner">
     <p class="me-chip" data-reveal data-hero>{img('me/portrait.webp', 'Portrait of Nagules Gobi', '{root}', lazy=False)}<span>Hi, I’m <b>Nagules Gobi</b>. UX/UI designer who builds the apps too. Director of dotXline LTD.</span></p>
-    <h1 class="two-tone" data-split data-hero>I design the app. <span class="dim">Then I build it <em>myself.</em></span></h1>
-    <p class="lede" data-reveal data-hero style="--d:.35s">I design web and mobile products, then build them myself with SwiftUI, React Native and AI-assisted development. 30+ projects designed across three countries, and two apps of my own on the App Store.</p>
+    <h1 class="two-tone" data-split data-hero>Apps, designed <span class="dim">and built <em>end to end.</em></span></h1>
+    <p class="lede" data-reveal data-hero style="--d:.35s">Web and mobile products, from first sketch to working code in SwiftUI, React Native and AI-assisted development. 30+ projects designed across three countries, and two apps live on the App Store.</p>
     <div class="btns" data-reveal data-hero style="--d:.5s">
       <a class="btn" href="#shipped"><span>See my apps</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a>
       <a class="btn btn-ghost" href="{{root}}contact.html" data-label="Contact"><span>Hire me</span></a>
