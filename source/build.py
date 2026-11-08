@@ -198,9 +198,9 @@ PROJECTS = [
   dict(slug='chatvertiser', title='Chatvertiser', cat='product web', kind='Web design · Ad tech UX',
        short='An AI-powered advertising platform that turns conversations into conversion tools.',
        scene='img', image='work/chatvertiser.webp', preview='work/chatvertiser.webp'),
-  dict(slug='greenlife', title='Greenlife', cat='product mobile', kind='App design · Retail',
-       short='An everyday shopping assistant that makes the trip faster, from building the list to checkout.',
-       scene='img', image='work/greenlife.webp', preview='work/greenlife.webp'),
+  dict(slug='greenlife', title='Greenlife', cat='product mobile', kind='App design · Grocery',
+       short='A grocery shopping app that helps people buy their favourite fruit and vegetables from home, fast.',
+       scene='code', html=lambda: kit.gl_card_inner(), tone='gl-stage', preview=None),
   dict(slug='puff-count', title='Puff Count', cat='product mobile', kind='App design · Health',
        short='A mobile app that tracks nicotine consumption, with daily limits and onboarding that helps people quit vaping.',
        scene='code', html=lambda: kit.pc_card_inner(), tone='pc-stage', preview=None),
@@ -357,11 +357,11 @@ def home():
 <section class="hero" id="top">
   <canvas class="hero-canvas" aria-hidden="true"></canvas>
   <div class="wrap hero-inner">
-    <p class="me-chip" data-reveal data-hero>{img('me/portrait.webp', 'Portrait of Nagules Gobi', '{root}', lazy=False)}<span>Hi, I’m <b>Nagules Gobi</b>. UX/UI designer who builds the apps too. Director of dotXline LTD.</span></p>
-    <h1 class="two-tone" data-split data-hero>Apps, designed <span class="dim">and built <em>end to end.</em></span></h1>
-    <p class="lede" data-reveal data-hero style="--d:.35s">Web and mobile products, from first sketch to working code in SwiftUI, React Native and AI-assisted development. 30+ projects designed across three countries, and two apps live on the App Store.</p>
+    <p class="me-chip" data-reveal data-hero>{img('me/portrait.webp', 'Portrait of Nagules Gobi', '{root}', lazy=False)}<span>Hi, I’m <b>Nagules Gobi</b>. Product designer who builds websites and apps too. Director of dotXline LTD.</span></p>
+    <h1 class="two-tone" data-split data-hero>Products, designed <span class="dim">and built <em>end to end.</em></span></h1>
+    <p class="lede" data-reveal data-hero style="--d:.35s">Websites, web apps and mobile apps, from first sketch to working code in SwiftUI, React Native and AI-assisted development. 30+ projects designed across three countries, and two apps live on the App Store.</p>
     <div class="btns" data-reveal data-hero style="--d:.5s">
-      <a class="btn" href="#shipped"><span>See my apps</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a>
+      <a class="btn" href="#shipped"><span>Explore the work</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a>
       <a class="btn btn-ghost" href="{{root}}contact.html" data-label="Contact"><span>Hire me</span></a>
     </div>
     <div class="hero-mark-slot" data-reveal data-hero style="--d:.6s" aria-hidden="true"><span class="mono">Touch the mark</span></div>
@@ -584,12 +584,13 @@ def cases():
          kit.cv_sections() +
          f'<section class="case-band"><div class="wrap"><div class="duo"><div class="media" data-img>{img("work/chatvertiser-2.webp", "Chatvertiser support system screens", "{root}")}</div><div class="media logo-panel" data-img>{img("brand/logo-chatvertiser-logo.webp", "Chatvertiser logo", "{root}", "mono-logo")}</div></div></div></section>')
     # Greenlife
-    case('greenlife', 'Case study · App design · Retail', 'Shopping, from list to <em>checkout</em>.',
-         'An everyday shopping assistant app designed to make the trip faster, from building the list to paying at the till.',
-         [('Role', 'App design'), ('Industry', 'Retail and grocery'), ('Platform', 'Mobile app'), ('Prototype', '<a href="https://www.behance.net/gallery/109365235/Grocery-Shopping-App" target="_blank" rel="noopener">Behance ↗</a>')],
-         cover_img('work/greenlife.webp', 'Greenlife app screens with fresh produce'),
-         sec('Overview', '<p class="lead">Built for the shop floor, not the sofa.</p><p>The UI focuses on simplicity, accessibility and visual clarity, so the app stays easy to use with one hand and a full basket.</p>') +
-         sec('Design focus', points([('List creation', 'Build the list quickly before you leave home.'), ('In-store efficiency', 'Find what is next without hunting through menus.'), ('Accessible by default', 'Clear contrast, large targets and readable type.'), ('Fresh visual voice', 'A green, produce-led identity that feels like the food it sells.')])))
+    case('greenlife', 'Case study · App design · Grocery', 'Fresh groceries, ordered from <em>home</em>.',
+         'Greenlife is a grocery shopping app for fast and convenient shopping. It helps customers buy their favourite vegetables and fruits without leaving home.',
+         [('Role', 'UX/UI design and branding'), ('Made for', 'Loofyn Hyper'), ('Team', 'With Muralikrishna Naguleswararajah'), ('Tools', 'Adobe XD, Illustrator, Photoshop'), ('Project', '<a href="https://www.behance.net/gallery/109365235/Grocery-Shopping-App" target="_blank" rel="noopener">Behance ↗</a>')],
+         kit.GL_FONT + kit.gl_cover(),
+         sec('Overview', '<p class="lead">Fast, convenient and fresh.</p><p>The idea was an app for fast and convenient grocery shopping. The project covered the user flow, wireframes, the visual system and the full set of screens, from sign-in to a placed order.</p>') +
+         sec('Design focus', points([('Recipes built in', 'Sign-up asks for recipe preferences, and one tap adds every ingredient for a recipe to the cart.'), ('Browse your way', 'Shop by category, popular items or special offers, or go straight to search.'), ('Two paths to checkout', 'Search and select, or use Quick shop: both meet at address, payment and order.'), ('A fresh, green identity', 'A leaf mark, a green palette (#09B44D, #7DAF25) with slate greys, and Acumin type.')])) +
+         kit.gl_sections())
     # Puff Count
     case('puff-count', 'Case study · App design · Health', 'Every puff, <em>counted</em>.',
          'Puff Count is a mobile app that tracks nicotine consumption, lets people set daily limits and helps them work towards quitting vaping.',

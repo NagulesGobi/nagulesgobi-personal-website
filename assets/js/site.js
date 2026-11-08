@@ -629,21 +629,7 @@
   var doc = document.documentElement;
   var RM = matchMedia('(prefers-reduced-motion: reduce)').matches, FINE = matchMedia('(hover: hover) and (pointer: fine)').matches;
 
-  /* Dock magnification: items near the pointer grow, like the macOS Dock */
-  var dock = document.querySelector('[data-dock]');
-  if (dock && FINE && !RM) {
-    var items = Array.prototype.slice.call(dock.querySelectorAll('.dk-item')), raf = 0, px = null;
-    function apply() {
-      raf = 0;
-      items.forEach(function (it) {
-        var s = 1;
-        if (px !== null) { var r = it.getBoundingClientRect(), c = r.left + r.width / 2, d = Math.abs(px - c); s = 1 + 0.42 * Math.max(0, 1 - d / 110); }
-        it.style.setProperty('--s', s.toFixed(3));
-      });
-    }
-    dock.addEventListener('pointermove', function (e) { if (innerWidth <= 820) return; px = e.clientX; dock.classList.add('live'); if (!raf) raf = requestAnimationFrame(apply); });
-    dock.addEventListener('pointerleave', function () { px = null; dock.classList.remove('live'); if (!raf) raf = requestAnimationFrame(apply); });
-  }
+  /* Dock magnification is pure CSS (.dock:hover), so nothing is measured while items resize */
 
   /* Search palette */
   var finder = document.querySelector('.finder');

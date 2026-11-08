@@ -279,3 +279,85 @@ def xp_sections():
                       + palette_jobs([('0F9D7A', 'Mint', 'Logo, icon, chart fills'), ('0A7D61', 'Mint Dark', 'Buttons and links'), ('E3F5EE', 'Mint Light', 'Tinted wells, selection'),
                                       ('0E1512', 'Ink', 'Text, dark backgrounds'), ('F5A524', 'Amber', 'Celebrations and progress'), ('F4F6F3', 'Paper', 'Light background')])
                       + typeface('"Sora", system-ui, sans-serif', 'Sora', weights='SemiBold · section headings, with SF Pro for the app', tint='#0F9D7A'), 'From the brand kit', '#0F9D7A'))
+
+# ------------------------------------------------------------------ Greenlife (grocery shopping app, Behance 109365235)
+GL_FONT = '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@500;600;700&amp;family=Open+Sans:wght@400;600&amp;display=swap">'
+GL_MARK = ('<svg class="gl-mark" viewBox="0 0 48 64" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">'
+           '<path d="M24 3C36 11 38 25 30 32c-4 3.5-10 3.5-13 0-4-4-2-11 4-11 4 0 6 4 4 7"/><path d="M24 3C12 11 10 25 17 32c-8 6-7 20 3 23 8 2 14-4 11-11-2-4-7-5-9-2"/></svg>')
+GL_ICONS = {
+    'mail': '<path d="M3 6h18v12H3z"/><path d="M3 7l9 6 9-6"/>',
+    'lock': '<rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
+    'user': '<circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4 4.5-6 8-6s6.5 2 8 6"/>',
+    'search': '<circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/>',
+    'back': '<path d="M19 12H5M11 6l-6 6 6 6"/>',
+    'leaf': '<path d="M5 19c0-9 6-14 14-14 0 8-5 14-14 14z"/><path d="M5 19l8-8"/>',
+    'list': '<path d="M8 7h12M8 12h12M8 17h12M4 7h.01M4 12h.01M4 17h.01"/>',
+    'cart': '<path d="M3 4h3l2 11h11l2-8H7"/><circle cx="10" cy="19" r="1.4"/><circle cx="18" cy="19" r="1.4"/>',
+    'gear': '<circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/>',
+    'close': '<path d="M6 6l12 12M18 6L6 18"/>',
+}
+def gl_ic(name, cls='gl-ic'):
+    return f'<svg class="{cls}" viewBox="0 0 24 24" aria-hidden="true">{GL_ICONS[name]}</svg>'
+
+def gl_tabs(on='leaf', badge=''):
+    def t(n):
+        b = f'<sup>{badge}</sup>' if (n == 'cart' and badge) else ''
+        return f'<span class="{"on" if n == on else ""}">{gl_ic(n)}{b}</span>'
+    return f'<div class="gl-tabs">{t("leaf")}{t("list")}<b>+</b>{t("cart")}{t("gear")}</div>'
+
+def gl_screens():
+    s = []
+    s.append(phone(status() + f'<div class="gl-body gl-splash">{GL_MARK}</div>', 'gl-app', 'Splash'))
+    s.append(phone(status() + f'<div class="gl-body gl-auth"><p class="gl-h">Sign In</p><div class="gl-in">{gl_ic("mail")}Email</div><div class="gl-in">{gl_ic("lock")}Password</div>'
+                   f'<p class="gl-small">Forgot password?</p><span class="gl-btn">→ SIGN IN</span><p class="gl-foot">CREATE ACCOUNT</p></div>', 'gl-app', 'Sign in'))
+    s.append(phone(status() + f'<div class="gl-body gl-auth"><span class="gl-x">{gl_ic("close")}</span><p class="gl-h">Create Account</p><div class="gl-in">{gl_ic("user")}Full Name</div>'
+                   f'<div class="gl-in">{gl_ic("mail")}Email</div><div class="gl-in">{gl_ic("lock")}Password</div><span class="gl-btn">→ CREATE ACCOUNT</span><p class="gl-foot">SIGN IN</p></div>', 'gl-app', 'Create account'))
+    for i, (emo, text) in enumerate([('🛒', 'Quickly search and add healthy foods to your cart'), ('📋', 'With one click you can add every ingredient for a recipe to your cart')]):
+        dots = ''.join(f'<i class="{"on" if k == i else ""}"></i>' for k in range(3))
+        s.append(phone(status() + f'<div class="gl-body gl-onb"><div class="gl-blob"><span>{emo}</span><em>+</em><em>○</em></div><p>{text}</p><div class="gl-dots">{dots}</div><p class="gl-foot">SKIP</p></div>', 'gl-app', f'Onboarding {i + 1}'))
+    tiles = ''.join(f'<span class="gl-tile" style="background:{bg}"><i>{e}</i>{n}</span>' for e, n, bg in [('🍓', 'Berries', '#E0393E'), ('🍊', 'Citrus', '#FFA200'), ('🍋', 'Lemons', '#FFD43B')])
+    s.append(phone(status() + f'<div class="gl-body"><div class="gl-top"><span></span><b>Store</b>{gl_ic("search")}</div><div class="gl-hero">🥦</div>'
+                   f'<p class="gl-cat">Vegetables</p><p class="gl-sub">Browse</p><div class="gl-tiles">{tiles}</div></div>{gl_tabs("leaf")}', 'gl-app', 'Store'))
+    s.append(phone(status() + f'<div class="gl-body"><div class="gl-top">{gl_ic("back")}<b>Broccoli</b><span></span></div><div class="gl-hero">🥦</div>'
+                   '<div class="gl-pick"><small>Broccoli</small><div class="gl-wheel"><span><i>1</i><b>2</b><i>3</i></span><span><i>grams</i><b>lbs</b><i>heads</i><i>packs</i></span></div><em>£0.80</em></div>'
+                   '<span class="gl-btn">→ SELECT</span></div>', 'gl-app', 'Product'))
+    rows = ''.join(f'<li><i>{e}</i><span><b>{n}</b><small>{q}</small></span><em>{p}</em></li>' for e, n, q, p in
+                   [('🥦', 'Broccoli', '2 lbs', '£0.80'), ('🥬', 'Kale', '300g', '£3.00'), ('🫑', 'Red Peppers', '5', '£1.50'), ('🍓', 'Strawberries', '2 punnets', '£4.00')])
+    s.append(phone(status() + f'<div class="gl-body"><div class="gl-top"><span></span><b>Cart</b><span></span></div><ul class="gl-rows">{rows}</ul>'
+                   '<div class="gl-sum"><p><span>Sub-total</span><span>£9.30</span></p><p><span>Delivery</span><span>Standard (free)</span></p><p class="tot"><span>Total</span><span>£9.30</span></p></div>'
+                   f'<span class="gl-btn">→ CHECKOUT</span></div>{gl_tabs("cart", "4")}', 'gl-app', 'Cart'))
+    s.append(phone(status() + f'<div class="gl-body"><div class="gl-top">{gl_ic("back")}<b>Live Chat</b><span></span></div><div class="gl-chat">'
+                   '<p class="them">Hi! Can I help you?</p><p class="me">Hello, I seem to be having some trouble with my order.</p>'
+                   '<p class="them">Thanks for your patience. I’ve fixed it.</p><p class="me">Perfect. Thanks so much!</p><p class="them">You’re welcome!</p></div></div>', 'gl-app', 'Live chat'))
+    s.append(phone(status() + f'<div class="gl-body gl-onb"><div class="gl-blob"><span>📦</span><em>+</em><em>○</em></div><p>Order placed.<br>Your order number is</p><strong class="gl-num">#5678</strong></div>{gl_tabs("cart")}', 'gl-app', 'Order placed'))
+    return s
+
+def gl_flow():
+    def lane(name, steps):
+        chips = '<i>→</i>'.join(f'<span class="{c}">{E(t)}</span>' for t, c in steps)
+        return f'<div class="gl-lane" data-reveal><p class="mono">{E(name)}</p><div>{chips}</div></div>'
+    return ('<div class="kit-block gl-flow"><p class="kit-label mono">User flow</p>'
+            + lane('New user', [('Start', 'end'), ('Sign up', ''), ('Recipe preference', ''), ('Store', 'key')])
+            + lane('Returning user', [('Start', 'end'), ('Login', ''), ('Store', 'key')])
+            + lane('Search', [('Store', 'key'), ('Search', ''), ('Select item', ''), ('Item description', ''), ('Quantity', ''), ('Address & option', ''), ('Payment method', ''), ('Place order', ''), ('End', 'end')])
+            + lane('Quick shop', [('Store', 'key'), ('Quick shop', ''), ('Quantity', ''), ('Address & option', ''), ('Payment method', ''), ('Place order', ''), ('End', 'end')])
+            + '</div>')
+
+def gl_cover():
+    sc = gl_screens()
+    return stage(f'<div class="ks-brand gl-brand">{GL_MARK}<b>greenlife</b><span>Grocery shopping app · UX UI design</span></div><div class="ks-phones">{sc[5]}{sc[0]}</div>', 'gl-stage')
+
+def gl_card_inner():
+    sc = gl_screens()
+    return f'<div class="ks-mini">{sc[5]}{sc[7]}</div>'
+
+def gl_sections():
+    sc = gl_screens()
+    return (section('The design system.', palette([('09B44D', 'Green'), ('7DAF25', 'Leaf'), ('748A9D', 'Slate'), ('404E5A', 'Ink')]) +
+                    typeface('"Archivo Narrow", system-ui, sans-serif', 'Acumin Variable Concept', shown_as='Archivo Narrow', weights='Medium · Semi Bold · Bold', tint='#09B44D') +
+                    wireframes([['bar', 'hero', 'line', 'grid', 'tabs'], ['spacer', 'circle', 'btn'], ['bar', 'list', 'btn'], ['bar', 'hero', 'line', 'grid', 'tabs']], 'User experience: wireframes'), 'From the Behance board', '#09B44D')
+            + section('From first tap to placed order.', gl_flow())
+            + section('Sign in and sign up.', phones(sc[:3], 'Login screens'))
+            + section('Onboarding.', '<p class="kit-quote" data-reveal>Welcome screens introduce new users to the main app features.</p>' + phones(sc[3:5], 'Welcome screens'))
+            + section('The store, a product and the cart.', '<p class="kit-quote" data-reveal>Choose groceries by category, among popular items or special offers, or use the search button.</p>' + phones(sc[5:8], 'Main screens'))
+            + section('Help and confirmation.', phones(sc[8:], 'Live chat and order placed')))
