@@ -52,7 +52,7 @@ decided or built in the first session (7 November 2026).
 
 ## 4. Pages
 
-1. **Home** (`index.html`, redesigned Nov 2026: hero "I design the app. Then I build it and ship it.", mono facts strip, **Shipped** section with working Xpense and Tockbee demos and App Store buttons, client work ledger, logos, services, How I build, pitch). Before that: intro loader (mark draws, 0–100% counter, curtain lifts, once per
+1. **Home** (`index.html`, redesigned Nov 2026: hero "I design the app. Then I build it myself.", mono facts strip, **My apps** section with working Xpense and Tockbee demos and App Store buttons, client work ledger, logos, services, How I build, pitch). Before that: intro loader (mark draws, 0–100% counter, curtain lifts, once per
    visit), particle N-mark hero with portrait chip, marquee of disciplines, stats (30 / 3 / 6),
    pinned horizontal "Selected work" with six panels, dotXline ventures strip, client logo
    marquee, services with spotlight borders, **How I build** (Design → Develop → Refine →
@@ -178,3 +178,13 @@ the case study credits both.
   (Amber #F5A524 on dark, Ember #D97706 on light), official one-colour-text lockups on the dotXline page,
   Ink #0E1512 / Paper #F4F6F3 hero. Mint belongs to Xpense; dotXline never uses it.
 - Phones show no particle mark in the hero.
+
+## 13. Nov 2026 polish round
+
+- Wording: no "ship/shipped" anywhere (owner finds it unnatural). Say "designed and built", "My apps". Project count reads "30+ projects designed", never "shipped".
+- Home hero: softer portrait ring; brand gradient sits on "myself." in the headline to balance the coloured mark. On desktop the mark is centred on the text block inside the 1240px column (site.js MarkField build), so wide screens stay aligned.
+- Dock: the dotXline mark uses the same colour as the other dock icons.
+- dotXline page hero now uses the site's own background, text and kicker colours; only the lockup carries the dotXline brand colours.
+- App fans on dotXline stay inside their column on hover. "Read the case study" and the App Store badge are the same height and shape.
+- Chatvertiser: the wide logo sits in `.logo-panel`, never cropped.
+- Custom cursor: the press scale is part of the JS transform, so the ring no longer jumps away on click.

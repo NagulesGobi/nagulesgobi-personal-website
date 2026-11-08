@@ -150,6 +150,26 @@
         cx = (inr ? inr.offsetLeft : 0) + slot.offsetLeft + sw / 2; cy = (inr ? inr.offsetTop : 0) + slot.offsetTop + sh / 2;
       } else {
         size = Math.min(H * 0.7, W * 0.36, 640); cx = W * 0.75; cy = H * 0.5;
+        // Desktop: line the mark up with the text block, so it stays balanced on wide and tall screens
+        var hin = canvas.parentNode.querySelector('.hero-inner'), h1 = hin && hin.querySelector('h1');
+        if (hin && h1) {
+          var cr = r, top = Infinity, bot = -Infinity, txr = 0;
+          Array.prototype.forEach.call(hin.children, function (el) {
+            if (el.classList.contains('hero-mark-slot') || !el.offsetHeight) return;
+            var b = el.getBoundingClientRect(); top = Math.min(top, b.top - cr.top); bot = Math.max(bot, b.bottom - cr.top);
+          });
+          // right edge of the actual text (words, line by line), not of the full-width blocks
+          [hin.querySelector('.lede')].forEach(function (el) {
+            if (!el) return; var rg = document.createRange(); rg.selectNodeContents(el);
+            Array.prototype.forEach.call(rg.getClientRects(), function (b) { if (b.width) txr = Math.max(txr, b.right - cr.left); });
+          });
+          Array.prototype.forEach.call(h1.querySelectorAll('.wi'), function (w) { txr = Math.max(txr, w.getBoundingClientRect().right - cr.left); });
+          var cs = getComputedStyle(hin), right = hin.getBoundingClientRect().right - cr.left - parseFloat(cs.paddingRight || 0);
+          var left = Math.max(txr + 48, W * 0.5);
+          if (isFinite(top) && right - left > 160) {
+            size = Math.min(bot - top, right - left, 640); cx = (left + right) / 2; cy = (top + bot) / 2;
+          }
+        }
       }
       var ox = cx - size / 2, oy = cy - size / 2;
       canvas.style.opacity = 1;
@@ -157,7 +177,7 @@
       var off = document.createElement('canvas'); off.width = off.height = Math.ceil(size);
       var o = off.getContext('2d'); o.scale(size / 100, size / 100); o.fill(new Path2D(MARK_D));
       var data = o.getImageData(0, 0, off.width, off.height).data;
-      if (slot && slot.offsetWidth) { // centre the mark's visible shape (not its box) in the panel
+      { // centre the mark's visible shape (not its box) on its target point
         var minX = off.width, minY = off.height, maxX = 0, maxY = 0;
         for (var yy = 0; yy < off.height; yy++) for (var xx = 0; xx < off.width; xx++) if (data[(yy * off.width + xx) * 4 + 3] >= 128) { if (xx < minX) minX = xx; if (yy < minY) minY = yy; if (xx > maxX) maxX = xx; if (yy > maxY) maxY = yy; }
         ox = cx - (minX + maxX) / 2; oy = cy - (minY + maxY) / 2;
@@ -214,12 +234,13 @@
   if (FINE && !RM && $('.cursor')) {
     doc.classList.add('has-cursor');
     var cur = $('.cursor'), dot = $('.cursor-dot'), ring = $('.cursor-ring'), label = $('.cursor-label'), prev = $('.cursor-preview');
-    var rx = pointer.x, ry = pointer.y, px = pointer.x, py = pointer.y, pvx = 0;
+    var rs = 1, rx = pointer.x, ry = pointer.y, px = pointer.x, py = pointer.y, pvx = 0;
     (function loop() {
       rx = lerp(rx, pointer.x, 0.2); ry = lerp(ry, pointer.y, 0.2);
       var npx = lerp(px, pointer.x, 0.12); pvx = lerp(pvx, npx - px, 0.2); px = npx; py = lerp(py, pointer.y, 0.12);
       dot.style.transform = 'translate3d(' + pointer.x + 'px,' + pointer.y + 'px,0)';
-      ring.style.transform = 'translate3d(' + rx + 'px,' + ry + 'px,0)';
+      rs = lerp(rs, cur.classList.contains('is-down') ? 0.8 : 1, 0.3);
+      ring.style.transform = 'translate3d(' + rx + 'px,' + ry + 'px,0) scale(' + rs.toFixed(3) + ')';
       if (prev) prev.style.transform = 'translate3d(' + px + 'px,' + py + 'px,0) rotate(' + clamp(pvx * 1.2, -12, 12).toFixed(2) + 'deg)';
       requestAnimationFrame(loop);
     })();

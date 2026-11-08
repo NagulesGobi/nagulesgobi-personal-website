@@ -14,4 +14,4 @@
 - App Store links live in `APP_STORE` near the top of the home section of `source/build.py`. They point at
   dotxline.com until the owner sends the real App Store URLs.
 - Xpense is built with SwiftUI, Tockbee with React Native; both are presented as live on the App Store.
-- The home page phones in "Shipped" are working HTML/CSS/JS demos (`[data-xpense]`, `[data-tockbee]` in site.js).
+- The home page phones in "My apps" are working HTML/CSS/JS demos (`[data-xpense]`, `[data-tockbee]` in site.js).

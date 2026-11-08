@@ -93,7 +93,7 @@ def dock_icon(key):
     return f'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="{DOCK_ICONS[key]}"/></svg>'
 
 def finder_items(root):
-    items = [('Pages', 'Home', 'Shipped apps, client work and how I build', 'index.html'),
+    items = [('Pages', 'Home', 'My apps, client work and how I build', 'index.html'),
              ('Pages', 'Work', 'Product case studies, brand and print', 'work.html'),
              ('Pages', 'Brand and print', '29 logos, campaigns, print and packaging pieces', 'work.html#brand'),
              ('Pages', 'dotXline', 'My product company in Cardiff', 'dotxline.html'),
@@ -313,7 +313,7 @@ def release_xpense():
         <p class="rel-tag mono">My product · dotXline</p>
         <div class="rel-name">{img('kit/xp-icon.webp', '', '{root}')}<h3>Xpense</h3></div>
         <p class="rel-sub">Every penny, in plain sight.</p>
-        <dl class="rel-meta mono"><div><dt>Platform</dt><dd>iPhone</dd></div><div><dt>Built with</dt><dd>SwiftUI</dd></div><div><dt>Status</dt><dd>On the App Store</dd></div><div><dt>Role</dt><dd>Designed, built, shipped</dd></div></dl>
+        <dl class="rel-meta mono"><div><dt>Platform</dt><dd>iPhone</dd></div><div><dt>Built with</dt><dd>SwiftUI</dd></div><div><dt>Status</dt><dd>On the App Store</dd></div><div><dt>Role</dt><dd>Designed and built</dd></div></dl>
         <p class="rel-desc">A calm, native expense tracker. Log spending in one tap, set budgets and goals, and split costs with friends.</p>
         <ul class="rel-points"><li>Quick Add tiles log an expense in one tap</li><li>Progress, never shame: it notices when you spend less</li><li>No ads, and receipt photos stay on your iPhone</li></ul>
         <div class="rel-ctas">{store_btn('xpense', 'Xpense')}<a class="link" href="{{root}}work/xpense.html" data-label="Xpense">Read the case study <span aria-hidden="true">→</span></a></div>
@@ -330,7 +330,7 @@ def release_tockbee():
         <p class="rel-tag mono">My product · dotXline</p>
         <div class="rel-name">{img('kit/tb-icon.webp', '', '{root}')}<h3>Tockbee</h3></div>
         <p class="rel-sub">Every hour you work, on the record.</p>
-        <dl class="rel-meta mono"><div><dt>Platform</dt><dd>iPhone and Android</dd></div><div><dt>Built with</dt><dd>React Native</dd></div><div><dt>Status</dt><dd>On the App Store</dd></div><div><dt>Role</dt><dd>Designed, built, shipped</dd></div></dl>
+        <dl class="rel-meta mono"><div><dt>Platform</dt><dd>iPhone and Android</dd></div><div><dt>Built with</dt><dd>React Native</dd></div><div><dt>Status</dt><dd>On the App Store</dd></div><div><dt>Role</dt><dd>Designed and built</dd></div></dl>
         <p class="rel-desc">A shift and pay tracker for UK hourly workers. It clocks you in when you arrive, works out your pay and take-home, and checks your payslip against the hours you really worked.</p>
         <ul class="rel-points"><li>Clocks you in by location or your work Wi-Fi</li><li>Overtime, weekend and night rates worked out as you go</li><li>No account and no data collected</li></ul>
         <div class="rel-ctas">{store_btn('tockbee', 'Tockbee')}<a class="link" href="{{root}}work/tockbee.html" data-label="Tockbee">Read the case study <span aria-hidden="true">→</span></a></div>
@@ -358,10 +358,10 @@ def home():
   <canvas class="hero-canvas" aria-hidden="true"></canvas>
   <div class="wrap hero-inner">
     <p class="me-chip" data-reveal data-hero>{img('me/portrait.webp', 'Portrait of Nagules Gobi', '{root}', lazy=False)}<span>Hi, I’m <b>Nagules Gobi</b>. UX/UI designer who builds the apps too. Director of dotXline LTD.</span></p>
-    <h1 class="two-tone" data-split data-hero>I design the app. <span class="dim">Then I build it and ship it.</span></h1>
-    <p class="lede" data-reveal data-hero style="--d:.35s">I design web and mobile products, then build them myself with SwiftUI, React Native and AI-assisted development. 30+ projects across three countries, and two apps of my own on the App Store.</p>
+    <h1 class="two-tone" data-split data-hero>I design the app. <span class="dim">Then I build it <em>myself.</em></span></h1>
+    <p class="lede" data-reveal data-hero style="--d:.35s">I design web and mobile products, then build them myself with SwiftUI, React Native and AI-assisted development. 30+ projects designed across three countries, and two apps of my own on the App Store.</p>
     <div class="btns" data-reveal data-hero style="--d:.5s">
-      <a class="btn" href="#shipped"><span>See what I’ve shipped</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a>
+      <a class="btn" href="#shipped"><span>See my apps</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a>
       <a class="btn btn-ghost" href="{{root}}contact.html" data-label="Contact"><span>Hire me</span></a>
     </div>
     <div class="hero-mark-slot" data-reveal data-hero style="--d:.6s" aria-hidden="true"><span class="mono">Touch the mark</span></div>
@@ -380,14 +380,14 @@ def home():
 
 <section class="glance" aria-label="At a glance">
   <div class="wrap glance-row mono" data-reveal>
-    <span><b>30+</b> projects shipped</span><span><b>3</b> countries</span><span><b>4</b> years of experience</span><span><b>2</b> apps on the App Store</span><span>BSc Computing</span>
+    <span><b>30+</b> projects designed</span><span><b>3</b> countries</span><span><b>4</b> years of experience</span><span><b>2</b> apps on the App Store</span><span>BSc Computing</span>
   </div>
 </section>
 
 <section class="shipped" id="shipped">
   <div class="wrap">
     <div class="section-head">
-      <p class="kicker" data-reveal>Shipped</p>
+      <p class="kicker" data-reveal>My apps</p>
       <h2 class="two-tone" data-split>Designed by me. Built by me. <span class="dim">Live on the App Store.</span></h2>
       <p data-reveal>Xpense and Tockbee are the apps of dotXline LTD, my product company in Cardiff. I designed every screen and built both of them. The phones below are working code, not screenshots: try them.</p>
     </div>
@@ -453,7 +453,7 @@ def home():
   </div>
 </section>
 '''
-    page('index.html', 'Nagules Gobi · UX/UI Designer and App Developer', 'Nagules Gobi is a UK UX/UI designer who builds and ships his own apps, Xpense and Tockbee, and Director of dotXline LTD.', 'index.html', body, intro=True)
+    page('index.html', 'Nagules Gobi · UX/UI Designer and App Developer', 'Nagules Gobi is a UK UX/UI designer who designs and builds his own apps, Xpense and Tockbee, and Director of dotXline LTD.', 'index.html', body, intro=True)
 
 # ---------------------------------------------------------------- work index
 def work_index():
@@ -549,7 +549,7 @@ def cases():
     # Xpense
     case('xpense', 'Case study · My product at dotXline', 'Every penny, in <em>plain</em> sight.',
          'A calm, native expense tracker for iPhone. Log it in one tap, see where it goes, and keep a little more each month.',
-         [('Role', 'Founder · designed, built, shipped'), ('Company', 'dotXline LTD'), ('Platform', 'iPhone'), ('Built with', 'SwiftUI'), ('Status', 'On the App Store')],
+         [('Role', 'Founder · designed and built'), ('Company', 'dotXline LTD'), ('Platform', 'iPhone'), ('Built with', 'SwiftUI'), ('Status', 'On the App Store')],
          kit.XP_FONT + kit.xp_cover(),
          sec('The idea', '<p class="quote">Spending isn’t the problem. Not knowing is.</p><p>Xpense keeps every penny in plain sight, celebrates the months you keep a little more, and never makes you feel bad about the rest.</p>') +
          sec('Design decisions', points([
@@ -558,12 +558,12 @@ def cases():
              ('Numbers first', 'Built natively for iPhone with the calm design of iOS 26. Nothing in the way of the figure you came for.'),
              ('Private by default', 'No ads, no selling data, and receipt photos stay on your iPhone.')])) +
          kit.xp_sections() +
-         sec('Principles', points([('Clear', 'We say the number. “£3.40 logged to Food.” Plain, specific, no guessing.'), ('Calm', 'Quiet interfaces that stay out of your way and respect your attention.'), ('Private', 'No ads. No tracking you across other companies’ apps.'), ('Built to ship', 'Designed and built inside my own company, with every detail owned end to end.')]) +
+         sec('Principles', points([('Clear', 'We say the number. “£3.40 logged to Food.” Plain, specific, no guessing.'), ('Calm', 'Quiet interfaces that stay out of your way and respect your attention.'), ('Private', 'No ads. No tracking you across other companies’ apps.'), ('Built in-house', 'Designed and built inside my own company, with every detail owned end to end.')]) +
              '<p><a class="link" href="https://dotxline.com/xpense.html" target="_blank" rel="noopener">See Xpense on dotxline.com ↗</a></p>'))
     # Tockbee
     case('tockbee', 'Case study · My product at dotXline', 'Every hour you work, on the <em>record</em>.',
          'Tockbee keeps your own record of every hour you work, so you can check your payslip and sort out missing pay.',
-         [('Role', 'Founder · designed, built, shipped'), ('Company', 'dotXline LTD'), ('Platform', 'iPhone and Android'), ('Built with', 'React Native'), ('Status', 'On the App Store')],
+         [('Role', 'Founder · designed and built'), ('Company', 'dotXline LTD'), ('Platform', 'iPhone and Android'), ('Built with', 'React Native'), ('Status', 'On the App Store')],
          kit.TB_FONT + kit.tb_cover(),
          sec('The problem', '<p class="quote">Every hour you work should show up on your payslip.</p><p>Tockbee keeps an honest record on your phone and nobody else’s, so checking your pay takes a minute instead of an argument.</p>') +
          sec('How it works', points([
@@ -582,7 +582,7 @@ def cases():
          sec('Overview', '<p class="lead">One chat, the whole campaign.</p><p>Chatvertiser is a customer support chatting application for any business. The design focused on a fluid, chat-based interface that simplifies campaign creation, audience targeting and performance tracking, all through one conversational flow.</p>') +
          sec('Design focus', points([('Campaigns by chat', 'Creating a campaign feels like describing it, not filling in a long form.'), ('A full support desk', 'Profiles, flows, broadcasts, segments, reports, integrations and agents in one dashboard.'), ('A clear visual system', 'A violet palette (#805AD5, #7678EC, #3C348A), one typeface, a consistent icon set and reusable elements.'), ('A mark to match', 'I also designed the Chatvertiser logo, a speech bubble with a pulse.')])) +
          kit.cv_sections() +
-         f'<section class="case-band"><div class="wrap"><div class="duo"><div class="media" data-img>{img("work/chatvertiser-2.webp", "Chatvertiser support system screens", "{root}")}</div><div class="media" data-img style="display:grid;place-items:center;padding:12%;background:var(--card)">{img("brand/logo-chatvertiser-logo.webp", "Chatvertiser logo", "{root}", "mono-logo")}</div></div></div></section>')
+         f'<section class="case-band"><div class="wrap"><div class="duo"><div class="media" data-img>{img("work/chatvertiser-2.webp", "Chatvertiser support system screens", "{root}")}</div><div class="media logo-panel" data-img>{img("brand/logo-chatvertiser-logo.webp", "Chatvertiser logo", "{root}", "mono-logo")}</div></div></div></section>')
     # Greenlife
     case('greenlife', 'Case study · App design · Retail', 'Shopping, from list to <em>checkout</em>.',
          'An everyday shopping assistant app designed to make the trip faster, from building the list to paying at the till.',
@@ -726,15 +726,15 @@ def about():
     </figure>
     <div class="bio">
       <p class="lead" data-reveal>I design products people actually enjoy using, and I build my own.</p>
-      <p data-reveal>I’m <strong>Nagules Gobi</strong>, a product designer in the United Kingdom working across UX/UI, web and app design, and brand identity. Over four years I’ve shipped <strong>30+ projects across 3 countries</strong>, from ad-tech platforms and health apps to shopping apps and logos.</p>
-      <p data-reveal>I’m also <strong>Director of dotXline LTD</strong>, a product company in Cardiff. There I design and build Xpense, a calm iPhone expense tracker, and Tockbee, a shift and pay tracker for UK workers. Owning products end to end taught me to design for the people using them and for the team that has to ship them.</p>
+      <p data-reveal>I’m <strong>Nagules Gobi</strong>, a product designer in the United Kingdom working across UX/UI, web and app design, and brand identity. Over four years I’ve designed <strong>30+ projects across 3 countries</strong>, from ad-tech platforms and health apps to shopping apps and logos.</p>
+      <p data-reveal>I’m also <strong>Director of dotXline LTD</strong>, a product company in Cardiff. There I design and build Xpense, a calm iPhone expense tracker, and Tockbee, a shift and pay tracker for UK workers. Owning products end to end taught me to design for the people using them and for the team that has to build them.</p>
       <p data-reveal>I studied for a <strong>BSc in Computing</strong>, and today I also build what I design. I use <strong>AI-assisted development</strong> to turn designs into working products quickly, then review and refine the code myself. It means I can prototype in code, test ideas with real users sooner, and talk to engineering teams in their own language.</p>
       <dl class="facts" data-reveal>
         <div><dt>Role</dt><dd>Product designer who builds</dd></div>
         <div><dt>Company</dt><dd>Director, dotXline LTD</dd></div>
         <div><dt>Builds with</dt><dd>Code and AI-assisted development</dd></div>
         <div><dt>Education</dt><dd>BSc in Computing</dd></div>
-        <div><dt>Experience</dt><dd>4 years · 30+ projects</dd></div>
+        <div><dt>Experience</dt><dd>4 years · 30+ projects designed</dd></div>
         <div><dt>Open to</dt><dd>Roles and freelance</dd></div>
       </dl>
       <p data-reveal><a class="btn" href="{{root}}contact.html" data-magnetic data-label="Contact"><span>Hire me</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></p>
