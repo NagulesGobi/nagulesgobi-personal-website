@@ -1101,3 +1101,6 @@ html:not(.is-dark) .dx-logo.on-light { display: block; }
 .dock.mini .dk-mark .dk-tip, .dock.mini .dk-item[aria-current="page"]::after { display: none; }
 .dk-mark .dk-tile { transition: border-radius .45s var(--ease), transform .32s cubic-bezier(.25,1.35,.4,1), background .25s; }
 @media (prefers-reduced-motion: reduce) { .dock, .dock > *, .dk-mark .dk-tile { transition: none !important; } }
+/* Folding back is slower and softer than opening */
+.dock.mini, .dock.mini > *, .dock.mini .dk-tile { transition-duration: .75s; transition-timing-function: cubic-bezier(.65, 0, .35, 1); }
+.dock.mini > :not(.dk-mark) { transition-property: width, max-width, margin, padding, opacity; transition-duration: .75s, .75s, .75s, .75s, .35s; }

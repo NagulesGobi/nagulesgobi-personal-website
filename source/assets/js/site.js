@@ -641,9 +641,23 @@
       if (y < 120) { acc = 0; setMini(false); return; }
       if (mdock.matches(':hover') || mdock.contains(document.activeElement)) return;
       acc = (dy > 0) === (acc > 0) ? acc + dy : dy;
-      if (acc > 40) setMini(true); else if (acc < -40) setMini(false);
+      if (acc > 40) setMini(true); else if (acc < -40) { hoverOpened = false; setMini(false); }
     }, { passive: true });
-    mdock.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') setMini(false); });
+    var hoverOpened = false, foldT = 0;
+    mdock.addEventListener('pointerenter', function (e) {
+      if (e.pointerType !== 'mouse') return;
+      clearTimeout(foldT);
+      if (mdock.classList.contains('mini')) { hoverOpened = true; setMini(false); }
+    });
+    // opened by hovering the round button: fold back, gently, once the pointer leaves
+    mdock.addEventListener('pointerleave', function (e) {
+      if (e.pointerType !== 'mouse' || !hoverOpened) return;
+      clearTimeout(foldT);
+      foldT = setTimeout(function () {
+        hoverOpened = false;
+        if (scrollY >= 120 && !mdock.contains(document.activeElement) && !document.querySelector('.finder:not([hidden])')) setMini(true);
+      }, 450);
+    });
     mdock.addEventListener('focusin', function () { setMini(false); });
     if (mark) mark.addEventListener('click', function (e) { if (mdock.classList.contains('mini') || Date.now() - openedAt < 400) { e.preventDefault(); setMini(false); } });
   }
