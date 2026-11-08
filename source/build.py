@@ -213,15 +213,15 @@ P = {p['slug']: p for p in PROJECTS}
 def scene(p, root='{root}', lazy=True):
     s = p['scene']
     if s == 'img':
-        return f'<div class="scene img-scene">{img(p["image"], p["title"] + " design preview", root, "cover", lazy)}<span class="scene-title">{p["title"]}</span></div>'
+        return f'<div class="scene img-scene">{img(p["image"], p["title"] + " design preview", root, "cover", lazy)}</div>'
     if s == 'code':
-        return f'<div class="scene kit-scene {p["tone"]}">{p["html"]()}<span class="scene-title">{p["title"]}</span></div>'
+        return f'<div class="scene kit-scene {p["tone"]}">{p["html"]()}</div>'
     if s == 'app':
         shots = ''.join(f'<div class="phone-shot">{img(x, p["title"] + " screen", root, lazy=lazy)}</div>' for x in p['shots'])
-        return f'<div class="scene app-scene {p["tone"]}">{shots}<span class="scene-title">{p["title"]}</span></div>'
+        return f'<div class="scene app-scene {p["tone"]}">{shots}</div>'
     if s == 'omni':
-        return '''<div class="scene s1"><div class="mock mock-dash"><div class="mock-bar"><i></i><i></i><i></i></div><div class="mock-body"><div class="map"><span class="route"></span><span class="pin p1"></span><span class="pin p2"></span><span class="pin p3"></span></div><div class="side"><b></b><b></b><b></b><b></b></div></div></div><span class="scene-title">OmniGPS</span></div>'''
-    return '''<div class="scene s3"><div class="dial"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50"/><circle class="arc" cx="60" cy="60" r="50" pathLength="100"/></svg><span>72<small>%</small></span></div><div class="chips"><b></b><b></b><b></b></div><span class="scene-title">Quantum Vac</span></div>'''
+        return '''<div class="scene s1"><div class="mock mock-dash"><div class="mock-bar"><i></i><i></i><i></i></div><div class="mock-body"><div class="map"><span class="route"></span><span class="pin p1"></span><span class="pin p2"></span><span class="pin p3"></span></div><div class="side"><b></b><b></b><b></b><b></b></div></div></div></div>'''
+    return '''<div class="scene s3"><div class="dial"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50"/><circle class="arc" cx="60" cy="60" r="50" pathLength="100"/></svg><span>72<small>%</small></span></div><div class="chips"><b></b><b></b><b></b></div></div>'''
 
 def preview_attr(p, root):
     if p.get('preview'): return f' data-preview="{root}assets/img/{p["preview"]}"'
@@ -458,13 +458,16 @@ def home():
 # ---------------------------------------------------------------- work index
 def work_index():
     cards = ''
-    for p in PROJECTS:
+    for i, p in enumerate(PROJECTS, 1):
         badge = f'<span class="badge"><i></i>{p["badge"]}</span>' if p.get('badge') else ''
         cards += f'''
       <a class="wcard" href="{{root}}work/{p['slug']}.html" data-cat="{p['cat']}" data-cursor="View"{preview_attr(p, '{root}')} data-label="{p['title']}">
         <div class="media" data-img>{badge}{scene(p)}</div>
-        <div class="wcard-meta"><h3>{p['title']}</h3><span class="tags">{p['kind']}</span></div>
-        <p>{p['short']}</p>
+        <div class="wcard-body">
+          <div class="wcard-meta"><span class="wcard-n">{i:02d}</span><span class="tags">{p['kind']}</span></div>
+          <div class="wcard-head"><h3>{p['title']}</h3><span class="wcard-go" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 17 17 7M9 7h8v8"/></svg></span></div>
+          <p>{p['short']}</p>
+        </div>
       </a>'''
     body = f'''<section class="page-hero">
   <div class="glow" aria-hidden="true"></div>

@@ -84,7 +84,7 @@ def pc_cover():
 
 def pc_card():
     sc = pc_screens()
-    return f'<div class="scene kit-scene pc-stage"><div class="ks-mini">{sc[0]}{sc[6]}</div><span class="scene-title">Puff Count</span></div>'
+    return f'<div class="scene kit-scene pc-stage"><div class="ks-mini">{sc[0]}{sc[6]}</div></div>'
 
 def pc_sections():
     sc = pc_screens()
@@ -120,7 +120,7 @@ def pw_cover():
 
 def pw_card():
     sc = pw_screens()
-    return f'<div class="scene kit-scene pw-stage"><div class="ks-mini">{sc[0]}{sc[4]}</div><span class="scene-title">Pocket</span></div>'
+    return f'<div class="scene kit-scene pw-stage"><div class="ks-mini">{sc[0]}{sc[4]}</div></div>'
 
 def pw_sections():
     sc = pw_screens()

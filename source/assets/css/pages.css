@@ -142,13 +142,13 @@
 .wcard-meta { display: flex; justify-content: space-between; gap: 16px; align-items: baseline; }
 .wcard h3 { font-size: clamp(30px, 3vw, 42px); }
 .wcard .tags { color: var(--muted); font-size: 15px; text-align: right; }
-.wcard p { color: var(--muted); font-size: 16px; max-width: 56ch; }
+.wcard-body > p { color: var(--muted); font-size: 16px; max-width: 56ch; }
 .badge { display: inline-flex; align-items: center; gap: 6px; font: 600 12px/1 var(--body); letter-spacing: .08em; text-transform: uppercase; padding: 7px 10px; border-radius: 999px; background: var(--card); color: var(--text); position: absolute; left: 16px; top: 16px; z-index: 2; box-shadow: 0 4px 14px rgba(0,0,0,.12); }
 .badge i { width: 6px; height: 6px; border-radius: 50%; background: var(--grad); }
 /* List view: big rows with the cursor preview */
 [data-view="list"] .wgrid { grid-template-columns: 1fr; gap: 0; border-top: 1px solid var(--line); }
 [data-view="list"] .wcard { flex-direction: row; align-items: center; gap: 24px; padding: 26px 0; border-bottom: 1px solid var(--line); transition: padding .5s var(--ease); }
-[data-view="list"] .wcard .media, [data-view="list"] .wcard p { display: none; }
+[data-view="list"] .wcard .media, [data-view="list"] .wcard-body > p { display: none; }
 [data-view="list"] .wcard-meta { flex: 1; }
 [data-view="list"] .wcard h3 { font-size: clamp(34px, 5vw, 72px); transition: transform .5s var(--ease), color .3s; }
 [data-view="list"] .wcard:hover h3 { transform: translateX(14px); color: var(--accent); }
@@ -1130,3 +1130,38 @@ html:not(.is-dark) .dx-logo.on-light { display: block; }
 .dock.mini .dk-item, .dock.mini .dk-sep, .dock.mini .dk-hire {
   transition: width .75s cubic-bezier(.65,0,.35,1), height .75s cubic-bezier(.65,0,.35,1), max-width .75s cubic-bezier(.65,0,.35,1), margin .75s cubic-bezier(.65,0,.35,1), padding .75s cubic-bezier(.65,0,.35,1), opacity .3s ease, transform .32s ease; }
 @media (prefers-reduced-motion: reduce) { .dock .dk-item, .dock .dk-sep, .dock .dk-hire { transition: none !important; } }
+
+/* ---------- Work cards, framed (no watermark word) ---------- */
+.wgrid { gap: 28px; }
+.wcard { gap: 0; padding: 10px; border-radius: 30px; background: var(--card); border: 1px solid var(--line);
+  transition: border-color .5s var(--ease), box-shadow .6s var(--ease), transform .6s var(--ease); }
+.wcard:hover { border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); box-shadow: var(--shadow); transform: translateY(-4px); }
+.wcard .media { border-radius: 22px; aspect-ratio: 4 / 3; }
+.wcard .badge { background: rgba(18,17,15,.42); color: #fff; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: none; border: 1px solid rgba(255,255,255,.18); }
+.wcard-body { display: grid; gap: 10px; padding: 22px 16px 14px; }
+.wcard-meta { display: flex; justify-content: flex-start; align-items: center; gap: 12px; }
+.wcard-n { font: 500 12px/1 var(--mono); color: var(--accent); letter-spacing: .04em; }
+.wcard .tags { font-size: 14px; text-align: left; color: var(--faint); }
+.wcard-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.wcard h3 { font-size: clamp(28px, 2.6vw, 38px); line-height: 1; }
+.wcard-go { flex: none; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; border: 1px solid var(--line); color: var(--text);
+  transition: background .4s var(--ease), color .4s, border-color .4s, transform .5s var(--ease); }
+.wcard-go svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.wcard:hover .wcard-go { background: var(--btn); color: var(--btn-ink); border-color: var(--btn); transform: rotate(45deg); }
+.wcard-body > p { font-size: 15.5px; line-height: 1.55; }
+@media (max-width: 560px) {
+  .wcard { padding: 8px; border-radius: 24px; }
+  .wcard .media { border-radius: 18px; }
+  .wcard-body { padding: 18px 12px 10px; }
+  .wcard-go { width: 38px; height: 38px; }
+}
+/* list view: one clean row per project */
+[data-view="list"] .wcard { padding: 26px 0; background: none; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; box-shadow: none; transform: none; }
+[data-view="list"] .wcard-body { display: flex; align-items: center; gap: 24px; flex: 1; padding: 0; }
+[data-view="list"] .wcard-meta, [data-view="list"] .wcard-head { display: contents; }
+[data-view="list"] .wcard-n { order: 1; }
+[data-view="list"] .wcard h3 { order: 2; flex: 1; }
+[data-view="list"] .wcard .tags { order: 3; text-align: right; }
+[data-view="list"] .wcard-go { order: 4; }
+@media (max-width: 560px) { [data-view="list"] .wcard .tags { display: none; } }
+@media (prefers-reduced-motion: reduce) { .wcard, .wcard-go { transition: none; } .wcard:hover { transform: none; } .wcard:hover .wcard-go { transform: none; } }
