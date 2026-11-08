@@ -1104,3 +1104,13 @@ html:not(.is-dark) .dx-logo.on-light { display: block; }
 /* Folding back is slower and softer than opening */
 .dock.mini, .dock.mini > *, .dock.mini .dk-tile { transition-duration: .75s; transition-timing-function: cubic-bezier(.65, 0, .35, 1); }
 .dock.mini > :not(.dk-mark) { transition-property: width, max-width, margin, padding, opacity; transition-duration: .75s, .75s, .75s, .75s, .35s; }
+/* Fold without a snap: Hire me collapses through max-width (its real width is ~104px), never width:auto -> 0 */
+.dk-hire { max-width: 112px; }
+.dock.mini .dk-hire { width: auto; max-width: 0; }
+/* While waiting to fold after a hover-open, hold the hover size so the fold is one motion */
+@media (hover: hover) and (pointer: fine) and (min-width: 821px) and (prefers-reduced-motion: no-preference) {
+  .dock.hold { padding: 13px 15px; }
+  .dock.hold .dk-item { --s: 1.12; }
+}
+/* max-width must start from a number, not "none", or the fold snaps instead of animating */
+.dock .dk-item, .dock .dk-sep { max-width: 80px; }
