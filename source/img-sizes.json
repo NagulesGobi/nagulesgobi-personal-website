@@ -294,5 +294,41 @@
 "kit/tb-icon": [
 240,
 240
+],
+"work/mk-card": [
+1200,
+900
+],
+"work/mk-cover": [
+1400,
+875
+],
+"work/mk-phone": [
+600,
+1298
+],
+"work/mk-art-mountain": [
+800,
+1000
+],
+"work/mk-art-sea": [
+800,
+1000
+],
+"work/mk-art-waterfall": [
+800,
+1000
+],
+"work/mk-logo": [
+800,
+800
+],
+"work/mk-orbit": [
+1000,
+1000
+],
+"work/mk-appicon": [
+800,
+800
 ]
 }

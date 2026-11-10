@@ -1165,3 +1165,11 @@ html:not(.is-dark) .dx-logo.on-light { display: block; }
 [data-view="list"] .wcard-go { order: 4; }
 @media (max-width: 560px) { [data-view="list"] .wcard .tags { display: none; } }
 @media (prefers-reduced-motion: reduce) { .wcard, .wcard-go { transition: none; } .wcard:hover { transform: none; } .wcard:hover .wcard-go { transform: none; } }
+
+/* Mistkite case study */
+.mk-art { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.mk-art .media { aspect-ratio: 4 / 5; border-radius: 18px; overflow: hidden; }
+.mk-art img, .duo .mk-phone img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.duo .mk-phone { background: #F7F2EC; }
+.duo .mk-phone img { object-position: top center; }
+@media (max-width: 760px) { .mk-art { gap: 8px; } .mk-art .media { border-radius: 12px; } }

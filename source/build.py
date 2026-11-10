@@ -195,6 +195,9 @@ PROJECTS = [
   dict(slug='tockbee', title='Tockbee', cat='product apps mobile', kind='iPhone and Android app · dotXline', badge='My product',
        short='A shift and pay tracker for UK hourly workers. It clocks you in at work, works out your pay and checks your payslip.',
        scene='code', html=lambda: '<div class="ks-mini">' + tb_phone(False) + '</div>', tone='t-scene', preview=None),
+  dict(slug='mistkite', title='Mistkite', cat='product apps web', kind='Web app · dotXline', badge='In development',
+       short='A UK travel finder: describe how you want a place to feel, and it finds real places that match, with credited photos and today’s light and weather.',
+       scene='img', image='work/mk-card.webp', preview='work/mk-card.webp'),
   dict(slug='chatvertiser', title='Chatvertiser', cat='product web', kind='Web design · Ad tech UX',
        short='An AI-powered advertising platform that turns conversations into conversion tools.',
        scene='img', image='work/chatvertiser.webp', preview='work/chatvertiser.webp'),
@@ -577,6 +580,30 @@ def cases():
          kit.tb_sections() +
          sec('Honest by design', '<p class="lead">Tax is an estimate, and the app says so.</p><p>Tockbee calls it <strong>estimated take-home</strong>: after PAYE (including Scottish rates), National Insurance, student loan and pension. Your payslip stays the official figure. And Tockbee collects no data at all.</p>' +
              '<p><a class="link" href="https://dotxline.com/tockbee.html" target="_blank" rel="noopener">See Tockbee on dotxline.com ↗</a></p>'))
+    # Mistkite
+    mk = lambda f, alt: img(f'work/{f}.webp', alt, '{root}')
+    case('mistkite', 'Case study · My product at dotXline', 'A <em>feeling</em> in, a real place out.',
+         'Mistkite is a UK travel finder. Instead of picking a destination, you describe how you want a place to feel, and it finds real places you can reach.',
+         [('Role', 'Founder · designed and built'), ('Company', 'dotXline LTD'), ('Platform', 'Web, iPhone app planned'), ('Built with', 'Next.js, TypeScript, Supabase, Claude'), ('Status', 'In development')],
+         cover_img('work/mk-cover.webp', 'Mistkite landing page: a search box asking how the place should feel, inside a slowly turning ring of UK place names'),
+         sec('The idea', '<p class="quote">“Misty mountains, quiet, sunrise, four hours from Manchester.”</p><p>People rarely start a trip with a place name. They start with a feeling. Mistkite lets them say it in plain words: the mood, the look, the time of day, how long they have and where they are starting. It aims to find every place that fits, including small places with no Wikipedia page.</p>') +
+         sec('How it works', points([
+             ('Describe the feeling', 'One big search box, with chips for quick ideas such as Misty mountains, Quiet coast, Golden hour and Dark skies. You can also search with a photo.'),
+             ('It reads your vibe', 'Claude picks out the mood, setting, start point and time you have, then searches places that really exist.'),
+             ('Real places only', 'The AI never invents a place. It only ranks and explains places from real map data, and only states facts from each place’s record.'),
+             ('Today’s light and weather', 'Each result shows the forecast, golden hour, mist or night-sky conditions for today, picked to match the feeling you asked for.')])) +
+         kit.section('Place Orbit.', '<p class="kit-quote" data-reveal>The search sits inside a slowly turning ring of UK place names. It pauses on hover, has a pause button, and stands still for people who prefer reduced motion.</p>'
+             + f'<div class="duo" data-reveal><div class="media" data-img>{mk("mk-orbit", "Mistkite on desktop: the search box at the centre of a ring of UK place names")}</div><div class="media mk-phone" data-img>{mk("mk-phone", "Mistkite on a phone: the ring becomes an arc above the search, with a pause button")}</div></div>', 'The landing page', '#F2436F') +
+         kit.section('The design system.', kit.palette([('FF8A3D', 'Ember'), ('F2436F', 'Dusk'), ('15121A', 'Ink'), ('F7F2EC', 'Paper'), ('BDB5C6', 'Mist'), ('655D6F', 'Mist deep')], 'The ember gradient is only an accent: the logo, one hero word, match rings and the main search button.')
+             + kit.typeface('"Fraunces", Georgia, serif', 'Fraunces and Geist', weights='Fraunces for headings and place names · Geist for the interface', tint='#F2436F')
+             + f'<div class="duo" data-reveal><div class="media logo-panel" data-img>{mk("mk-logo", "Mistkite logo: a kite cut by one band of mist")}</div><div class="media logo-panel" data-img>{mk("mk-appicon", "Mistkite app icon")}</div></div>', 'Ember Dusk', '#FF8A3D') +
+         kit.section('Place art.', '<p class="kit-quote" data-reveal>When a place has no good photo, Mistkite shows a short animated Ember Dusk scene for that kind of place instead of an empty box.</p>'
+             + '<div class="mk-art" data-reveal>' + ''.join(f'<div class="media" data-img>{mk("mk-art-" + k, "Animated place art: " + t)}</div>' for k, t in [('mountain', 'mountains'), ('sea', 'coast'), ('waterfall', 'waterfall')]) + '</div>', 'For places without photos', '#F2436F') +
+         sec('Built to be trusted', points([
+             ('Credit for every photo', 'No photo is shown without its author, source and licence.'),
+             ('Measured, not guessed', 'A set of 30 test searches runs against the live search and Claude grades every list, so each change to search is checked.'),
+             ('Accounts that sync', 'Sign in with an email link to save places into collections, sync them across devices and share them with a link.'),
+             ('Ready for an app', 'All search logic sits behind JSON APIs, so the planned iPhone app can use the same backend.')])))
     # Chatvertiser
     case('chatvertiser', 'Case study · Web app UI · Ad tech UX', 'Advertising that starts with a <em>conversation</em>.',
          'An AI-powered advertising platform that turns conversations into conversion tools, with a customer support chat app that makes business enquiries easier.',
