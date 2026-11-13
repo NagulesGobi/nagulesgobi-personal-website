@@ -195,6 +195,9 @@ PROJECTS = [
   dict(slug='tockbee', title='Tockbee', cat='product apps mobile', kind='iPhone and Android app · dotXline', badge='My product',
        short='A shift and pay tracker for UK hourly workers. It clocks you in at work, works out your pay and checks your payslip.',
        scene='code', html=lambda: '<div class="ks-mini">' + tb_phone(False) + '</div>', tone='t-scene', preview=None),
+  dict(slug='freshbit', title='FreshBit', cat='product apps mobile', kind='iPhone, iPad and Mac app · dotXline', badge='In testing',
+       short='Confirmed news for designers and developers. It reads 51 trusted sources, groups stories about the same event and scores each one out of 100.',
+       scene='code', html=lambda: kit.fb_card_inner(), tone='fb-scene', preview=None),
   dict(slug='chatvertiser', title='Chatvertiser', cat='product web', kind='Web design · Ad tech UX',
        short='An AI-powered advertising platform that turns conversations into conversion tools.',
        scene='img', image='work/chatvertiser.webp', preview='work/chatvertiser.webp'),
@@ -529,6 +532,7 @@ def case(slug, hero_kicker, title_html, lede, fact_items, cover, sections, link=
     <p class="lede" data-reveal data-hero style="--d:.3s">{lede}</p>
     {facts(fact_items)}
     {('<p class="case-store" data-reveal>' + store_btn(slug, p['title']) + '</p>') if slug in APP_STORE else ''}
+    {(f'<p class="case-store" data-reveal><a class="btn" href="{link[1]}" target="_blank" rel="noopener" data-magnetic data-label="{link[0]}"><span>{link[0]} ↗</span></a></p>') if link else ''}
   </div>
 </section>
 {cover}
@@ -577,6 +581,25 @@ def cases():
          kit.tb_sections() +
          sec('Honest by design', '<p class="lead">Tax is an estimate, and the app says so.</p><p>Tockbee calls it <strong>estimated take-home</strong>: after PAYE (including Scottish rates), National Insurance, student loan and pension. Your payslip stays the official figure. And Tockbee collects no data at all.</p>' +
              '<p><a class="link" href="https://dotxline.com/tockbee.html" target="_blank" rel="noopener">See Tockbee on dotxline.com ↗</a></p>'))
+    # FreshBit
+    case('freshbit', 'Case study · My product at dotXline', 'News that <em>checks</em> first.',
+         'FreshBit reads 51 trusted sources every 30 minutes, groups the articles about the same event and scores each story out of 100. You see what actually happened in design, UX/UI, AI and dev, and how sure it is.',
+         [('Role', 'Founder · designed and built'), ('Company', 'dotXline LTD'), ('Platform', 'iPhone, iPad and Mac'), ('Built with', 'Expo, React Native, SwiftUI via @expo/ui'), ('Status', 'iPhone in TestFlight testing')],
+         kit.FB_FONT + kit.fb_cover(),
+         sec('The problem', '<p class="quote">Too much news, too little certainty.</p><p>Design and dev news is spread across dozens of company blogs, changelogs, press sites and community feeds. Most aggregators show everything at once: rumours next to official announcements, the same story five times. The goal was one calm feed where every story carries a label that says how sure it is.</p>') +
+         sec('Words before pixels', points([
+             ('“Verified” became “Confirmed”', 'An app can’t check that something is true. It can say who published it and how many independent sources agree. So the label became Confirmed by trusted sources.'),
+             ('A source audit, tier by tier', 'Every feed was checked by hand. Official sources confirm on their own, press needs company, and community sites only add weight.'),
+             ('Own words, always linked', 'FreshBit writes every headline, summary and brief itself, and “Read on …” opens the original. Images only when a publisher offers them or they carry an open licence.'),
+             ('Few alerts, and earned', 'Top stories at most 3 a day, only when 2 or more trusted sources confirm them. One morning brief at the hour you pick.')])) +
+         kit.fb_sections() +
+         sec('Tested on a real iPhone', points([
+             ('11 TestFlight builds', 'The app was reviewed from screen recordings of real use, and fixed build by build.'),
+             ('The folding header went native', 'A custom bouncing animation became Apple’s Liquid Glass morph, so it feels like the system.'),
+             ('Lime stopped being text on glass', 'Lime on the light tab bar measured about 1.2:1. Light mode now tints the selected tab in the dark brand green, 6.8:1.'),
+             ('Built for $0 a month', 'Supabase on the free plan, rare-word matching and free meaning search. Designed and built with AI-assisted development.')]) +
+             f'<p><a class="link" href="{kit.FB_SITE}" target="_blank" rel="noopener">Visit the FreshBit website ↗</a></p>'),
+         link=('Visit the FreshBit website', kit.FB_SITE))
     # Chatvertiser
     case('chatvertiser', 'Case study · Web app UI · Ad tech UX', 'Advertising that starts with a <em>conversation</em>.',
          'An AI-powered advertising platform that turns conversations into conversion tools, with a customer support chat app that makes business enquiries easier.',
@@ -619,7 +642,7 @@ def dotxline():
     <p class="kicker" data-reveal data-hero>My company · Director</p>
     <h1 data-split data-hero>Small, exact apps that just work.</h1>
     <p class="lede" data-reveal data-hero style="--d:.3s">dotXline LTD is a product company in Cardiff. We make everyday money and work feel simple, one carefully built app at a time. As Director, I lead the product and design every screen.</p>
-    <div class="hero-meta" data-reveal data-hero style="--d:.4s"><span>Role <b>Director</b></span><span>Based in <b>Cardiff, United Kingdom</b></span><span>Apps <b>Xpense, Tockbee</b></span></div>
+    <div class="hero-meta" data-reveal data-hero style="--d:.4s"><span>Role <b>Director</b></span><span>Based in <b>Cardiff, United Kingdom</b></span><span>Apps <b>Xpense, Tockbee, FreshBit</b></span></div>
   </div>
 </section>
 <section class="section">
@@ -648,6 +671,14 @@ def dotxline():
   </div>
   <div class="stack" data-reveal>{''.join(f'<div class="shot">{img(x, "Tockbee screen", "{root}")}</div>' for x in ['apps/tockbee-shifts.webp', 'apps/tockbee-today.webp', 'apps/tockbee-payslip.webp'])}</div>
 </section>
+<section class="wrap app-sec">
+  <div>
+    <div class="app-id" data-reveal>{img('kit/fb-icon.webp', '', '{root}')}<div><b>FreshBit</b><br><span style="color:var(--muted)">by dotXline · in testing</span></div></div>
+    <h2 data-split>News that checks first.</h2>
+    <div class="body" data-reveal><p>Confirmed news for designers and developers. FreshBit reads 51 trusted sources, groups the articles about the same event and scores each story out of 100.</p><div class="tags"><span>iPhone, iPad and Mac</span><span>Expo and SwiftUI</span><span>In TestFlight testing</span><span>No ads, no tracking</span></div><p class="btn-row"><a class="btn" href="{{root}}work/freshbit.html" data-magnetic data-label="FreshBit"><span>Read the case study</span></a><a class="btn btn-ghost" href="{kit.FB_SITE}" target="_blank" rel="noopener" data-label="FreshBit website"><span>Visit the website ↗</span></a></p></div>
+  </div>
+  <div class="stack" data-reveal>{''.join(f'<div class="shot fb-st">{img(x, "FreshBit screen", "{root}")}</div>' for x in ['kit/fb-explore-light.webp', 'kit/fb-today-light.webp', 'kit/fb-story-dark.webp'])}</div>
+</section>
 <section class="section alt">
   <div class="wrap">
     <div class="section-head"><p class="kicker" data-reveal>How we work</p><h2 data-split>Three habits, in every app.</h2></div>
@@ -659,7 +690,7 @@ def dotxline():
     <p data-reveal style="margin-top:40px"><a class="link" href="https://dotxline.com" target="_blank" rel="noopener">Visit dotxline.com ↗</a></p>
   </div>
 </section>'''
-    page('dotxline.html', 'dotXline · Nagules Gobi', 'Nagules Gobi is Director of dotXline LTD, a Cardiff product company that makes Xpense and Tockbee.', 'dotxline.html', body)
+    page('dotxline.html', 'dotXline · Nagules Gobi', 'Nagules Gobi is Director of dotXline LTD, a Cardiff product company that makes Xpense, Tockbee and FreshBit.', 'dotxline.html', body)
 
 # ---------------------------------------------------------------- brand
 GALLERY = [

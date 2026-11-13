@@ -361,3 +361,64 @@ def gl_sections():
             + section('Onboarding.', '<p class="kit-quote" data-reveal>Welcome screens introduce new users to the main app features.</p>' + phones(sc[3:5], 'Welcome screens'))
             + section('The store, a product and the cart.', '<p class="kit-quote" data-reveal>Choose groceries by category, among popular items or special offers, or use the search button.</p>' + phones(sc[5:8], 'Main screens'))
             + section('Help and confirmation.', phones(sc[8:], 'Live chat and order placed')))
+
+# ------------------------------------------------------------------ FreshBit (dotXline, in TestFlight testing)
+# Screens are FreshBit's own rendered press screens (freshbit.dotxline.com press kit), already in a device frame.
+FB_FONT = '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&amp;display=swap">'
+FB_SITE = 'https://freshbit.dotxline.com'
+
+def fb_shot(name, alt, caption='', lazy=True):
+    cap = f'<figcaption>{E(caption)}</figcaption>' if caption else ''
+    ld = ' loading="lazy"' if lazy else ''
+    return (f'<figure class="fb-shot" data-reveal><img src="{{root}}assets/img/kit/fb-{name}.webp" alt="{E(alt)}" width="400" height="800"{ld} decoding="async">{cap}</figure>')
+
+def fb_row(items, label):
+    return f'<div class="kit-block"><p class="kit-label mono">{E(label)}</p><div class="kit-phones fb-row" tabindex="0" aria-label="{E(label)}, scroll sideways">{"".join(items)}</div></div>'
+
+def fb_cover():
+    return stage('<div class="ks-brand fb-brand"><img src="{root}assets/img/kit/fb-icon-dark.webp" alt="" width="240" height="240"><b>FreshBit</b>'
+                 '<span>Confirmed news for designers and developers.</span></div>'
+                 '<div class="ks-phones">' + fb_shot('today-light', 'FreshBit Today screen: the top story is confirmed by 5 sources', lazy=False)
+                 + fb_shot('story-dark', 'FreshBit story screen in dark mode: the brief and a Read on Google DeepMind button', lazy=False) + '</div>', 'fb-stage')
+
+def fb_card_inner():
+    return ('<div class="ks-mini fb-mini"><img src="{root}assets/img/kit/fb-today-light.webp" alt="" width="400" height="800" loading="lazy" decoding="async">'
+            '<img src="{root}assets/img/kit/fb-story-dark.webp" alt="" width="400" height="800" loading="lazy" decoding="async"></div>')
+
+def fb_steps():
+    def step(n, k, title, text, chips):
+        ch = ''.join(f'<span>{E(c)}</span>' for c in chips)
+        return f'<div class="fb-step" data-reveal style="--d:{(n - 1) * .08:.2f}s"><p class="mono">Step {n} · {E(k)}</p><h3>{E(title)}</h3><p>{E(text)}</p><div class="fb-chips">{ch}</div></div>'
+    return ('<div class="fb-steps">'
+            + step(1, 'Sources', 'Read 51 trusted feeds', 'Company blogs, changelogs and release notes, plus established press and a few community sites. Every 30 minutes, all day.', ['Tier 1 · 30 official', 'Tier 2 · 18 press', 'Tier 3 · 3 community'])
+            + step(2, 'Confirmation', 'Group the same event', 'Articles about one event are matched by rare words like product names and version numbers, and by meaning. Two blogs from one company count as one voice.', ['Rare-word matching', 'Meaning search'])
+            + step(3, 'Credibility', 'Score it out of 100', 'Who published it, whether an official source confirms it, how many independent outlets agree, and any red-flag words. Rumours are never marked Confirmed.', ['Confirmed 75+', 'Reported 50+', 'Developing 40+'])
+            + '</div>')
+
+def fb_logo():
+    cs = [('1', 'Leaf Bit · chosen', 'A pixel square shaped like a leaf. The cut is the leaf’s vein and the / from code.'),
+          ('2', 'New Bit', 'A small square popping out of a big one, like a new story arriving.'),
+          ('3', 'The f', 'A lowercase f whose crossbar ends in a separate square.'),
+          ('4', 'Rising Dots', 'Three dots growing toward the newest story.')]
+    cards = ''.join(f'<div class="fb-concept{" on" if i == "1" else ""}" data-reveal style="--d:{int(i) * .06:.2f}s"><i><img src="{{root}}assets/img/kit/fb-concept-{i}.svg" alt="" width="100" height="100"></i><b>{E(t)}</b><span>{E(d)}</span></div>' for i, t, d in cs)
+    return (f'<div class="kit-block"><p class="kit-label mono">The icon: four concepts, all tested at 16 px</p><div class="fb-concepts">{cards}</div>'
+            '<div class="fb-icons"><img src="{root}assets/img/kit/fb-icon.webp" alt="FreshBit app icon, light" width="240" height="240"><img src="{root}assets/img/kit/fb-icon-dark.webp" alt="FreshBit app icon, dark" width="240" height="240">'
+            '<p>Leaf Bit stayed clearest at the smallest sizes. It was rebuilt in Apple’s Icon Composer as two layers, the leaf and the bit, so iOS 26 renders it with Liquid Glass in the default, dark, clear and tinted styles.</p></div></div>')
+
+def fb_sections():
+    light = [('today-light', 'Today', 'Today: the most-confirmed story on top, then everything else, newest first'),
+             ('story-light', 'Story', 'Story: brief in FreshBit’s own words, the facts and the credibility score'),
+             ('explore-light', 'Explore', 'Explore: topics, trending tags and events'),
+             ('widgets-light', 'Widgets', 'Home Screen widgets with the most-confirmed stories'),
+             ('settings-light', 'Settings', 'Settings: account, topics, alerts and feed'),
+             ('alerts', 'Lock Screen', 'Lock Screen: alerts and widgets')]
+    dark = [(n.replace('light', 'dark'), c, a.replace(':', ' in dark mode:', 1)) for n, c, a in light if 'light' in n]
+    return (section('Read. Match. Score. Then publish.', fb_steps()
+                    + '<p class="kit-note">Nothing reaches the feed until it passes the credibility check, and every score comes with its reasons in plain words.</p>', 'How it works', '#7FB800')
+            + section('Five places, one calm feed.', fb_row([fb_shot(n, a, c) for n, c, a in light], 'The app, screen by screen'), 'Real screens', '#7FB800')
+            + section('Dark mode isn’t an inverted light mode.', fb_row([fb_shot(n, a, c) for n, c, a in dark], 'The same screens, dark')
+                      + palette_jobs([('C8F550', 'Lime', 'Brand, Confirmed badge, active filter. Fills only'), ('0E1A12', 'Ink', 'Text on light, 16.7:1'), ('F6F8F3', 'Paper', 'Light background'),
+                                      ('0B120D', 'Night', 'Dark background'), ('3D6600', 'Leaf', 'Links on light, 6.8:1'), ('EEF5EA', 'Mist', 'Text on dark, 17.1:1')], 'Two tuned palettes'), 'Light and dark', '#7FB800')
+            + section('Swiss minimal, with one loud colour.', typeface('"Montserrat", system-ui, sans-serif', 'Montserrat', weights='Bold 700 · brand title and the large “Today” only', tint='var(--text)')
+                      + '<p class="kit-note">Reading text uses SF Pro with Dynamic Type, so it follows the size each person sets. Three rules: never lime for text on a light background, never a credibility state shown by colour alone, and no emoji as icons.</p>'
+                      + fb_logo(), 'The brand', '#7FB800'))
