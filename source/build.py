@@ -531,8 +531,7 @@ def case(slug, hero_kicker, title_html, lede, fact_items, cover, sections, link=
     <h1 data-split data-hero>{title_html}</h1>
     <p class="lede" data-reveal data-hero style="--d:.3s">{lede}</p>
     {facts(fact_items)}
-    {('<p class="case-store" data-reveal>' + store_btn(slug, p['title']) + '</p>') if slug in APP_STORE else ''}
-    {(f'<p class="case-store" data-reveal><a class="btn" href="{link[1]}" target="_blank" rel="noopener" data-magnetic data-label="{link[0]}"><span>{link[0]} ↗</span></a></p>') if link else ''}
+    {('<p class="case-store btn-row" data-reveal>' + (store_btn(slug, p['title']) if slug in APP_STORE else '') + (f'<a class="btn" href="{link[1]}" target="_blank" rel="noopener" data-magnetic data-label="{link[0]}"><span>{link[0]} ↗</span></a>' if link else '') + '</p>') if (link or slug in APP_STORE) else ''}
   </div>
 </section>
 {cover}
@@ -566,7 +565,8 @@ def cases():
              ('Private by default', 'No ads, no selling data, and receipt photos stay on your iPhone.')])) +
          kit.xp_sections() +
          sec('Principles', points([('Clear', 'We say the number. “£3.40 logged to Food.” Plain, specific, no guessing.'), ('Calm', 'Quiet interfaces that stay out of your way and respect your attention.'), ('Private', 'No ads. No tracking you across other companies’ apps.'), ('Built in-house', 'Designed and built inside my own company, with every detail owned end to end.')]) +
-             '<p><a class="link" href="https://dotxline.com/xpense.html" target="_blank" rel="noopener">See Xpense on dotxline.com ↗</a></p>'))
+             '<p><a class="link" href="https://xpense.dotxline.com" target="_blank" rel="noopener">Visit the Xpense website ↗</a></p>'),
+         link=('Visit the Xpense website', 'https://xpense.dotxline.com'))
     # Tockbee
     case('tockbee', 'Case study · My product at dotXline', 'Every hour you work, on the <em>record</em>.',
          'Tockbee keeps your own record of every hour you work, so you can check your payslip and sort out missing pay.',
@@ -580,7 +580,8 @@ def cases():
              ('Your timesheet, ready to share', 'A PDF or CSV with every shift and how it was recorded.')])) +
          kit.tb_sections() +
          sec('Honest by design', '<p class="lead">Tax is an estimate, and the app says so.</p><p>Tockbee calls it <strong>estimated take-home</strong>: after PAYE (including Scottish rates), National Insurance, student loan and pension. Your payslip stays the official figure. And Tockbee collects no data at all.</p>' +
-             '<p><a class="link" href="https://dotxline.com/tockbee.html" target="_blank" rel="noopener">See Tockbee on dotxline.com ↗</a></p>'))
+             '<p><a class="link" href="https://tockbee.dotxline.com" target="_blank" rel="noopener">Visit the Tockbee website ↗</a></p>'),
+         link=('Visit the Tockbee website', 'https://tockbee.dotxline.com'))
     # FreshBit
     case('freshbit', 'Case study · My product at dotXline', 'News that <em>checks</em> first.',
          'FreshBit reads 51 trusted sources every 30 minutes, groups the articles about the same event and scores each story out of 100. You see what actually happened in design, UX/UI, AI and dev, and how sure it is.',
