@@ -1203,3 +1203,15 @@ html:not(.is-dark) .dx-logo.on-light { display: block; }
 .stack .shot.fb-st { background: none; box-shadow: none; border-radius: 0; overflow: visible; aspect-ratio: 1 / 2; }
 .stack .shot.fb-st img { object-fit: contain; filter: drop-shadow(0 30px 40px rgba(0,0,0,.25)); }
 .kit .kit-note + .kit-block { margin-top: 36px; }
+
+
+/* ---------- FreshBit in My apps (home): real screens, light and dark ---------- */
+.rel-stage.fb-rel { background: radial-gradient(120% 120% at 0% 0%, #DDFB86, #C8F550 45%, #8FC21F); border-color: transparent; }
+.rel-stage.fb-rel::before { display: none; }
+.fb-pair { display: flex; gap: clamp(12px, 2vw, 22px); align-items: flex-end; justify-content: center; }
+.fb-pair .fb-shot img { width: clamp(150px, 17vw, 230px); height: auto; filter: drop-shadow(0 24px 30px rgba(14, 26, 18, .28)); }
+.fb-pair .fb-shot:nth-child(2) { margin-bottom: -7%; }
+.rel-stage.fb-rel .demo-hint { color: #24361A; }
+.rel-stage.fb-rel .demo-hint::before { background: #0E1A12; animation: none; }
+.store.fb-site small { opacity: .75; }
+@media (max-width: 560px) { .fb-pair .fb-shot:nth-child(2) { display: none; } .fb-pair .fb-shot img { width: min(230px, 62vw); } }

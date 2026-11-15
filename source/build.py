@@ -345,6 +345,23 @@ def release_tockbee():
     </article>'''
 
 
+def release_freshbit():
+    return f'''<article class="release" style="--acc:#8FC21F" id="freshbit">
+      <div class="rel-info" data-reveal>
+        <p class="rel-tag mono">My product · dotXline</p>
+        <div class="rel-name">{img('kit/fb-icon.webp', '', '{root}')}<h3>FreshBit</h3></div>
+        <p class="rel-sub">News that checks first.</p>
+        <dl class="rel-meta mono"><div><dt>Platform</dt><dd>iPhone, iPad and Mac</dd></div><div><dt>Built with</dt><dd>Expo, React Native, SwiftUI</dd></div><div><dt>Status</dt><dd>In TestFlight testing</dd></div><div><dt>Role</dt><dd>Designed and built</dd></div></dl>
+        <p class="rel-desc">Confirmed news for designers and developers. It reads 51 trusted sources, groups stories about the same event and scores each one out of 100.</p>
+        <ul class="rel-points"><li>Every story is labelled Confirmed, Reported or Developing</li><li>Top-story alerts at most 3 a day</li><li>Built to run for $0 a month</li></ul>
+        <div class="rel-ctas"><a class="store fb-site" href="{kit.FB_SITE}" target="_blank" rel="noopener"><span><small>Visit the</small>FreshBit website</span></a><a class="link" href="{{root}}work/freshbit.html" data-label="FreshBit">Read the case study <span aria-hidden="true">→</span></a></div>
+      </div>
+      <div class="rel-stage fb-rel" data-reveal style="--d:.1s">
+        <div class="fb-pair">{kit.fb_shot('today-light', 'FreshBit Today screen: the top story is confirmed by 5 sources').replace(' data-reveal', '')}{kit.fb_shot('story-dark', 'FreshBit story screen in dark mode: the brief and a Read on Google DeepMind button').replace(' data-reveal', '')}</div>
+        <p class="demo-hint mono" aria-hidden="true">Real screens · light and dark</p>
+      </div>
+    </article>'''
+
 def home():
     logos = ''.join(f'<img class="mono-logo" src="{{root}}assets/img/brand/logo-{k}.webp" alt="{t}" width="{SIZES["logo/" + k][0]}" height="{SIZES["logo/" + k][1]}" loading="lazy">'
                     for k, t in [('hanek', 'Hanek'), ('phinaturals', 'PhiNaturals'), ('nation-insure', 'Nation Insure'), ('mr-physics', 'Mr Physics'), ('chatvertiser-logo', 'Chatvertiser'), ('cupid-theory', 'Cupid Theory')])
@@ -391,11 +408,12 @@ def home():
   <div class="wrap">
     <div class="section-head">
       <p class="kicker" data-reveal>My apps</p>
-      <h2 class="two-tone" data-split>Designed by me. Built by me. <span class="dim">Live on the App Store.</span></h2>
-      <p data-reveal>Xpense and Tockbee are the apps of dotXline LTD, my product company in Cardiff. I designed every screen and built both of them. The phones below are working code, not screenshots: try them.</p>
+      <h2 class="two-tone" data-split>Designed by me. Built by me. <span class="dim">Two live on the App Store, one in testing.</span></h2>
+      <p data-reveal>Xpense, Tockbee and FreshBit are the apps of dotXline LTD, my product company in Cardiff. I designed every screen and built all three. The Xpense and Tockbee phones below are working code, not screenshots: try them.</p>
     </div>
     {release_xpense()}
     {release_tockbee()}
+    {release_freshbit()}
     <p class="shipped-foot" data-reveal><a class="link" href="{{root}}dotxline.html" data-label="dotXline">About dotXline LTD <span aria-hidden="true">→</span></a></p>
   </div>
 </section>
@@ -456,7 +474,7 @@ def home():
   </div>
 </section>
 '''
-    page('index.html', 'Nagules Gobi · UX/UI Designer and App Developer', 'Nagules Gobi is a UK UX/UI designer who designs and builds his own apps, Xpense and Tockbee, and Director of dotXline LTD.', 'index.html', body, intro=True)
+    page('index.html', 'Nagules Gobi · UX/UI Designer and App Developer', 'Nagules Gobi is a UK UX/UI designer who designs and builds his own apps, Xpense, Tockbee and FreshBit, and Director of dotXline LTD.', 'index.html', body, intro=True)
 
 # ---------------------------------------------------------------- work index
 def work_index():
