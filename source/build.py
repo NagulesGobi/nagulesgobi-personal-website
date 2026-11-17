@@ -100,9 +100,9 @@ def finder_items(root):
              ('Pages', 'About', 'Story, process and capabilities', 'about.html'),
              ('Pages', 'Contact', 'Hire me for a role or a project', 'contact.html')]
     items += [('Case studies', p['title'], p['kind'], f"work/{p['slug']}.html") for p in PROJECTS]
-    items += [('On the home page', 'Try Xpense', 'Working demo: tap a tile to log an expense', 'index.html#xpense'),
-              ('On the home page', 'Try Tockbee', 'Working demo: a live shift timer', 'index.html#tockbee'),
-              ('On the home page', 'How I build', 'Design, develop, refine, launch', 'index.html#build')]
+    items += [('On the home page', 'Xpense', 'Every penny, in plain sight', 'index.html#xpense'),
+              ('On the home page', 'Tockbee', 'Every hour you work, on the record', 'index.html#tockbee'),
+              ('On the home page', 'How I work', 'Discovery, wireframes, UI design, prototype, build', 'index.html#process')]
     out, last = '', None
     for g, t, sub, h in items:
         if g != last: out += f'<li class="fd-group" role="presentation">{g}</li>'; last = g
@@ -897,5 +897,7 @@ if __name__ == '__main__':
     shutil.copytree(os.path.join(HERE, 'assets'), os.path.join(OUT, 'assets'))
     js = os.path.join(OUT, 'assets', 'js', 'site.js'); s = open(js).read()
     s = re.sub(r"var MARK_D = '[^']+';", f"var MARK_D = '{MARK100}';", s); open(js, 'w').write(s)
-    home(); work_index(); cases(); dotxline(); brand(); about(); contact(); extras()
+    # Home, work, about, contact and dotXline come from motion.py (the dot-motion design); the rest from this file
+    import motion
+    cases(); brand(); extras(); motion.build(OUT)
     print('built', sorted(os.path.relpath(os.path.join(d, f), OUT) for d, _, fs in os.walk(OUT) for f in fs if f.endswith('.html')))

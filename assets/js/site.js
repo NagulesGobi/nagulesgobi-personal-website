@@ -633,7 +633,7 @@
   var mdock = document.querySelector('[data-dock]');
   if (mdock) {
     var lastY = scrollY, acc = 0;
-    var mark = mdock.querySelector('.dk-mark');
+    var dmark = mdock.querySelector('.dk-mark');
     var openedAt = 0;
     function setMini(on) { if (!on && mdock.classList.contains('mini')) openedAt = Date.now(); mdock.classList.remove('hold'); mdock.classList.toggle('mini', on); }
     addEventListener('scroll', function () {
@@ -659,7 +659,7 @@
       }, 450);
     });
     mdock.addEventListener('focusin', function () { setMini(false); });
-    if (mark) mark.addEventListener('click', function (e) { if (mdock.classList.contains('mini') || Date.now() - openedAt < 400) { e.preventDefault(); setMini(false); } });
+    if (dmark) dmark.addEventListener('click', function (e) { if (mdock.classList.contains('mini') || Date.now() - openedAt < 400) { e.preventDefault(); setMini(false); } });
   }
 
   /* Dock: liquid-glass magnification. The slot sizes are fixed while hovered (CSS), so the

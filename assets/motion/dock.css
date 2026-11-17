@@ -1,0 +1,130 @@
+/* The live site's dock, search (Command K) and theme switch, copied from base.css and pages.css. */
+.theme-btn { width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--line); background: transparent; color: var(--text); display: grid; place-items: center; padding: 0; cursor: pointer; }
+.theme-btn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; overflow: visible; }
+.theme-btn .sun { fill: currentColor; stroke: none; transition: r .5s var(--ease); }
+.theme-btn .rays { transition: transform .6s var(--ease), opacity .3s; transform-origin: 12px 12px; }
+.theme-btn .moon-cut { fill: var(--bg); stroke: none; transform: translate(10px, -10px); transition: transform .5s var(--ease), fill .3s; }
+.is-dark .theme-btn .sun { r: 8; }
+.is-dark .theme-btn .rays { transform: rotate(90deg) scale(.4); opacity: 0; }
+.is-dark .theme-btn .moon-cut { transform: none; }
+.dock-wrap { position: fixed; z-index: 100; top: calc(14px + env(safe-area-inset-top, 0px)); left: 0; right: 0; display: flex; justify-content: center; pointer-events: none; }
+.dock { pointer-events: auto; display: flex; align-items: flex-start; gap: 6px; padding: 7px; border-radius: 22px;
+  background: color-mix(in srgb, var(--card) 64%, transparent); -webkit-backdrop-filter: blur(22px) saturate(1.6); backdrop-filter: blur(22px) saturate(1.6);
+  border: 1px solid color-mix(in srgb, var(--text) 12%, transparent); box-shadow: 0 18px 50px -24px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.07); }
+.dk-item { --s: 1; position: relative; flex: none; display: block; width: calc(42px * var(--s)); height: calc(42px * var(--s)); padding: 0; border: 0; background: none; color: var(--text); cursor: pointer; text-decoration: none; transition: width .25s var(--ease), height .25s var(--ease); }
+.dock.live .dk-item { transition: width .07s linear, height .07s linear; }
+.dk-tile { display: grid; place-items: center; width: 100%; height: 100%; border-radius: 28%; background: color-mix(in srgb, var(--text) 7%, transparent); border: 1px solid color-mix(in srgb, var(--text) 9%, transparent); transition: background .25s; }
+.dk-item:hover .dk-tile, .dk-item:focus-visible .dk-tile { background: color-mix(in srgb, var(--text) 13%, transparent); }
+.dk-item:focus-visible { outline: none; } .dk-item:focus-visible .dk-tile { box-shadow: 0 0 0 2px var(--accent); }
+.dk-tile svg { width: 46%; height: 46%; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; overflow: visible; }
+.dk-mark .dk-tile { background: #15130F; border-color: transparent; } .dk-mark .dk-tile svg { width: 60%; height: 60%; stroke: none; }
+.dk-item[aria-current="page"]::after { content: ""; position: absolute; left: 50%; bottom: -5px; width: 4px; height: 4px; margin-left: -2px; border-radius: 50%; background: var(--text); }
+.dk-tip { position: absolute; top: calc(100% + 12px); left: 50%; transform: translate(-50%, -4px); opacity: 0; pointer-events: none; white-space: nowrap; padding: 6px 10px; border-radius: 9px;
+  background: color-mix(in srgb, var(--card) 92%, transparent); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border: 1px solid var(--line); font: 500 13px/1 var(--body); color: var(--text); transition: opacity .2s, transform .25s var(--ease); }
+.dk-item:hover .dk-tip, .dk-item:focus-visible .dk-tip { opacity: 1; transform: translate(-50%, 0); }
+.dk-tip kbd, .fd-field kbd { font: 500 11px/1 var(--mono); padding: 3px 5px; border-radius: 5px; border: 1px solid var(--line); margin-left: 6px; color: var(--muted); }
+.dk-sep { width: 1px; align-self: stretch; margin: 6px 3px; background: color-mix(in srgb, var(--text) 14%, transparent); }
+.dock .theme-btn { width: calc(42px * var(--s)); height: calc(42px * var(--s)); border: 0; border-radius: 0; margin: 0; }
+.dock .theme-btn svg { width: 46%; height: 46%; }
+.dock .theme-btn .moon-cut { fill: color-mix(in srgb, var(--card) 80%, var(--text) 8%); }
+.dk-hire { align-self: center; flex: none; display: inline-flex; align-items: center; gap: 8px; height: 42px; padding: 0 16px; margin-left: 2px; border-radius: 14px; background: var(--btn); color: var(--btn-ink); font: 600 15px/1 var(--body); text-decoration: none; transition: transform .3s var(--ease); }
+.dk-hire:hover { transform: translateY(1px) scale(1.03); }
+.dk-hire .pulse { width: 7px; height: 7px; border-radius: 50%; background: #22B35E; box-shadow: 0 0 0 0 rgba(34,179,94,.6); animation: pulse 2s infinite; }
+@media (min-width: 821px) and (max-width: 1180px) { .corner-logo { display: none; } }
+@media (max-width: 820px) {
+  .corner-logo { top: 20px; left: 16px; } .corner-logo .logo-svg { height: 24px; }
+  .dock-wrap { top: auto; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); }
+  .dock { gap: 4px; padding: 6px; border-radius: 20px; }
+  .dk-mark, .dk-sep, .dk-hire, .dk-tip { display: none; }
+  .dk-item { width: 44px; height: 44px; }
+  .dk-item[aria-current="page"]::after { bottom: -4px; }
+  body { padding-bottom: 84px; }
+}
+
+/* Search (Command K) */
+.finder { position: fixed; inset: 0; z-index: 300; display: grid; justify-items: center; align-items: start; padding: 12vh 16px 16px; }
+.finder[hidden] { display: none; }
+.fd-backdrop { position: absolute; inset: 0; background: rgba(10, 9, 8, .5); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); animation: fd-fade .25s ease; }
+.fd-panel { position: relative; width: min(640px, 100%); max-height: min(70vh, 640px); display: flex; flex-direction: column; overflow: hidden; border-radius: 22px;
+  background: color-mix(in srgb, var(--card) 94%, transparent); -webkit-backdrop-filter: blur(24px) saturate(1.5); backdrop-filter: blur(24px) saturate(1.5);
+  border: 1px solid var(--line); box-shadow: 0 40px 100px -30px rgba(0,0,0,.65); animation: fd-in .35s var(--ease); }
+@keyframes fd-in { from { opacity: 0; transform: translateY(-10px) scale(.98); } }
+@keyframes fd-fade { from { opacity: 0; } }
+.fd-field { display: flex; align-items: center; gap: 12px; padding: 18px 20px; border-bottom: 1px solid var(--line); }
+.fd-field svg { width: 20px; height: 20px; fill: none; stroke: var(--muted); stroke-width: 2; stroke-linecap: round; flex: none; }
+.fd-field input { flex: 1; min-width: 0; border: 0; background: none; outline: none; color: var(--text); font: 500 19px/1.2 var(--body); }
+.fd-field input::placeholder { color: var(--faint); }
+.fd-list { list-style: none; margin: 0; padding: 8px; overflow: auto; overscroll-behavior: contain; }
+.fd-group { padding: 12px 12px 6px; font: 500 11px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--faint); }
+.fd-list a, .fd-list button { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 12px; width: 100%; padding: 10px 12px; border: 0; border-radius: 12px; background: none; color: var(--text); text-align: left; text-decoration: none; font: inherit; cursor: pointer; }
+.fd-list b { font: 600 16px/1.3 var(--body); }
+.fd-list span { grid-column: 1; color: var(--muted); font-size: 13.5px; line-height: 1.35; }
+/* Dock: steady zoom. Hovering the dock lifts every icon a little; the icon under the pointer grows more */
+@media (hover: hover) and (pointer: fine) and (min-width: 821px) and (prefers-reduced-motion: no-preference) {
+  .dk-item { transition: width .3s var(--ease), height .3s var(--ease); }
+  /* the whole dock grows once on entry and holds that size until the pointer leaves it */
+  .dock:hover .dk-item { --s: 1.12; }
+  /* Liquid-glass feel: site.js sets --ts (scale) and --tx (slide) per icon from the pointer.
+     Transforms only, scaled from the centre, so the dock never resizes or crops an icon. */
+  .dock { position: relative; transition: padding .3s var(--ease); }
+  /* breathing room around the magnified icons: the dock grows its padding once on entry and holds it */
+  .dock:hover { padding: 13px 15px; }
+  .dock::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .3s;
+    background: radial-gradient(120px 80px at var(--mx, 50%) 30%, rgba(255,255,255,.16), transparent 70%); mix-blend-mode: soft-light; }
+  .dock:hover::after { opacity: 1; }
+  .dock > * { transform: translateX(var(--tx, 0px)); transition: transform .32s cubic-bezier(.25,1.35,.4,1); }
+  .dk-tile { transform: scale(var(--ts, 1)); transform-origin: 50% 50%; transition: transform .32s cubic-bezier(.25,1.35,.4,1), background .25s; }
+  .dock.live > *, .dock.live .dk-tile { transition-duration: .14s; transition-timing-function: cubic-bezier(.2,.8,.3,1); }
+  .dock .dk-item:hover { z-index: 2; }
+  .dock .dk-item:focus-visible .dk-tile { --ts: 1.18; }
+}
+
+.dock { transition: padding .45s var(--ease), gap .45s var(--ease), border-radius .45s var(--ease), box-shadow .45s var(--ease); }
+.dock .dk-item, .dock .dk-sep, .dock .dk-hire { transition: width .45s var(--ease), height .45s var(--ease), max-width .45s var(--ease), margin .45s var(--ease), padding .45s var(--ease), opacity .3s, transform .32s cubic-bezier(.25,1.35,.4,1); }
+.dk-hire { max-width: 160px; overflow: hidden; white-space: nowrap; }
+.dock.mini { gap: 0; padding: 5px; border-radius: 999px; }
+.dock.mini > :not(.dk-mark) { width: 0; max-width: 0; margin: 0; padding-left: 0; padding-right: 0; opacity: 0; overflow: hidden; pointer-events: none; }
+.dock.mini .dk-sep { margin: 0; }
+.dock.mini .dk-mark { display: block; }
+.dock.mini .dk-mark .dk-tile { border-radius: 50%; }
+.dock.mini .dk-mark .dk-tip, .dock.mini .dk-item[aria-current="page"]::after { display: none; }
+.dk-mark .dk-tile { transition: border-radius .45s var(--ease), transform .32s cubic-bezier(.25,1.35,.4,1), background .25s; }
+@media (prefers-reduced-motion: reduce) { .dock, .dock > *, .dk-mark .dk-tile { transition: none !important; } }
+/* Folding back is slower and softer than opening */
+.dock.mini, .dock.mini > *, .dock.mini .dk-tile { transition-duration: .75s; transition-timing-function: cubic-bezier(.65, 0, .35, 1); }
+.dock.mini > :not(.dk-mark) { transition-property: width, max-width, margin, padding, opacity; transition-duration: .75s, .75s, .75s, .75s, .35s; }
+/* Fold without a snap: Hire me collapses through max-width (its real width is ~104px), never width:auto -> 0 */
+.dk-hire { max-width: 112px; }
+.dock.mini .dk-hire { width: auto; max-width: 0; }
+/* While waiting to fold after a hover-open, hold the hover size so the fold is one motion */
+@media (hover: hover) and (pointer: fine) and (min-width: 821px) and (prefers-reduced-motion: no-preference) {
+  .dock.hold { padding: 13px 15px; }
+  .dock.hold .dk-item { --s: 1.12; }
+}
+/* max-width must start from a number, not "none", or the fold snaps instead of animating */
+.dock .dk-item, .dock .dk-sep { max-width: 80px; }
+/* Opening: smooth and unhurried. The fast hover timing (.live) only touches transforms,
+   never the sizes, so entering the dock no longer makes it pop open. */
+.dock { --open: cubic-bezier(.22, 1, .36, 1); transition: padding .6s var(--open), gap .6s var(--open), border-radius .6s var(--open), box-shadow .6s var(--open); }
+.dock .dk-item, .dock .dk-sep, .dock .dk-hire {
+  transition: width .6s var(--open), height .6s var(--open), max-width .6s var(--open), margin .6s var(--open), padding .6s var(--open), opacity .4s ease .12s, transform .32s cubic-bezier(.25,1.35,.4,1); }
+.dock.live > * {
+  transition: width .6s var(--open), height .6s var(--open), max-width .6s var(--open), margin .6s var(--open), padding .6s var(--open), opacity .4s ease .12s, transform .14s cubic-bezier(.2,.8,.3,1); }
+.dock.live .dk-tile { transition: transform .14s cubic-bezier(.2,.8,.3,1), background .25s, border-radius .6s var(--open); }
+@media (prefers-reduced-motion: reduce) { .dock, .dock > *, .dock .dk-tile { transition: none !important; } }
+/* beat the older .dock.live .dk-item rule (width .07s) so opening stays slow and smooth */
+.dock.live .dk-item, .dock.live .dk-sep, .dock.live .dk-hire {
+  transition: width .6s var(--open), height .6s var(--open), max-width .6s var(--open), margin .6s var(--open), padding .6s var(--open), opacity .4s ease .12s, transform .14s cubic-bezier(.2,.8,.3,1); }
+/* folding back keeps its own gentle ease-in-out, icons fade out first */
+.dock.mini .dk-item, .dock.mini .dk-sep, .dock.mini .dk-hire {
+  transition: width .75s cubic-bezier(.65,0,.35,1), height .75s cubic-bezier(.65,0,.35,1), max-width .75s cubic-bezier(.65,0,.35,1), margin .75s cubic-bezier(.65,0,.35,1), padding .75s cubic-bezier(.65,0,.35,1), opacity .3s ease, transform .32s ease; }
+@media (prefers-reduced-motion: reduce) { .dock .dk-item, .dock .dk-sep, .dock .dk-hire { transition: none !important; } }
+@keyframes pulse { 70% { box-shadow: 0 0 0 9px rgba(34,179,94,0); } 100% { box-shadow: 0 0 0 0 rgba(34,179,94,0); } }
+
+.fd-list i { grid-row: 1 / span 2; grid-column: 2; align-self: center; font-style: normal; color: var(--accent); opacity: 0; }
+.fd-list li.on > a, .fd-list li.on > button { background: color-mix(in srgb, var(--accent) 13%, transparent); }
+.fd-list li.on i { opacity: 1; }
+.fd-list li[hidden] { display: none; }
+.fd-empty { padding: 26px 20px; color: var(--muted); }
+.fd-foot { display: flex; gap: 18px; padding: 12px 20px; border-top: 1px solid var(--line); color: var(--faint); font-size: 12px; }
+@media (max-width: 600px) { .finder { padding-top: 10vh; } .fd-foot { display: none; } }

@@ -11,7 +11,12 @@
   as "AI-assisted development", not "vibe coding".
 - Respect `prefers-reduced-motion`, keep phones free of sideways scrolling, and check pages in
   a browser at desktop and phone width before pushing.
-- App Store links live in `APP_STORE` near the top of the home section of `source/build.py`. They point at
-  dotxline.com until the owner sends the real App Store URLs.
+- App Store links (`APP_STORE` in `source/build.py`) point at dotxline.com until the owner sends the real App
+  Store URLs. The new main pages link to the case studies instead; add store buttons in `source/motion.py` when the links exist.
 - Xpense is built with SwiftUI, Tockbee with React Native; both are presented as live on the App Store.
-- The home page phones in "My apps" are working HTML/CSS/JS demos (`[data-xpense]`, `[data-tockbee]` in site.js).
+- Home, work, about, contact and dotXline are built by `source/motion.py` (the dot-motion design: one WebGL dot
+  canvas, `source/assets/motion/`, images in `source/assets/img/motion/`). Case studies, redirects and 404 still come
+  from `source/build.py`. Its old `home()`, `work_index()`, `about()`, `contact()` and `dotxline()` are no longer
+  called; the previous design is kept as the git tag `live-backup-2026-11-17`.
+- The About page's "What went wrong" stories come from real fixes (FreshBit case study, Xpense and Tockbee commit
+  history). Add new ones only from facts the owner gives.

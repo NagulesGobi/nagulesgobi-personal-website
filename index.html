@@ -1,19 +1,11 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<script data-intro="1">
-  (function () {
-    var d = document.documentElement, s = document.currentScript; d.classList.add('js');
-    try {
-      var t = localStorage.getItem('ng-theme'); if (t === 'light' || t === 'dark') d.dataset.theme = t;
-      var rm = matchMedia('(prefers-reduced-motion: reduce)').matches, nav = sessionStorage.getItem('ng-nav');
-      if (nav && !rm) { d.classList.add('arriving'); d.dataset.navLabel = nav; sessionStorage.removeItem('ng-nav'); sessionStorage.setItem('ng-intro', '1'); }
-      if (s.dataset.intro && !rm && !sessionStorage.getItem('ng-intro')) d.classList.add('intro');
-    } catch (e) {}
-  })();
-</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>try { var t = localStorage.getItem('ng-theme'); if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; } catch (e) {}</script>
+<meta name="theme-color" content="#F3EFE7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#12110F" media="(prefers-color-scheme: dark)">
 <title>Nagules Gobi · UX/UI Designer and App Developer</title>
 <meta name="description" content="Nagules Gobi is a UK UX/UI designer who designs and builds his own apps, Xpense, Tockbee and FreshBit, and Director of dotXline LTD.">
 <meta property="og:title" content="Nagules Gobi · UX/UI Designer and App Developer">
@@ -21,8 +13,6 @@
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://www.nagulesgobi.com/assets/brand/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#F3EFE7" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#12110F" media="(prefers-color-scheme: dark)">
 <link rel="canonical" href="https://www.nagulesgobi.com/">
 <link rel="icon" href="favicon.ico" sizes="48x48">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -31,260 +21,156 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/base.css?v=0ce3ea91">
-<link rel="stylesheet" href="assets/css/pages.css?v=0ce3ea91">
-<script src="assets/js/site.js?v=0ce3ea91" defer></script>
+<link rel="stylesheet" href="assets/motion/motion.css?v=91596fb0">
+<link rel="stylesheet" href="assets/motion/dock.css?v=91596fb0">
+<script src="assets/motion/dock.js?v=91596fb0" defer></script>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js" } }</script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
+<script type="module" src="assets/motion/site.js?v=91596fb0"></script>
 </head>
-<body>
+<body data-intro="on">
 <a class="skip" href="#main">Skip to content</a>
-<div class="curtain" aria-hidden="true"><span class="curtain-label"></span></div>
-<div class="progress" aria-hidden="true"><i></i></div>
-<div class="grain" aria-hidden="true"></div>
-<div class="cursor" aria-hidden="true"><div class="cursor-preview"></div><div class="cursor-ring"><span class="cursor-label"></span></div><div class="cursor-dot"></div></div>
+<canvas id="dots" aria-hidden="true"></canvas>
 <header class="dock-wrap">
   <nav class="dock" aria-label="Main" data-dock>
-    <a class="dk-item dk-mark" href="index.html" aria-current="page" aria-label="Nagules Gobi, home" data-label="Home"><span class="dk-tile"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="dkg" gradientUnits="userSpaceOnUse" cx="15" cy="8" r="113"><stop offset="0" stop-color="#FF9124"/><stop offset=".3" stop-color="#FF4A2C"/><stop offset=".55" stop-color="#FF2440"/><stop offset="1" stop-color="#FF008E"/></radialGradient></defs><path fill="url(#dkg)" d="M12.75 8H56.72A30.53 30.53 0 0 1 87.25 38.53V38.53H73.82V38.53A17.1 17.1 0 0 0 56.72 21.43H35.68L73.82 59.57V51.97H87.25V92L26.18 30.93V51.97A17.1 17.1 0 0 0 43.28 69.07H43.28V82.5H43.28A30.53 30.53 0 0 1 12.75 51.97Z"/></svg></span><span class="dk-tip">Home</span></a>
+    <a class="dk-item dk-mark" href="index.html" aria-current="page" aria-label="Nagules Gobi, home"><span class="dk-tile"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="dkg" gradientUnits="userSpaceOnUse" cx="15" cy="8" r="113"><stop offset="0" stop-color="#FF9124"/><stop offset=".3" stop-color="#FF4A2C"/><stop offset=".55" stop-color="#FF2440"/><stop offset="1" stop-color="#FF008E"/></radialGradient></defs><path fill="url(#dkg)" d="M12.75 8H56.72A30.53 30.53 0 0 1 87.25 38.53V38.53H73.82V38.53A17.1 17.1 0 0 0 56.72 21.43H35.68L73.82 59.57V51.97H87.25V92L26.18 30.93V51.97A17.1 17.1 0 0 0 43.28 69.07H43.28V82.5H43.28A30.53 30.53 0 0 1 12.75 51.97Z"/></svg></span><span class="dk-tip">Home</span></a>
     <i class="dk-sep" aria-hidden="true"></i>
-    <a class="dk-item" href="work.html" data-label="Work" aria-label="Work"><span class="dk-tile"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16v13H4zM9 7V4h6v3M4 12h16"/></svg></span><span class="dk-tip">Work</span></a><a class="dk-item" href="dotxline.html" data-label="dotXline" aria-label="dotXline"><span class="dk-tile"><svg class="dk-dx" viewBox="0.37 0.37 87.31 87.31" aria-hidden="true"><path transform="translate(0 1.025)" d="M63.44 36.56 L38.69 61.31 A16 16 0 1 1 38.69 38.69 L61.31 61.31 A9 9 0 0 0 76.68 54.95 L76.68 20.00" fill="none" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="dk-tip">dotXline</span></a><a class="dk-item" href="about.html" data-label="About" aria-label="About"><span class="dk-tile"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21c1-4 4-6 8-6s7 2 8 6"/></svg></span><span class="dk-tip">About</span></a><a class="dk-item" href="contact.html" data-label="Contact" aria-label="Contact"><span class="dk-tile"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18v12H3zM3 7l9 6 9-6"/></svg></span><span class="dk-tip">Contact</span></a>
+    <a class="dk-item" href="work.html" aria-label="Work"><span class="dk-tile"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16v13H4zM9 7V4h6v3M4 12h16"/></svg></span><span class="dk-tip">Work</span></a><a class="dk-item" href="about.html" aria-label="About"><span class="dk-tile"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21c1-4 4-6 8-6s7 2 8 6"/></svg></span><span class="dk-tip">About</span></a><a class="dk-item" href="dotxline.html" aria-label="dotXline"><span class="dk-tile"><svg class="dk-dx" viewBox="0.37 0.37 87.31 87.31" aria-hidden="true"><path transform="translate(0 1.025)" d="M63.44 36.56 L38.69 61.31 A16 16 0 1 1 38.69 38.69 L61.31 61.31 A9 9 0 0 0 76.68 54.95 L76.68 20.00" fill="none" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="dk-tip">dotXline</span></a><a class="dk-item" href="contact.html" aria-label="Contact"><span class="dk-tile"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18v12H3zM3 7l9 6 9-6"/></svg></span><span class="dk-tip">Contact</span></a>
     <i class="dk-sep" aria-hidden="true"></i>
     <button class="dk-item" type="button" data-finder-open aria-label="Search the site (Command K)" aria-haspopup="dialog"><span class="dk-tile"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM21 21l-5-5"/></svg></span><span class="dk-tip">Search <kbd>⌘K</kbd></span></button>
     <button class="dk-item theme-btn" type="button" aria-label="Switch between light and dark theme"><span class="dk-tile"><svg viewBox="0 0 24 24" aria-hidden="true"><circle class="sun" cx="12" cy="12" r="5"/><g class="rays"><path d="M12 1.5v2.2M12 20.3v2.2M1.5 12h2.2M20.3 12h2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></g><circle class="moon-cut" cx="17" cy="7" r="5"/></svg></span><span class="dk-tip">Theme</span></button>
-    <a class="dk-hire" href="contact.html" data-label="Contact"><span class="pulse" aria-hidden="true"></span>Hire me</a>
+    <a class="dk-hire" href="contact.html"><span class="pulse" aria-hidden="true"></span>Hire me</a>
   </nav>
 </header>
 <div class="finder" role="dialog" aria-modal="true" aria-label="Search the site" hidden>
   <div class="fd-backdrop" data-finder-close></div>
   <div class="fd-panel">
-    <label class="fd-field"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM21 21l-5-5"/></svg><input type="text" placeholder="Search pages, case studies and demos" autocomplete="off" spellcheck="false" aria-label="Search" aria-controls="fd-list"><kbd>Esc</kbd></label>
-    <ul class="fd-list" id="fd-list" role="listbox"><li class="fd-group" role="presentation">Pages</li><li role="option"><a href="index.html" data-label="Home" data-text="home my apps, client work and how i build pages"><b>Home</b><span>My apps, client work and how I build</span><i aria-hidden="true">↵</i></a></li><li role="option"><a href="work.html" data-label="Work" data-text="work product case studies, brand and print pages"><b>Work</b><span>Product case studies, brand and print</span><i aria-hidden="true">↵</i></a></li><li role="option"><a href="work.html#brand" data-label="Brand and print" data-text="brand and print 29 logos, campaigns, print and packaging pieces pages"><b>Brand and print</b><span>29 logos, campaigns, print and packaging pieces</span><i aria-hidden="true">↵</i></a></li><li role="option"><a href="dotxline.html" data-label="dotXline" data-text="dotxline my product company in cardiff pages"><b>dotXline</b><span>My product company in Cardiff</span><i aria-hidden="true">↵</i></a></li><li role="option"><a href="about.html" data-label="About" data-text="about story, process and capabilities pages"><b>About</b><span>Story, process and capabilities</span><i aria-hidden="true">↵</i></a></li><li role="option"><a href="contact.html" data-label="Contact" data-text="contact hire me for a role or a project pages"><b>Contact</b><span>Hire me for a role or a project</span><i aria-hidden="true">↵</i></a></li><li class="fd-group" role="presentation">Case studies</li><li role="option"><a href="work/xpense.html" data-label="Xpense" data-text="xpense iphone app · dotxline case studies"><b>Xpense</b><span>iPhone app · dotXline</span><i aria-hidden="true">↵</i></a></li><li role="option"><a href="work/tockbee.html" data-label="Tockbee" data-text="tockbee iphone and android app · dotxline case studies"><b>Tockbee</b><span>iPhone and Android app · dotXline</span><i aria-hidden="true">↵</i></a></li><li role="option"><a href="work/freshbit.html" data-label="FreshBit" data-text="freshbit iphone, ipad and mac app · dotxline case studies"><b>FreshBit</b><span>iPhone, iPad and Mac app · dotXline</span><i aria-hidden="true">↵</i></a></li><li role="option"><a href="work/chatvertiser.html" data-label="Chatvertiser" data-text="chatvertiser web design · ad tech ux case studies"><b>Chatvertiser</b><span>Web design · Ad tech UX</span><i aria-hidden="true">↵</i></a></li><li role="option"><a href="work/greenlife.html" data-label="Greenlife" data-text="greenlife app design · grocery case studies"><b>Greenlife</b><span>App design · Grocery</span><i aria-hidden="true">↵</i></a></li><li role="option"><a href="work/puff-count.html" data-label="Puff Count" data-text="puff count app design · health case studies"><b>Puff Count</b><span>App design · Health</span><i aria-hidden="true">↵</i></a></li><li role="option"><a href="work/pocket.html" data-label="Pocket" data-text="pocket ios app design · personal finance case studies"><b>Pocket</b><span>iOS app design · Personal finance</span><i aria-hidden="true">↵</i></a></li><li class="fd-group" role="presentation">On the home page</li><li role="option"><a href="index.html#xpense" data-label="Try Xpense" data-text="try xpense working demo: tap a tile to log an expense on the home page"><b>Try Xpense</b><span>Working demo: tap a tile to log an expense</span><i aria-hidden="true">↵</i></a></li><li role="option"><a href="index.html#tockbee" data-label="Try Tockbee" data-text="try tockbee working demo: a live shift timer on the home page"><b>Try Tockbee</b><span>Working demo: a live shift timer</span><i aria-hidden="true">↵</i></a></li><li role="option"><a href="index.html#build" data-label="How I build" data-text="how i build design, develop, refine, launch on the home page"><b>How I build</b><span>Design, develop, refine, launch</span><i aria-hidden="true">↵</i></a></li><li class="fd-group" role="presentation">Actions</li><li role="option"><a href="mailto:contact@nagulesgobi.com" data-text="email contact hire mail contact@nagulesgobi.com"><b>Email me</b><span>contact@nagulesgobi.com</span><i aria-hidden="true">↵</i></a></li><li role="option"><button type="button" data-theme-toggle data-text="theme dark light mode switch"><b>Switch theme</b><span>Light or dark</span><i aria-hidden="true">↵</i></button></li></ul>
+    <label class="fd-field"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM21 21l-5-5"/></svg><input type="text" placeholder="Search pages and case studies" autocomplete="off" spellcheck="false" aria-label="Search" aria-controls="fd-list"><kbd>Esc</kbd></label>
+    <ul class="fd-list" id="fd-list" role="listbox"><li class="fd-group" role="presentation">Pages</li><li role="option"><a href="index.html" data-text="home products, designed and built end to end pages"><b>Home</b><span>Products, designed and built end to end</span><i aria-hidden="true">↵</i></a></li><li role="option"><a href="work.html" data-text="work product case studies, brand and print pages"><b>Work</b><span>Product case studies, brand and print</span><i aria-hidden="true">↵</i></a></li><li role="option"><a href="work.html#brand" data-text="brand and print 34 logos, campaigns, print and packaging pieces pages"><b>Brand and print</b><span>34 logos, campaigns, print and packaging pieces</span><i aria-hidden="true">↵</i></a></li><li role="option"><a href="dotxline.html" data-text="dotxline my product company in cardiff pages"><b>dotXline</b><span>My product company in Cardiff</span><i aria-hidden="true">↵</i></a></li><li role="option"><a href="about.html" data-text="about story, process and capabilities pages"><b>About</b><span>Story, process and capabilities</span><i aria-hidden="true">↵</i></a></li><li role="option"><a href="contact.html" data-text="contact hire me for a role or a project pages"><b>Contact</b><span>Hire me for a role or a project</span><i aria-hidden="true">↵</i></a></li><li class="fd-group" role="presentation">Case studies</li><li role="option"><a href="work/xpense.html" data-text="xpense iphone app · dotxline case studies"><b>Xpense</b><span>iPhone app · dotXline</span><i aria-hidden="true">↵</i></a></li><li role="option"><a href="work/tockbee.html" data-text="tockbee iphone and android app · dotxline case studies"><b>Tockbee</b><span>iPhone and Android app · dotXline</span><i aria-hidden="true">↵</i></a></li><li role="option"><a href="work/freshbit.html" data-text="freshbit iphone, ipad and mac app · dotxline case studies"><b>FreshBit</b><span>iPhone, iPad and Mac app · dotXline</span><i aria-hidden="true">↵</i></a></li><li role="option"><a href="work/chatvertiser.html" data-text="chatvertiser web design · ad tech ux case studies"><b>Chatvertiser</b><span>Web design · Ad tech UX</span><i aria-hidden="true">↵</i></a></li><li role="option"><a href="work/greenlife.html" data-text="greenlife app design · grocery case studies"><b>Greenlife</b><span>App design · Grocery</span><i aria-hidden="true">↵</i></a></li><li role="option"><a href="work/puff-count.html" data-text="puff count app design · health case studies"><b>Puff Count</b><span>App design · Health</span><i aria-hidden="true">↵</i></a></li><li role="option"><a href="work/pocket.html" data-text="pocket ios app design · personal finance case studies"><b>Pocket</b><span>iOS app design · Personal finance</span><i aria-hidden="true">↵</i></a></li><li class="fd-group" role="presentation">Actions</li><li role="option"><a href="mailto:contact@nagulesgobi.com" data-text="email contact hire mail"><b>Email me</b><span>contact@nagulesgobi.com</span><i aria-hidden="true">↵</i></a></li><li role="option"><button type="button" data-theme-toggle data-text="theme dark light mode switch"><b>Switch theme</b><span>Light or dark</span><i aria-hidden="true">↵</i></button></li></ul>
     <p class="fd-empty" hidden>Nothing matches. Try “app”, “brand” or “contact”.</p>
     <div class="fd-foot mono"><span>↑ ↓ to move</span><span>↵ to open</span><span>⌘K or / to search</span></div>
   </div>
 </div>
 <main id="main">
-<div class="intro-screen" aria-hidden="true">
-  <svg class="intro-mark" viewBox="0 0 100 100"><defs><radialGradient id="ngi" gradientUnits="userSpaceOnUse" cx="15" cy="8" r="113"><stop offset="0" stop-color="#FF9124"/><stop offset=".3" stop-color="#FF4A2C"/><stop offset=".55" stop-color="#FF2440"/><stop offset="1" stop-color="#FF008E"/></radialGradient></defs><path pathLength="1" d="M12.75 8H56.72A30.53 30.53 0 0 1 87.25 38.53V38.53H73.82V38.53A17.1 17.1 0 0 0 56.72 21.43H35.68L73.82 59.57V51.97H87.25V92L26.18 30.93V51.97A17.1 17.1 0 0 0 43.28 69.07H43.28V82.5H43.28A30.53 30.53 0 0 1 12.75 51.97Z"/></svg>
-  <div class="intro-count"><span data-intro-count>000</span><i>%</i></div>
-  <div class="intro-name">Nagules Gobi · Product Designer</div>
-</div>
-<section class="hero" id="top">
-  <canvas class="hero-canvas" aria-hidden="true"></canvas>
-  <div class="wrap hero-inner">
-    <p class="me-chip" data-reveal data-hero><img src="assets/img/me/portrait.webp" alt="Portrait of Nagules Gobi" width="720" height="900" decoding="async"><span>Hi, I’m <b>Nagules Gobi</b>. Product designer who builds websites and apps too. Director of dotXline LTD.</span></p>
-    <h1 class="two-tone" data-split data-hero>Products, designed <span class="dim">and built <em>end to end.</em></span></h1>
-    <p class="lede" data-reveal data-hero style="--d:.35s">Websites, web apps and mobile apps, from first sketch to working code in SwiftUI, React Native and AI-assisted development. 30+ projects designed across three countries, and two apps live on the App Store.</p>
-    <div class="btns" data-reveal data-hero style="--d:.5s">
-      <a class="btn" href="#shipped"><span>Explore the work</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a>
-      <a class="btn btn-ghost" href="contact.html" data-label="Contact"><span>Hire me</span></a>
+<section class="stage hero" data-dots="n" aria-labelledby="h1">
+  <div class="wrap">
+    <div class="copy">
+      <p class="me-chip rv"><img src="assets/img/me/portrait.webp" alt="Portrait of Nagules Gobi" width="720" height="900"><span>Hi, I’m <b>Nagules Gobi</b>. Product designer who builds websites and apps too. Director of dotXline LTD.</span></p>
+      <h1 id="h1" class="rv" style="--d:.05s"><span class="ln">Products,</span> <span class="ln">designed</span> <span class="ln">and built</span> <span class="ln ac">end to end.</span></h1>
+      <p class="lead rv" style="--d:.12s">Websites, web apps and mobile apps, from first sketch to working code in SwiftUI, React Native and AI-assisted development.</p>
+      <div class="btns rv" style="--d:.2s"><a class="btn btn-solid" href="work.html">See the work</a><a class="btn btn-line" href="contact.html">Hire me</a></div>
+      <div class="facts rv" style="--d:.3s"><div><b data-count="30" data-suffix="+">30+</b><span>projects designed</span></div><div><b data-count="3">3</b><span>countries</span></div><div><b data-count="4">4</b><span>years</span></div><div><b data-count="2">2</b><span>apps on the App Store</span></div></div>
     </div>
-    <div class="hero-mark-slot" data-reveal data-hero style="--d:.6s" aria-hidden="true"><span class="mono">Touch the mark</span></div>
-  </div>
-  <div class="wrap hero-foot" data-reveal data-hero style="--d:.7s">
-    <span class="mono">UX/UI design · App development · Brand identity</span>
-    <span class="hint">Move over the mark, or click it</span>
-    <span class="clock mono">London <time data-clock>--:--</time></span>
+    <div class="art" data-art aria-hidden="true"></div>
   </div>
 </section>
-
 <section class="marquee" aria-label="Disciplines">
-  <div class="marquee-row" data-marquee="1" data-skew="off"><div class="marquee-track"><span>UX/UI Design</span><b>✦</b><span>App Development</span><b>✦</b><span>Product Design</span><b>✦</b><span>Web Development</span><b>✦</b><span>Brand Identity</span><b>✦</b></div></div>
-  <div class="marquee-row outline" data-marquee="-1" data-skew="off" aria-hidden="true"><div class="marquee-track"><span>iPhone &amp; Android Apps</span><b>✦</b><span>AI-Assisted Development</span><b>✦</b><span>Websites &amp; Web Apps</span><b>✦</b><span>Design Strategy</span><b>✦</b><span>Graphic Design</span><b>✦</b></div></div>
+  <div class="marquee-row" data-marquee="1"><div class="marquee-track"><span>UX/UI Design</span><b>✦</b><span>App Development</span><b>✦</b><span>Product Design</span><b>✦</b><span>Web Development</span><b>✦</b><span>Brand Identity</span><b>✦</b></div></div>
+  <div class="marquee-row outline" data-marquee="-1" aria-hidden="true"><div class="marquee-track"><span>iPhone &amp; Android Apps</span><b>✦</b><span>AI-Assisted Development</span><b>✦</b><span>Websites &amp; Web Apps</span><b>✦</b><span>Design Strategy</span><b>✦</b><span>Graphic Design</span><b>✦</b></div></div>
 </section>
-
-<section class="glance" aria-label="At a glance">
-  <div class="wrap glance-row mono" data-reveal>
-    <span><b>30+</b> projects designed</span><span><b>3</b> countries</span><span><b>4</b> years of experience</span><span><b>2</b> apps on the App Store</span><span>BSc Computing</span>
-  </div>
+<section class="section" id="process" data-dots="off" aria-labelledby="process-h">
+  <div class="wrap head"><div><p class="kicker rv">How I work</p><h2 id="process-h" class="rv">From first question to working product.</h2></div><p class="rv">The same five steps on every project. Timelines depend on the size of the work, and I share one after our first call.</p></div>
 </section>
-
-<section class="shipped" id="shipped">
+<section class="stage" data-dots="notes" aria-labelledby="st-0">
   <div class="wrap">
-    <div class="section-head">
-      <p class="kicker" data-reveal>My apps</p>
-      <h2 class="two-tone" data-split>Designed by me. Built by me. <span class="dim">Two live on the App Store, one in testing.</span></h2>
-      <p data-reveal>Xpense, Tockbee and FreshBit are the apps of dotXline LTD, my product company in Cardiff. I designed every screen and built all three. The Xpense and Tockbee phones below are working code, not screenshots: try them.</p>
-    </div>
-    <article class="release" style="--acc:var(--xp)" id="xpense">
-      <div class="rel-info" data-reveal>
-        <p class="rel-tag mono">My product · dotXline</p>
-        <div class="rel-name"><img src="assets/img/kit/xp-icon.webp" alt="" width="240" height="240" loading="lazy" decoding="async"><h3>Xpense</h3></div>
-        <p class="rel-sub">Every penny, in plain sight.</p>
-        <dl class="rel-meta mono"><div><dt>Platform</dt><dd>iPhone</dd></div><div><dt>Built with</dt><dd>SwiftUI</dd></div><div><dt>Status</dt><dd>On the App Store</dd></div><div><dt>Role</dt><dd>Designed and built</dd></div></dl>
-        <p class="rel-desc">A calm, native expense tracker. Log spending in one tap, set budgets and goals, and split costs with friends.</p>
-        <ul class="rel-points"><li>Quick Add tiles log an expense in one tap</li><li>Progress, never shame: it notices when you spend less</li><li>No ads, and receipt photos stay on your iPhone</li></ul>
-        <div class="rel-ctas"><a class="store" href="https://dotxline.com/xpense.html" target="_blank" rel="noopener" aria-label="Download Xpense on the App Store"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.37 12.6c-.02-2.2 1.8-3.26 1.88-3.31-1.03-1.5-2.62-1.7-3.18-1.73-1.35-.14-2.64.8-3.33.8-.69 0-1.74-.78-2.87-.76-1.47.02-2.83.86-3.59 2.18-1.53 2.66-.39 6.6 1.1 8.76.73 1.06 1.6 2.25 2.73 2.2 1.1-.04 1.51-.71 2.84-.71 1.32 0 1.7.71 2.86.69 1.18-.02 1.93-1.08 2.65-2.14.84-1.22 1.18-2.41 1.2-2.47-.03-.01-2.3-.88-2.32-3.5zM14.2 6.13c.6-.73 1.01-1.75.9-2.76-.87.04-1.92.58-2.54 1.31-.56.65-1.05 1.68-.92 2.68.97.07 1.96-.49 2.56-1.23z"/></svg><span><small>Download on the</small>App Store</span></a><a class="link" href="work/xpense.html" data-label="Xpense">Read the case study <span aria-hidden="true">→</span></a></div>
-      </div>
-      <div class="rel-stage xp-stage" data-reveal style="--d:.1s">
-                <div class="phone xp-app" data-xpense role="group" aria-label="Working demo of the Xpense overview screen">
-          <div class="ph-status"><span>9:41</span><i class="ph-island"></i><span class="ph-sig"><svg viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5" width="3" height="7" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg viewBox="0 0 26 12"><rect x=".5" y=".5" width="22" height="11" rx="3" fill="none" stroke="currentColor"/><rect x="2" y="2" width="17" height="8" rx="2"/><rect x="23.5" y="4" width="2" height="4" rx="1"/></svg></span></div>
-          <div class="xp-body">
-            <p class="xp-h">Overview</p><p class="xp-sub">Good evening</p>
-            <div class="xp-card">
-              <span class="xp-l">Spent in October</span>
-              <b class="xp-total" data-total>£1,248.60</b>
-              <span class="xp-left" data-left>£351.40 left of £1,600 budget</span>
-              <div class="xp-bar"><i data-bar></i></div>
-              <div class="xp-row"><span data-used>78% used</span><span>9 days to go</span></div>
-              <button type="button" class="xp-add" tabindex="-1" aria-hidden="true">+ Add Expense</button>
-            </div>
-            <p class="xp-qh">Quick Add</p>
-            <div class="xp-grid"><button type="button" class="xp-tile" data-cat="Food" data-amt="12.40" style="--c:#F59E0B"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v8M5 3v4a2 2 0 0 0 4 0V3M7 11v10M16 3c-2 0-3 2-3 5s1 4 3 4v9"/></svg></i><span>Food</span></button><button type="button" class="xp-tile" data-cat="Transport" data-amt="8.20" style="--c:#3B82F6"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16V9l2-4h12l2 4v7M4 16h16M4 16v2M20 16v2M7 13h.01M17 13h.01"/></svg></i><span>Transport</span></button><button type="button" class="xp-tile" data-cat="Fuel" data-amt="45.00" style="--c:#EF4444"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M4 21h12M15 9h2l2 2v6a1.5 1.5 0 0 0 3 0V8l-3-3M8 7h4"/></svg></i><span>Fuel</span></button><button type="button" class="xp-tile" data-cat="Subs" data-amt="10.99" style="--c:#A855F7"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3M18 3v4h-4M6 21v-4h4"/></svg></i><span>Subs</span></button><button type="button" class="xp-tile" data-cat="Shopping" data-amt="24.00" style="--c:#EC4899"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l-1 13H6L5 8zM9 8V6a3 3 0 0 1 6 0v2"/></svg></i><span>Shopping</span></button><button type="button" class="xp-tile" data-cat="Groceries" data-amt="64.15" style="--c:#22C55E"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.5 11h10L20 7H6.2M9 20h.01M17 20h.01"/></svg></i><span>Groceries</span></button><button type="button" class="xp-tile" data-cat="Bills" data-amt="71.00" style="--c:#EAB308"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z"/></svg></i><span>Bills</span></button><button type="button" class="xp-tile" data-cat="Fun" data-amt="18.50" style="--c:#38BDF8"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7L12 3z"/></svg></i><span>Fun</span></button></div>
-            <p class="xp-qh">Recent</p>
-            <ul class="xp-recent" data-recent><li><i style="--c:#F59E0B"></i><span><b>Lunch with Sam</b><small>Food · Today</small></span><em>£12.40</em></li><li><i style="--c:#3B82F6"></i><span><b>Train to work</b><small>Transport · Today</small></span><em>£8.20</em></li></ul>
-            <div class="xp-toast" data-toast role="status" aria-live="polite"></div>
-          </div>
-          <div class="ph-tabs xp-tabs" aria-hidden="true"><span class="on">Home</span><span>History</span><span>Analyze</span><span>Shared</span></div>
-        </div>
-
-        <p class="demo-hint mono" aria-hidden="true">Tap a tile to log it</p>
-      </div>
-    </article>
-    <article class="release flip" style="--acc:var(--tb)" id="tockbee">
-      <div class="rel-info" data-reveal>
-        <p class="rel-tag mono">My product · dotXline</p>
-        <div class="rel-name"><img src="assets/img/kit/tb-icon.webp" alt="" width="240" height="240" loading="lazy" decoding="async"><h3>Tockbee</h3></div>
-        <p class="rel-sub">Every hour you work, on the record.</p>
-        <dl class="rel-meta mono"><div><dt>Platform</dt><dd>iPhone and Android</dd></div><div><dt>Built with</dt><dd>React Native</dd></div><div><dt>Status</dt><dd>On the App Store</dd></div><div><dt>Role</dt><dd>Designed and built</dd></div></dl>
-        <p class="rel-desc">A shift and pay tracker for UK hourly workers. It clocks you in when you arrive, works out your pay and take-home, and checks your payslip against the hours you really worked.</p>
-        <ul class="rel-points"><li>Clocks you in by location or your work Wi-Fi</li><li>Overtime, weekend and night rates worked out as you go</li><li>No account and no data collected</li></ul>
-        <div class="rel-ctas"><a class="store" href="https://dotxline.com/tockbee.html" target="_blank" rel="noopener" aria-label="Download Tockbee on the App Store"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.37 12.6c-.02-2.2 1.8-3.26 1.88-3.31-1.03-1.5-2.62-1.7-3.18-1.73-1.35-.14-2.64.8-3.33.8-.69 0-1.74-.78-2.87-.76-1.47.02-2.83.86-3.59 2.18-1.53 2.66-.39 6.6 1.1 8.76.73 1.06 1.6 2.25 2.73 2.2 1.1-.04 1.51-.71 2.84-.71 1.32 0 1.7.71 2.86.69 1.18-.02 1.93-1.08 2.65-2.14.84-1.22 1.18-2.41 1.2-2.47-.03-.01-2.3-.88-2.32-3.5zM14.2 6.13c.6-.73 1.01-1.75.9-2.76-.87.04-1.92.58-2.54 1.31-.56.65-1.05 1.68-.92 2.68.97.07 1.96-.49 2.56-1.23z"/></svg><span><small>Download on the</small>App Store</span></a><a class="link" href="work/tockbee.html" data-label="Tockbee">Read the case study <span aria-hidden="true">→</span></a></div>
-      </div>
-      <div class="rel-stage tb-stage" data-reveal style="--d:.1s">
-                <div class="phone tb-app" data-tockbee role="group" aria-label="Working demo of the Tockbee today screen">
-          <div class="ph-status"><span>09:41</span><i class="ph-island"></i><span class="ph-sig"><svg viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5" width="3" height="7" rx="1"/><rect x="10" y="2" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg viewBox="0 0 26 12"><rect x=".5" y=".5" width="22" height="11" rx="3" fill="none" stroke="currentColor"/><rect x="2" y="2" width="17" height="8" rx="2"/><rect x="23.5" y="4" width="2" height="4" rx="1"/></svg></span></div>
-          <div class="tb-body">
-            <div class="tb-top"><b>tockbee</b><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg></div>
-            <span class="tb-chip" data-chip><i></i><span data-chip-text>On shift at Riverside Care Home</span></span>
-            <b class="tb-timer" data-timer>1:33:28</b>
-            <span class="tb-since" data-since>Clocked in 07:58 by location</span>
-            <button type="button" class="tb-btn" data-btn><span data-btn-text>Clock out</span></button>
-            <div class="tb-week">
-              <span>This week so far</span>
-              <b data-week>£458.20</b>
-              <div class="xp-row"><span data-hours>36h 03m</span><span data-shifts>5 shifts</span></div>
-              <div class="tb-bar"><i data-bar></i></div>
-              <span class="tb-goal" data-goal>£41.80 to your £500.00 goal</span>
-            </div>
-          </div>
-          <div class="ph-tabs tb-tabs" aria-hidden="true"><span class="on">Today</span><span>Shifts</span><span>Sites</span><span>Pay</span></div>
-        </div>
-
-        <p class="demo-hint mono" aria-hidden="true">Live timer · tap Clock out</p>
-      </div>
-    </article>
-    <article class="release" style="--acc:#8FC21F" id="freshbit">
-      <div class="rel-info" data-reveal>
-        <p class="rel-tag mono">My product · dotXline</p>
-        <div class="rel-name"><img src="assets/img/kit/fb-icon.webp" alt="" width="400" height="400" loading="lazy" decoding="async"><h3>FreshBit</h3></div>
-        <p class="rel-sub">News that checks first.</p>
-        <dl class="rel-meta mono"><div><dt>Platform</dt><dd>iPhone, iPad and Mac</dd></div><div><dt>Built with</dt><dd>Expo, React Native, SwiftUI</dd></div><div><dt>Status</dt><dd>In TestFlight testing</dd></div><div><dt>Role</dt><dd>Designed and built</dd></div></dl>
-        <p class="rel-desc">Confirmed news for designers and developers. It reads 51 trusted sources, groups stories about the same event and scores each one out of 100.</p>
-        <ul class="rel-points"><li>Every story is labelled Confirmed, Reported or Developing</li><li>Top-story alerts at most 3 a day</li><li>Built to run for $0 a month</li></ul>
-        <div class="rel-ctas"><a class="store fb-site" href="https://freshbit.dotxline.com" target="_blank" rel="noopener"><span><small>Visit the</small>FreshBit website</span></a><a class="link" href="work/freshbit.html" data-label="FreshBit">Read the case study <span aria-hidden="true">→</span></a></div>
-      </div>
-      <div class="rel-stage fb-rel" data-reveal style="--d:.1s">
-        <div class="fb-pair"><figure class="fb-shot"><img src="assets/img/kit/fb-today-light.webp" alt="FreshBit Today screen: the top story is confirmed by 5 sources" width="400" height="800" loading="lazy" decoding="async"></figure><figure class="fb-shot"><img src="assets/img/kit/fb-story-dark.webp" alt="FreshBit story screen in dark mode: the brief and a Read on Google DeepMind button" width="400" height="800" loading="lazy" decoding="async"></figure></div>
-        <p class="demo-hint mono" aria-hidden="true">Real screens · light and dark</p>
-      </div>
-    </article>
-    <p class="shipped-foot" data-reveal><a class="link" href="dotxline.html" data-label="dotXline">About dotXline LTD <span aria-hidden="true">→</span></a></p>
+    <div class="copy"><p class="kicker rv"><span class="n">01 / 05</span>How I work</p><h2 id="st-0" class="rv" style="--d:.05s">Discovery</h2><p class="lead rv" style="--d:.1s">Research the people, the goal and the constraints.</p></div>
+    <div class="art" data-art aria-hidden="true"></div>
   </div>
-</section>
-
-<section class="section" id="work">
+</section><section class="stage flip" data-dots="wire" aria-labelledby="st-1">
   <div class="wrap">
-    <div class="section-head">
-      <p class="kicker" data-reveal>Client work</p>
-      <h2 class="two-tone" data-split>Products I designed for teams. <span class="dim">Web, mobile and brand.</span></h2>
-    </div>
-    <ol class="ledger">
-      <li data-reveal style="--d:0.00s"><a href="work/chatvertiser.html" data-preview="assets/img/work/chatvertiser.webp" data-label="Chatvertiser">
-        <span class="lg-n">01</span><span class="lg-t">Chatvertiser</span><span class="lg-k">Web design · Ad tech UX</span><span class="lg-s">An AI-powered advertising platform that turns conversations into conversion tools.</span><span class="lg-a" aria-hidden="true">→</span></a></li>
-      <li data-reveal style="--d:0.06s"><a href="work/greenlife.html" data-label="Greenlife">
-        <span class="lg-n">02</span><span class="lg-t">Greenlife</span><span class="lg-k">App design · Grocery</span><span class="lg-s">A grocery shopping app that helps people buy their favourite fruit and vegetables from home, fast.</span><span class="lg-a" aria-hidden="true">→</span></a></li>
-      <li data-reveal style="--d:0.12s"><a href="work/puff-count.html" data-label="Puff Count">
-        <span class="lg-n">03</span><span class="lg-t">Puff Count</span><span class="lg-k">App design · Health</span><span class="lg-s">A mobile app that tracks nicotine consumption, with daily limits and onboarding that helps people quit vaping.</span><span class="lg-a" aria-hidden="true">→</span></a></li>
-      <li data-reveal style="--d:0.18s"><a href="work/pocket.html" data-label="Pocket">
-        <span class="lg-n">04</span><span class="lg-t">Pocket</span><span class="lg-k">iOS app design · Personal finance</span><span class="lg-s">A personal wallet app for iPhone: log expenses by category, see weekly statistics and keep your balance under control.</span><span class="lg-a" aria-hidden="true">→</span></a></li>
-    </ol>
-    <p class="ledger-foot" data-reveal><a class="link" href="work.html" data-label="Work">All work <span aria-hidden="true">→</span></a><a class="link" href="work.html#brand" data-label="Brand">Brand and print work <span aria-hidden="true">→</span></a></p>
+    <div class="copy"><p class="kicker rv"><span class="n">02 / 05</span>How I work</p><h2 id="st-1" class="rv" style="--d:.05s">Wireframes</h2><p class="lead rv" style="--d:.1s">Structure and flow before any polish.</p></div>
+    <div class="art" data-art aria-hidden="true"></div>
   </div>
-</section>
-
-<section class="logos" aria-label="Brands I have designed for">
-  <div class="wrap"><p class="kicker">Brands I’ve designed identities for</p><a href="work.html#brand">See all brand work →</a></div>
-  <div class="logo-row" data-marquee="1" data-speed="0.5" data-skew="off"><div class="logo-track"><img class="mono-logo" src="assets/img/brand/logo-hanek.webp" alt="Hanek" width="871" height="146" loading="lazy"><img class="mono-logo" src="assets/img/brand/logo-phinaturals.webp" alt="PhiNaturals" width="900" height="216" loading="lazy"><img class="mono-logo" src="assets/img/brand/logo-nation-insure.webp" alt="Nation Insure" width="646" height="420" loading="lazy"><img class="mono-logo" src="assets/img/brand/logo-mr-physics.webp" alt="Mr Physics" width="900" height="267" loading="lazy"><img class="mono-logo" src="assets/img/brand/logo-chatvertiser-logo.webp" alt="Chatvertiser" width="900" height="148" loading="lazy"><img class="mono-logo" src="assets/img/brand/logo-cupid-theory.webp" alt="Cupid Theory" width="818" height="452" loading="lazy"></div></div>
-</section>
-
-<section class="section" id="services">
+</section><section class="stage" data-dots="ui" aria-labelledby="st-2">
   <div class="wrap">
-    <div class="section-head">
-      <p class="kicker" data-reveal>What I do</p>
-      <h2 data-split>Clean interfaces that catch the eye and guide users effortlessly.</h2>
-    </div>
-    <div class="services" data-spot>
-      <div class="service" data-reveal><svg class="ico" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="18" pathLength="1"/><circle cx="24" cy="24" r="10" pathLength="1"/><path d="M24 24 40 8M34 8h6v6" pathLength="1"/></svg><span class="num">Strategy</span><h3>Product design strategy</h3><p>Intuitive, user-focused design strategy rooted in research and aligned with business goals.</p></div>
-      <div class="service" data-reveal style="--d:.08s"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true"><rect x="5" y="9" width="30" height="24" rx="3" pathLength="1"/><rect x="30" y="18" width="13" height="22" rx="3" pathLength="1"/><path d="M5 15h30" pathLength="1"/></svg><span class="num">Design + build</span><h3>Web &amp; app design and development</h3><p>From first concept to high-fidelity design, then built into working websites and iPhone and Android apps.</p></div>
-      <div class="service" data-reveal style="--d:.16s"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true"><path d="M8 14h32M8 24h32M8 34h32" pathLength="1"/><circle cx="17" cy="14" r="4" pathLength="1"/><circle cx="31" cy="24" r="4" pathLength="1"/><circle cx="21" cy="34" r="4" pathLength="1"/></svg><span class="num">Usability</span><h3>UI/UX optimisation</h3><p>Better usability and performance through engaging, accessible interfaces.</p></div>
-      <div class="service" data-reveal style="--d:.24s"><svg class="ico" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 5 41 15v18L24 43 7 33V15Z" pathLength="1"/><path d="M24 5v38M7 15l34 18M41 15 7 33" pathLength="1"/></svg><span class="num">Identity</span><h3>Brand identity</h3><p>Helping brands find their visual voice and build a consistent presence that resonates.</p></div>
-    </div>
+    <div class="copy"><p class="kicker rv"><span class="n">03 / 05</span>How I work</p><h2 id="st-2" class="rv" style="--d:.05s">UI design</h2><p class="lead rv" style="--d:.1s">High-fidelity screens and a visual system.</p></div>
+    <div class="art" data-art aria-hidden="true"></div>
   </div>
-</section>
-
-<section class="section alt" id="build">
+</section><section class="stage flip" data-dots="proto" aria-labelledby="st-3">
   <div class="wrap">
-    <div class="section-head">
-      <p class="kicker" data-reveal>How I build</p>
-      <h2 data-split>From a Figma frame to a <em>working</em> product.</h2>
-      <p data-reveal>I’m a product designer first. I also build, using AI-assisted development to turn designs into real, working software fast, then reviewing and refining the code myself.</p>
-    </div>
-    <ol class="build-steps" data-spot>
-      <li class="why-card" data-reveal><span class="big">Design</span><h3>Research and design</h3><p>User flows, wireframes and high-fidelity UI in Figma, grounded in what people actually need.</p></li>
-      <li class="why-card" data-reveal style="--d:.08s"><span class="big">Develop</span><h3>Real apps, not just prototypes</h3><p>Working iPhone, Android and web apps, built in SwiftUI and React Native from the design, with real screens and real data.</p></li>
-      <li class="why-card" data-reveal style="--d:.16s"><span class="big">Refine</span><h3>AI-assisted development</h3><p>I build with AI coding tools, then review the code and check every change against the design and the brief.</p></li>
-      <li class="why-card" data-reveal style="--d:.24s"><span class="big">Launch</span><h3>Take it to users</h3><p>At dotXline I take products from idea to launch-ready apps. For teams, I hand over clean code or clean specs.</p></li>
-    </ol>
-    <p class="build-note" data-reveal>This portfolio is an example: designed and built by me with AI-assisted development, including the particle logo, page transitions and every animation.</p>
+    <div class="copy"><p class="kicker rv"><span class="n">04 / 05</span>How I work</p><h2 id="st-3" class="rv" style="--d:.05s">Prototype</h2><p class="lead rv" style="--d:.1s">An interactive version to test and refine.</p></div>
+    <div class="art" data-art aria-hidden="true"></div>
   </div>
-</section>
-
-<section class="pitch">
+</section><section class="stage" data-dots="code" aria-labelledby="st-4">
   <div class="wrap">
-    <p class="kicker" data-reveal>Need a product that looks great and works flawlessly?</p>
-    <p class="scrub" data-scrub>With experience across web, mobile and brand design, I help businesses turn ideas into products people love to use. Whether you’re starting from scratch or refining something that already exists, I bring the clarity and creativity to make it stand out.</p>
+    <div class="copy"><p class="kicker rv"><span class="n">05 / 05</span>How I work</p><h2 id="st-4" class="rv" style="--d:.05s">Build</h2><p class="lead rv" style="--d:.1s">I build it with AI-assisted development, or hand clean specs to your developers.</p></div>
+    <div class="art" data-art aria-hidden="true"></div>
   </div>
 </section>
-
+<section class="section" id="apps" data-dots="off" aria-labelledby="apps-h">
+  <div class="wrap head"><div><p class="kicker rv">My apps · dotXline LTD</p><h2 id="apps-h" class="rv">Designed by me. Built by me.</h2></div><p class="rv">Xpense, Tockbee and FreshBit are the apps of dotXline LTD, my product company in Cardiff. I designed every screen and built all three. Two are live on the App Store, one is in testing.</p></div>
+</section>
+<section class="stage app" id="xpense" data-dots="xpense" aria-labelledby="app-xpense">
+  <div class="wrap">
+    <div class="copy">
+      <div class="art" data-art data-small aria-hidden="true"></div>
+      <p class="kicker rv"><span class="n">01</span>iPhone app · dotXline</p>
+      <h2 id="app-xpense" class="rv" style="--d:.05s">Xpense</h2>
+      <p class="lead rv" style="--d:.1s"><strong>Every penny, in plain sight.</strong> A calm, native iPhone expense tracker. Log spending, set budgets and goals, and split costs with friends.</p>
+      <ul class="tags rv" style="--d:.15s"><li>iPhone</li><li>SwiftUI</li><li>No ads</li><li class="status ">Live on the App Store</li></ul>
+      <div class="btns rv" style="--d:.2s"><a class="btn btn-solid" href="work/xpense.html">Read the case study</a></div>
+    </div>
+    <div class="phones xp rv" style="--d:.1s"><div class="phone"><img src="assets/img/motion/xp-screen-1.webp" alt="Xpense screen" width="402" height="874" loading="lazy" decoding="async"></div><div class="phone"><img src="assets/img/motion/xp-screen-3.webp" alt="Xpense screen" width="402" height="874" loading="lazy" decoding="async"></div></div>
+  </div>
+</section><section class="stage app" id="tockbee" data-dots="tockbee" aria-labelledby="app-tockbee">
+  <div class="wrap">
+    <div class="copy">
+      <div class="art" data-art data-small aria-hidden="true"></div>
+      <p class="kicker rv"><span class="n">02</span>iPhone and Android app · dotXline</p>
+      <h2 id="app-tockbee" class="rv" style="--d:.05s">Tockbee</h2>
+      <p class="lead rv" style="--d:.1s"><strong>Every hour you work, on the record.</strong> Tockbee clocks you in when you arrive at work, works out your pay and take-home, and checks your payslip against the hours you really worked.</p>
+      <ul class="tags rv" style="--d:.15s"><li>iPhone and Android</li><li>React Native</li><li>No tracking</li><li class="status ">Live on the App Store</li></ul>
+      <div class="btns rv" style="--d:.2s"><a class="btn btn-solid" href="work/tockbee.html">Read the case study</a></div>
+    </div>
+    <div class="phones tb rv" style="--d:.1s"><div class="phone"><img src="assets/img/apps/tockbee-today.webp" alt="Tockbee screen" width="402" height="874" loading="lazy" decoding="async"></div><div class="phone"><img src="assets/img/apps/tockbee-shifts.webp" alt="Tockbee screen" width="402" height="874" loading="lazy" decoding="async"></div></div>
+  </div>
+</section><section class="stage app" id="freshbit" data-dots="freshbit" aria-labelledby="app-freshbit">
+  <div class="wrap">
+    <div class="copy">
+      <div class="art" data-art data-small aria-hidden="true"></div>
+      <p class="kicker rv"><span class="n">03</span>iPhone, iPad and Mac app · dotXline</p>
+      <h2 id="app-freshbit" class="rv" style="--d:.05s">FreshBit</h2>
+      <p class="lead rv" style="--d:.1s"><strong>News that checks first.</strong> Confirmed news for designers and developers. FreshBit reads 51 trusted sources, groups the articles about the same event and scores each story out of 100.</p>
+      <ul class="tags rv" style="--d:.15s"><li>iPhone, iPad and Mac</li><li>Expo and SwiftUI</li><li>No ads</li><li class="status test">In TestFlight testing</li></ul>
+      <div class="btns rv" style="--d:.2s"><a class="btn btn-solid" href="work/freshbit.html">Read the case study</a></div>
+    </div>
+    <div class="phones fb rv" style="--d:.1s"><div class="phone"><img src="assets/img/motion/fb-today.webp" alt="FreshBit screen" width="402" height="874" loading="lazy" decoding="async"></div><div class="phone"><img src="assets/img/motion/fb-explore.webp" alt="FreshBit screen" width="402" height="874" loading="lazy" decoding="async"></div></div>
+  </div>
+</section>
+<section class="section" id="work" data-dots="off" aria-labelledby="work-h">
+  <div class="wrap">
+    <div class="head"><div><p class="kicker rv">Client work</p><h2 id="work-h" class="rv">Products I designed for teams.</h2></div><p class="rv">Web, mobile and brand work for companies across three countries.</p></div>
+    <ol class="rows"><li class="rv" style="--d:0.00s"><a href="work/chatvertiser.html"><span class="no mono">01</span><span><span class="kind mono">Web design · Ad tech UX</span><h3>Chatvertiser</h3></span><p class="desc">An AI-powered advertising platform that turns conversations into conversion tools.</p><figure><img src="assets/img/work/cv-cover.webp" alt="Chatvertiser" width="1400" height="940" loading="lazy" decoding="async"></figure></a></li><li class="rv" style="--d:0.05s"><a href="work/greenlife.html"><span class="no mono">02</span><span><span class="kind mono">App design · Grocery</span><h3>Greenlife</h3></span><p class="desc">A grocery shopping app that helps people buy their favourite fruit and vegetables from home, fast.</p><figure><img src="assets/img/work/greenlife.webp" alt="Greenlife" width="1080" height="1080" loading="lazy" decoding="async"></figure></a></li><li class="rv" style="--d:0.10s"><a href="work/puff-count.html"><span class="no mono">03</span><span><span class="kind mono">App design · Health</span><h3>Puff Count</h3></span><p class="desc">A mobile app that tracks nicotine consumption, with daily limits and onboarding that helps people quit vaping.</p><figure><img src="assets/img/work/pc-cover.webp" alt="Puff Count" width="1400" height="935" loading="lazy" decoding="async"></figure></a></li><li class="rv" style="--d:0.15s"><a href="work/pocket.html"><span class="no mono">04</span><span><span class="kind mono">iOS app design · Personal finance</span><h3>Pocket</h3></span><p class="desc">A personal wallet app for iPhone: log expenses by category, see weekly statistics and keep your balance under control.</p><figure><img src="assets/img/work/pw-cover.webp" alt="Pocket" width="1400" height="990" loading="lazy" decoding="async"></figure></a></li></ol>
+    <div class="btns rv" style="margin-top:var(--s5)"><a class="btn btn-line" href="work.html">All work and brand</a></div>
+  </div>
+</section>
+<section class="section" data-dots="off" aria-labelledby="svc-h">
+  <div class="wrap">
+    <div class="head"><div><p class="kicker rv">What I do</p><h2 id="svc-h" class="rv">What you get when you hire me.</h2></div><p class="rv">Clean interfaces that catch the eye and guide users without effort.</p></div>
+    <div class="grid3"><article class="tile rv" style="--d:0.00s"><p class="kicker">Strategy</p><h3>Product design strategy</h3><p>User-focused strategy rooted in research and aligned with business goals.</p></article><article class="tile rv" style="--d:0.05s"><p class="kicker">Interfaces</p><h3>Web & app design</h3><p>Concept to high-fidelity design for web, iPhone and Android.</p></article><article class="tile rv" style="--d:0.10s"><p class="kicker">Usability</p><h3>UI/UX optimisation</h3><p>Engaging, accessible interfaces that perform better.</p></article><article class="tile rv" style="--d:0.15s"><p class="kicker">Identity</p><h3>Brand identity</h3><p>Logos and visual systems that give a product its voice.</p></article><article class="tile rv" style="--d:0.20s"><p class="kicker">Apps</p><h3>App development</h3><p>iPhone, Android and web apps designed and built end to end, like Xpense and Tockbee.</p></article><article class="tile rv" style="--d:0.25s"><p class="kicker">Building</p><h3>AI-assisted development</h3><p>Designs turned into working front ends and apps, reviewed and refined by me.</p></article></div>
+  </div>
+</section>
+<section class="stage" data-dots="hello" aria-labelledby="hi-h">
+  <div class="wrap">
+    <div class="copy"><p class="kicker rv">Available now</p><h2 id="hi-h" class="rv" style="--d:.05s">Let’s work together.</h2><p class="lead rv" style="--d:.1s">Hiring for a product design role, or need a designer for a project? Tell me a little about it and I’ll get back to you.</p>
+      <div class="btns rv" style="--d:.15s"><a class="btn btn-solid" href="contact.html">Start a conversation</a><a class="btn btn-line" href="mailto:contact@nagulesgobi.com">Email me</a></div></div>
+    <div class="art" data-art data-wide aria-hidden="true"></div>
+  </div>
+</section>
 </main>
-<section class="foot-cta">
+<footer class="site-foot">
   <div class="wrap">
-    <div class="foot-cta-grid">
-      <div>
-        <p class="kicker" data-reveal>Available for product design roles and freelance projects</p>
-        <h2 data-split>Have a product people should love? Let’s build it.</h2>
-        <a class="mail" href="mailto:contact@nagulesgobi.com" data-reveal><span data-text="contact@nagulesgobi.com">contact@nagulesgobi.com</span></a>
-      </div>
-      <a class="orb" href="contact.html" data-magnetic aria-label="Hire me" data-label="Contact">
-        <svg class="orb-ring" viewBox="0 0 200 200" aria-hidden="true"><defs><path id="orb-c" d="M100 100m-78 0a78 78 0 1 1 156 0a78 78 0 1 1-156 0"/></defs><text><textPath href="#orb-c" textLength="488" lengthAdjust="spacing">HIRE ME · LET'S TALK · HIRE ME · LET'S TALK · </textPath></text></svg>
-        <span class="orb-core"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
-      </a>
-    </div>
-  </div>
-</section>
-<footer class="foot">
-  <div class="wrap">
-    <svg class="giant" viewBox="-4 -4 871 112" aria-hidden="true"><defs><linearGradient id="gw" x1="0" x2="1"><stop offset="0" stop-color="#FF9124"/><stop offset=".35" stop-color="#FF4A2C"/><stop offset=".6" stop-color="#FF2440"/><stop offset="1" stop-color="#FF008E"/></linearGradient></defs><path d="M60.1 0H73.3Q74 0 74.5 0.5Q75 1 75 1.7V98.3Q75 99 74.5 99.5Q74 100 73.3 100H59.4Q58.1 100 57.4 98.7L26.3 34.7Q26 34.3 25.7 34.4Q25.4 34.4 25.4 35L25.6 98.3Q25.6 99 25.1 99.5Q24.6 100 23.9 100H10.7Q10 100 9.5 99.5Q9 99 9 98.3V1.7Q9 1 9.5 0.5Q10 0 10.7 0H24.4Q25.9 0 26.4 1.3L57.7 65.6Q58 66 58.3 65.9Q58.6 65.9 58.6 65.3L58.4 1.7Q58.4 1 58.9 0.5Q59.4 0 60.1 0Z M148.4 98.6 144.7 83.3Q144.6 82.7 144 82.7H114.6Q114 82.7 113.9 83.3L110.3 98.6Q109.9 100 108.3 100H94.7Q92.9 100 93.3 98.1L119.3 1.4Q119.7 0 121.3 0H137.6Q139.1 0 139.6 1.4L165.6 98.1L165.7 98.7Q165.7 100 164.1 100H150.4Q148.9 100 148.4 98.6ZM118 69.7H140.6Q140.9 69.7 141.1 69.5Q141.4 69.3 141.3 68.9L129.6 22Q129.4 21.6 129.1 21.6Q128.9 21.6 128.7 22L117.3 68.9Q117.1 69.3 117.4 69.5Q117.7 69.7 118 69.7Z M181.9 71.3V28.7Q181.9 19.9 185.8 13.1Q189.7 6.3 196.8 2.6Q203.9 -1.1 213.1 -1.1Q222.4 -1.1 229.6 2.5Q236.7 6.1 240.6 12.7Q244.6 19.3 244.6 27.7V31Q244.6 31.7 244.1 32.2Q243.6 32.7 242.9 32.7H229.7Q229 32.7 228.5 32.2Q228 31.7 228 31V27.7Q228 21.3 223.9 17.2Q219.9 13.1 213.1 13.1Q206.6 13.1 202.5 17.4Q198.4 21.6 198.4 28.4V71.6Q198.4 78.4 202.6 82.6Q206.9 86.9 213.6 86.9Q220.1 86.9 224.1 83.1Q228 79.3 228 72.7V61.4Q228 60.7 227.3 60.7H214.3Q213.6 60.7 213.1 60.2Q212.6 59.7 212.6 59V48.6Q212.6 47.9 213.1 47.4Q213.6 46.9 214.3 46.9H242.9Q243.6 46.9 244.1 47.4Q244.6 47.9 244.6 48.6V70.9Q244.6 85 236 93.1Q227.4 101.1 213.1 101.1Q203.9 101.1 196.8 97.4Q189.7 93.7 185.8 86.9Q181.9 80.1 181.9 71.3Z M265.9 70V1.7Q265.9 1 266.4 0.5Q266.9 0 267.6 0H280.7Q281.4 0 281.9 0.5Q282.4 1 282.4 1.7V70.9Q282.4 78 286.5 82.4Q290.6 86.9 297.3 86.9Q304 86.9 308.1 82.4Q312.3 78 312.3 70.9V1.7Q312.3 1 312.8 0.5Q313.3 0 314 0H327.1Q327.9 0 328.4 0.5Q328.9 1 328.9 1.7V70Q328.9 79.3 324.9 86.4Q321 93.4 313.9 97.3Q306.7 101.1 297.3 101.1Q288 101.1 280.9 97.3Q273.7 93.4 269.8 86.4Q265.9 79.3 265.9 70Z M352.3 98.3V1.7Q352.3 1 352.8 0.5Q353.3 0 354 0H367.1Q367.9 0 368.4 0.5Q368.9 1 368.9 1.7V85Q368.9 85.7 369.6 85.7H408.9Q409.6 85.7 410.1 86.2Q410.6 86.7 410.6 87.4V98.3Q410.6 99 410.1 99.5Q409.6 100 408.9 100H354Q353.3 100 352.8 99.5Q352.3 99 352.3 98.3Z M485.7 14.3H446Q445.3 14.3 445.3 15V41.9Q445.3 42.6 446 42.6H471.4Q472.1 42.6 472.6 43.1Q473.1 43.6 473.1 44.3V55.1Q473.1 55.9 472.6 56.4Q472.1 56.9 471.4 56.9H446Q445.3 56.9 445.3 57.6V85Q445.3 85.7 446 85.7H485.7Q486.4 85.7 486.9 86.2Q487.4 86.7 487.4 87.4V98.3Q487.4 99 486.9 99.5Q486.4 100 485.7 100H430.4Q429.7 100 429.2 99.5Q428.7 99 428.7 98.3V1.7Q428.7 1 429.2 0.5Q429.7 0 430.4 0H485.7Q486.4 0 486.9 0.5Q487.4 1 487.4 1.7V12.6Q487.4 13.3 486.9 13.8Q486.4 14.3 485.7 14.3Z M504.3 73.9V70.1Q504.3 69.4 504.8 68.9Q505.3 68.4 506 68.4H518.9Q519.6 68.4 520.1 68.9Q520.6 69.4 520.6 70.1V73Q520.6 79.1 524.9 83Q529.1 86.9 536.4 86.9Q543.1 86.9 546.7 83.4Q550.3 80 550.3 74.4Q550.3 70.6 548.3 67.8Q546.3 65 542.6 62.6Q539 60.3 531.4 56.3Q522.7 51.7 517.4 48.1Q512.1 44.6 508.5 39Q504.9 33.4 504.9 25.4Q504.9 13.1 513.1 6Q521.3 -1.1 534.7 -1.1Q544 -1.1 551.1 2.4Q558.3 5.9 562.1 12.3Q566 18.7 566 27V30Q566 30.7 565.5 31.2Q565 31.7 564.3 31.7H551.4Q550.7 31.7 550.2 31.2Q549.7 30.7 549.7 30V27.3Q549.7 21.1 545.6 17.1Q541.4 13.1 534.4 13.1Q528.3 13.1 524.7 16.4Q521.1 19.6 521.1 25.3Q521.1 29.1 523 31.9Q524.9 34.6 528.6 37Q532.4 39.4 540.1 43.3Q550.4 49.1 555.3 52.4Q560.1 55.7 563.5 60.9Q566.9 66.1 566.9 73.7Q566.9 86.3 558.4 93.7Q550 101.1 535.9 101.1Q526.4 101.1 519.3 97.8Q512.1 94.4 508.2 88.2Q504.3 82 504.3 73.9Z M585.1 71.3V28.7Q585.1 19.9 589.1 13.1Q593 6.3 600.1 2.6Q607.1 -1.1 616.4 -1.1Q625.7 -1.1 632.9 2.5Q640 6.1 643.9 12.7Q647.9 19.3 647.9 27.7V31Q647.9 31.7 647.4 32.2Q646.9 32.7 646.1 32.7H633Q632.3 32.7 631.8 32.2Q631.3 31.7 631.3 31V27.7Q631.3 21.3 627.2 17.2Q623.1 13.1 616.4 13.1Q609.9 13.1 605.8 17.4Q601.7 21.6 601.7 28.4V71.6Q601.7 78.4 605.9 82.6Q610.1 86.9 616.9 86.9Q623.4 86.9 627.4 83.1Q631.3 79.3 631.3 72.7V61.4Q631.3 60.7 630.6 60.7H617.6Q616.9 60.7 616.4 60.2Q615.9 59.7 615.9 59V48.6Q615.9 47.9 616.4 47.4Q616.9 46.9 617.6 46.9H646.1Q646.9 46.9 647.4 47.4Q647.9 47.9 647.9 48.6V70.9Q647.9 85 639.3 93.1Q630.7 101.1 616.4 101.1Q607.1 101.1 600.1 97.4Q593 93.7 589.1 86.9Q585.1 80.1 585.1 71.3Z M667.9 70.1V29.9Q667.9 20.7 671.8 13.6Q675.7 6.6 682.9 2.7Q690.1 -1.1 699.6 -1.1Q709.1 -1.1 716.4 2.7Q723.6 6.6 727.6 13.6Q731.6 20.7 731.6 29.9V70.1Q731.6 79.4 727.6 86.5Q723.6 93.6 716.4 97.4Q709.1 101.3 699.6 101.3Q690.1 101.3 682.9 97.4Q675.7 93.6 671.8 86.5Q667.9 79.4 667.9 70.1ZM715 70.9V29.4Q715 22.1 710.8 17.6Q706.6 13.1 699.6 13.1Q692.7 13.1 688.6 17.6Q684.4 22.1 684.4 29.4V70.9Q684.4 78 688.6 82.5Q692.7 87 699.6 87Q706.6 87 710.8 82.5Q715 78 715 70.9Z M785.9 100H755.4Q754.7 100 754.2 99.5Q753.7 99 753.7 98.3V1.7Q753.7 1 754.2 0.5Q754.7 0 755.4 0H784.1Q798.6 0 806.6 6.8Q814.7 13.6 814.7 27Q814.7 41.7 803.1 47.9Q802.4 48.3 803 48.7Q816 55.7 816 72.6Q816 85.9 807.6 92.9Q799.3 100 785.9 100ZM770.3 15V41.6Q770.3 42.3 771 42.3H784.3Q791 42.3 794.8 38.6Q798.6 35 798.6 28.4Q798.6 21.7 794.8 18Q791 14.3 784.3 14.3H771Q770.3 14.3 770.3 15ZM799.4 70.4Q799.4 63.3 795.6 59.2Q791.7 55.1 785.1 55.1H771Q770.3 55.1 770.3 55.9V84.9Q770.3 85.6 771 85.6H785.3Q791.9 85.6 795.6 81.6Q799.4 77.6 799.4 70.4Z M837.1 98.3V1.7Q837.1 1 837.6 0.5Q838.1 0 838.9 0H852Q852.7 0 853.2 0.5Q853.7 1 853.7 1.7V98.3Q853.7 99 853.2 99.5Q852.7 100 852 100H838.9Q838.1 100 837.6 99.5Q837.1 99 837.1 98.3Z"/></svg>
+    <p class="kicker">Open to product design roles and freelance projects</p>
+    <a class="big" href="mailto:contact@nagulesgobi.com">contact@nagulesgobi.com</a>
     <div class="foot-cols">
-      <div><h4>Pages</h4><ul><li><a href="index.html">Home</a></li><li><a href="work.html">Work</a></li><li><a href="dotxline.html">dotXline</a></li><li><a href="about.html">About</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+      <div><h4>Nagules Gobi</h4><p class="hint">Product designer in the United Kingdom. Director of dotXline LTD.</p><p class="hint" style="margin-top:8px">London <span data-clock>--:--</span></p></div>
+      <div><h4>Pages</h4><ul><li><a href="index.html">Home</a></li><li><a href="work.html">Work</a></li><li><a href="about.html">About</a></li><li><a href="dotxline.html">dotXline</a></li><li><a href="contact.html">Contact</a></li></ul></div>
       <div><h4>Case studies</h4><ul><li><a href="work/xpense.html">Xpense</a></li><li><a href="work/tockbee.html">Tockbee</a></li><li><a href="work/freshbit.html">FreshBit</a></li><li><a href="work/chatvertiser.html">Chatvertiser</a></li><li><a href="work/greenlife.html">Greenlife</a></li><li><a href="work/puff-count.html">Puff Count</a></li><li><a href="work/pocket.html">Pocket</a></li></ul></div>
-      <div><h4>Elsewhere</h4><ul><li><a href="https://dotxline.com" target="_blank" rel="noopener">dotxline.com ↗</a></li><li><a href="https://www.behance.net/gallery/224174429/Chatvertiser" target="_blank" rel="noopener">Behance ↗</a></li><li><a href="mailto:contact@nagulesgobi.com">Email</a></li><li><span>London <time data-clock>--:--</time></span></li></ul></div>
+      <div><h4>Elsewhere</h4><ul><li><a href="https://dotxline.com" target="_blank" rel="noopener">dotxline.com ↗</a></li><li><a href="https://www.behance.net/gallery/224174429/Chatvertiser" target="_blank" rel="noopener">Behance ↗</a></li><li><a href="mailto:contact@nagulesgobi.com">Email</a></li></ul></div>
     </div>
-    <div class="foot-row">
-      <p>© <span data-year>2026</span> Nagules Gobi · Product designer, United Kingdom</p>
-      <p><a href="#top">Back to top ↑</a></p>
-    </div>
+    <div class="foot-row"><p>© <span data-year>2026</span> Nagules Gobi · Product designer, United Kingdom</p><p>Designed and built by me</p></div>
   </div>
 </footer>
-
+<script src="assets/motion/marquee.js?v={V}" defer></script>
 </body>
 </html>
