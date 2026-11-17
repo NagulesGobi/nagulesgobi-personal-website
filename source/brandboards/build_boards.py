@@ -4,7 +4,7 @@
 Each brand gets one 1600 x 1200 board on its own ground: the app icon drawn the Apple way (layered
 Liquid Glass: each layer lifted off the tile with its own shadow, highlight and glass rim), the
 wordmark, the Dark and Tinted appearances and the palette. Every board is a different kind of
-showcase: Xpense a construction sheet, Tockbee a poster, FreshBit a home screen, Mistkite a
+showcase: Xpense an exploded layer view, Tockbee a poster, FreshBit a home screen, Mistkite a
 landscape and ngxo3 a stream overlay.
 
 The layers, their order and their light and dark colours come from each app's own Icon Composer
@@ -178,7 +178,7 @@ def box(svg_text):
     vb = [float(v) for v in re.search(r'viewBox="([^"]+)"', svg_text).group(1).split()]
     return ink_box(svg_text, vb)
 
-SHADOW = ('<filter id="sh" x="-40%" y="-40%" width="180%" height="190%"><feGaussianBlur in="SourceAlpha" stdDeviation="22"/><feOffset dy="26"/>'
+SHADOW = ('<filter id="sh" filterUnits="userSpaceOnUse" x="-400" y="-400" width="2600" height="2000"><feGaussianBlur in="SourceAlpha" stdDeviation="22"/><feOffset dy="26"/>'
           '<feComponentTransfer><feFuncA type="linear" slope=".38"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter>')
 
 def hero(spec, mark_svg=None, text=None, mark_h=150):
@@ -209,11 +209,13 @@ def footer(spec, cols, ring):
         out += f'<circle cx="{x + i * step}" cy="{TY + TS / 2}" r="{r}" fill="{c}" stroke="{ring}" stroke-width="1.5"/>'
     return out
 
-def board(slug, ground, body):
-    svg = (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}"><defs>{SHADOW}</defs>{ground}{body}</svg>')
+BOARD_SIZE = {}
+def board(slug, ground, body, w=W, h=H):
+    svg = (f'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 {w} {h}" width="{w}" height="{h}"><defs>{SHADOW}</defs>{ground}{body}</svg>')
     f = os.path.join(TMP, slug + '.svg'); open(f, 'w').write(svg)
     png = os.path.join(TMP, slug + '.png')
-    subprocess.run(['rsvg-convert', '-w', str(W), '-h', str(H), f, '-o', png], check=True, env=ENV)
+    BOARD_SIZE[f'brand/board-{slug}'] = [w, h]
+    subprocess.run(['rsvg-convert', '-w', str(w), '-h', str(h), f, '-o', png], check=True, env=ENV)
     subprocess.run(['cwebp', '-quiet', '-q', '90', png, '-o', os.path.join(OUT, f'board-{slug}.webp')], check=True)
     return f'brand/board-{slug}'
 
@@ -238,36 +240,60 @@ def label(x, y, txt, fill, size=22, font='Menlo', weight=400, anchor='start', op
     return f'<text x="{x}" y="{y}" font-family="{font}" font-size="{size}" font-weight="{weight}" fill="{fill}" fill-opacity="{op}" text-anchor="{anchor}">{txt}</text>'
 
 def xpense():
-    """Construction sheet: the layered icon on Apple's icon grid, each layer numbered and named."""
-    MINT, INK, PAPER = '#3DD6A8', '#0E1512', '#F4F6F3'
-    ground = f'<rect width="1600" height="1200" fill="{INK}"/>' + glow('#0F9D7A', .3, 470, 520, 760)
-    x, y, s = 150, 250, 560
-    def P(u, v): return x + u * s / 1024, y + v * s / 1024
-    g = f'stroke="{MINT}" stroke-opacity=".38" stroke-width="1.5" fill="none"'
-    grid = (f'<rect x="{x}" y="{y}" width="{s}" height="{s}" {g}/>'
-            f'<circle cx="{x + s / 2}" cy="{y + s / 2}" r="{s / 2}" {g}/><circle cx="{x + s / 2}" cy="{y + s / 2}" r="{s * .31}" {g}/>'
-            f'<rect x="{x + s * .09}" y="{y + s * .17}" width="{s * .82}" height="{s * .66}" {g}/><rect x="{x + s * .17}" y="{y + s * .09}" width="{s * .66}" height="{s * .82}" {g}/>'
-            f'<line x1="{x}" y1="{y}" x2="{x + s}" y2="{y + s}" {g}/><line x1="{x + s}" y1="{y}" x2="{x}" y2="{y + s}" {g}/>'
-            f'<line x1="{x + s / 2}" y1="{y - 40}" x2="{x + s / 2}" y2="{y + s + 40}" {g}/><line x1="{x - 40}" y1="{y + s / 2}" x2="{x + s + 40}" y2="{y + s / 2}" {g}/>')
-    dim = (f'<line x1="{x}" y1="{y - 34}" x2="{x + s}" y2="{y - 34}" stroke="{MINT}" stroke-opacity=".7" stroke-width="1.5"/>'
-           f'<line x1="{x}" y1="{y - 44}" x2="{x}" y2="{y - 24}" stroke="{MINT}" stroke-width="1.5"/><line x1="{x + s}" y1="{y - 44}" x2="{x + s}" y2="{y - 24}" stroke="{MINT}" stroke-width="1.5"/>'
-           + f'<rect x="{x + s / 2 - 70}" y="{y - 50}" width="140" height="32" fill="{INK}"/>' + label(x + s / 2, y - 26, '1024 pt', MINT, 20, anchor='middle'))
-    pins = [(1, P(512, 385), 'Last month', 'white at 35%'), (2, P(770, 639), 'Kept', 'amber #F5A524'), (3, P(400, 639), 'This month', 'white, in front')]
-    pin_svg = ''.join(f'<circle cx="{px:.1f}" cy="{py:.1f}" r="17" fill="{MINT}" stroke="{INK}" stroke-width="3"/>' + label(px, py + 7, str(n), INK, 19, weight=700, anchor='middle')
-                      for n, (px, py), _, _ in pins)
-    rx = 820
-    rows = ''
-    for i, (n, _, name, note) in enumerate(pins):
-        ry = 600 + i * 84
-        rows += (f'<circle cx="{rx + 17}" cy="{ry - 8}" r="17" fill="{MINT}"/>' + label(rx + 17, ry - 1, str(n), INK, 19, weight=700, anchor='middle')
-                 + label(rx + 56, ry - 1, name, PAPER, 28, 'Helvetica Neue', 500) + label(rx + 56 + 17 * len(name), ry - 1, '· ' + note, PAPER, 24, op=.55))
-    wm = embed(read('xpense-wordmark-dark.svg'), rx, 300, 470, 130)
-    head = label(rx, 470, 'App icon · three glass layers', MINT, 22) + f'<line x1="{rx}" y1="500" x2="{rx + 640}" y2="500" stroke="{MINT}" stroke-opacity=".3" stroke-width="1.5"/>'
-    foot = (icon_at(XPENSE, 'dark', rx, 900, 150) + icon_at(XPENSE, 'tinted', rx + 180, 900, 150)
-            + label(rx + 75, 1090, 'Dark', PAPER, 20, op=.6, anchor='middle') + label(rx + 255, 1090, 'Tinted', PAPER, 20, op=.6, anchor='middle')
-            + dots(['#0F9D7A', '#0A7D61', '#F5A524', PAPER], rx + 420, 975, 'rgba(255,255,255,.25)'))
-    body = grid + icon_at(XPENSE, 'light', x, y, s) + grid.replace('stroke-opacity=".38"', 'stroke-opacity=".16"') + dim + pin_svg + wm + head + rows + foot
-    return board('xpense', ground, body)
+    """Exploded view, the way Icon Composer shows a layered icon: the mint tile and the three bars float apart
+    in depth. Beside it the wordmark, what each bar means (the brand's own words), the three appearances and
+    the icon at 64, 32 and 16 px."""
+    w, h = 1600, 1200
+    INK, PAPER, AMBER, MINT, MINT_T = '#0E1512', '#F4F6F3', '#F5A524', '#0F9D7A', '#3DD6A8'
+    ground = f'<rect width="{w}" height="{h}" fill="{INK}"/>' + glow('#0F9D7A', .3, 420, 640, 700)
+    # isometric planes
+    cx, cy, S, D = 420, 760, 470, 118
+    k = S / 1024
+    def plane(i, inner, extra=''):
+        t = f'translate({cx} {cy - i * D}) matrix(.7071 .4082 -.7071 .4082 0 0) translate({-512 * k:.2f} {-512 * k:.2f}) scale({k:.5f})'
+        return f'<g filter="url(#sh)"><g transform="{t}" {extra}>{inner}</g></g>'
+    def pt(i, x, y):
+        X, Y = (x - 512) * k, (y - 512) * k
+        return cx + .7071 * X - .7071 * Y, cy - i * D + .4082 * X + .4082 * Y
+    tile = ('<defs><linearGradient id="xt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#14B08A"/><stop offset="1" stop-color="#0A7D61"/></linearGradient></defs>'
+            f'<path d="{TILE_D}" fill="url(#xt)"/><path d="{TILE_D}" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="8"/>')
+    layers = [(read('xpense-layer-last-month.svg'), '#FFFFFF', .35), (read('xpense-layer-kept.svg'), AMBER, 1), (read('xpense-layer-this-month.svg'), '#FFFFFF', 1)]
+    guides = ''
+    for (x, y) in ((0, 1024), (1024, 0), (1024, 1024)):
+        x1, y1 = pt(0, x, y); x2, y2 = pt(3, x, y)
+        guides += f'<line x1="{x1:.1f}" y1="{y1:.1f}" x2="{x2:.1f}" y2="{y2:.1f}" stroke="{MINT_T}" stroke-opacity=".35" stroke-width="1.5" stroke-dasharray="6 8"/>'
+    stack = plane(0, tile)
+    for i, (svg, fill, op) in enumerate(layers, 1):
+        d = attr(svg, ' d')
+        ghost = f'<path d="{TILE_D}" fill="#FFFFFF" fill-opacity=".035" stroke="#FFFFFF" stroke-opacity=".16" stroke-width="5"/>'
+        stack += plane(i, ghost + f'<path d="{d}" fill="{fill}" fill-opacity="{op}"/><path d="{d}" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="10"/>')
+    # layer numbers beside the stack
+    nums = ''
+    for i, name in enumerate(('Tile', 'Last month', 'Kept', 'This month')):
+        x, y = pt(i, 1024, 512)
+        nums += (f'<line x1="{x + 14:.0f}" y1="{y:.0f}" x2="{cx + 360:.0f}" y2="{y:.0f}" stroke="{MINT_T}" stroke-opacity=".45" stroke-width="1.5" stroke-dasharray="2 5"/>'
+                 + label(cx + 372, y + 6, f'{i:02d}  {name}', PAPER, 18, op=.75))
+    # right column
+    rx = 1010
+    right = (embed(read('xpense-wordmark-dark.svg'), rx, 150, 420, 110)
+             + label(rx, 330, 'The logo is two bars.', PAPER, 40, 'Sora', 600))
+    rows = [(f'<rect x="{rx}" y="{{y}}" width="120" height="30" rx="15" fill="{MINT}" fill-opacity=".45"/>', 'Faint: last month.'),
+            (f'<rect x="{rx}" y="{{y}}" width="120" height="30" rx="15" fill="#FFFFFF"/>', 'White: this month.'),
+            (f'<rect x="{rx}" y="{{y}}" width="120" height="30" rx="15" fill="{AMBER}"/>', 'Amber: what you kept.')]
+    for j, (shape, text) in enumerate(rows):
+        y = 384 + j * 62
+        right += shape.format(y=y) + label(rx + 148, y + 23, text, PAPER, 28, 'Sora', 600, op=.85)
+    looks = ''
+    for j, look in enumerate(('light', 'dark', 'tinted')):
+        x = rx + j * 196
+        looks += icon_at(XPENSE, look, x, 640, 160) + label(x + 80, 840, look.capitalize(), PAPER, 20, op=.6, anchor='middle')
+    sizes = ''
+    x = rx
+    for size in (64, 32, 16):
+        sizes += embed(icon_svg(XPENSE, 'light'), x, 950 + (64 - size) / 2, size, size, crop=False) + label(x + size / 2, 1046, f'{size} px', PAPER, 18, op=.55, anchor='middle')
+        x += size + 64
+    rule = f'<line x1="{rx}" y1="900" x2="{rx + 560}" y2="900" stroke="{MINT_T}" stroke-opacity=".25" stroke-width="1.5"/>'
+    return board('xpense', ground, guides + stack + nums + right + looks + rule + sizes, w, h)
 
 def tockbee():
     """Warm poster: the mark huge and cropped by the edge, the app icon and wordmark set small beside it."""
@@ -361,5 +387,5 @@ if __name__ == '__main__':
             open(os.path.join(SRC, f'{name}-layered-{look}.svg'), 'w').write(icon_svg(spec, look))
     sizes = json.load(open(SIZES))
     for fn in (xpense, tockbee, freshbit, mistkite, ngxo3):
-        key = fn(); sizes[key] = [W, H]; print('built', key)
+        key = fn(); sizes[key] = BOARD_SIZE[key]; print('built', key)
     json.dump(sizes, open(SIZES, 'w'))

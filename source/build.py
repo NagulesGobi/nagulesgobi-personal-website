@@ -713,7 +713,7 @@ def dotxline():
 
 # ---------------------------------------------------------------- brand
 GALLERY = [
-  ('board-xpense', 'Xpense', 'App icon and wordmark · dotXline', 'identity', False), ('board-tockbee', 'Tockbee', 'Logo and app icon · dotXline', 'identity', False),
+  ('board-xpense', 'Xpense', 'Logo and layered app icon · dotXline', 'identity', False), ('board-tockbee', 'Tockbee', 'Logo and app icon · dotXline', 'identity', False),
   ('board-freshbit', 'FreshBit', 'App icon and wordmark · dotXline', 'identity', False), ('board-mistkite', 'Mistkite', 'Logo and app icon · place-search web app', 'identity', False),
   ('board-ngxo3', 'ngxo3', 'Twitch channel logo', 'identity', False),
   ('logo-hanek', 'Hanek', 'Logo', 'identity', True), ('allura', 'Allura Apparel', 'Brand guide', 'identity', False),
