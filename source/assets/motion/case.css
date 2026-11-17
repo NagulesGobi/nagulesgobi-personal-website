@@ -1,0 +1,48 @@
+/* Case study pages, aligned with the main pages (assets/motion/motion.css):
+   the dot mark in the hero, uppercase display headings, mono labels and the same footer. */
+#dots { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; display: block; }
+main, .site-foot { position: relative; z-index: 1; }
+
+/* Hero: copy left, the project's mark in dots right */
+.cs-hero { min-height: 92svh; display: flex; align-items: center; padding: 140px 0 72px; background: none; }
+.cs-hero .glow { display: none; }
+.cs-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); grid-template-areas: "kicker art" "title art" "lede art" "facts art" "btns art"; column-gap: clamp(32px, 6vw, 96px); align-content: center; }
+.cs-grid > .kicker { grid-area: kicker; }
+.cs-grid > h1 { grid-area: title; margin-top: 20px; }
+.cs-grid > .lede { grid-area: lede; margin-top: 24px; max-width: 44ch; }
+.cs-grid > .case-facts { grid-area: facts; margin-top: 32px; }
+.cs-grid > .case-store { grid-area: btns; margin-top: 32px; }
+.cs-grid > .art { grid-area: art; align-self: center; justify-self: center; width: min(100%, 460px); aspect-ratio: 1; }
+.cs-hero h1 { font: 600 clamp(52px, 6.2vw, 104px)/.9 var(--display); letter-spacing: -.02em; }
+
+/* Headings and labels as on the main pages */
+.case-sec h2, .next h2, .case-band h2, .kit h2 { font-family: var(--display); font-weight: 600; text-transform: uppercase; letter-spacing: -.005em; line-height: .92; }
+.case-sec h2 { font-size: clamp(34px, 3.8vw, 60px); }
+.kicker { font-family: var(--mono); font-weight: 500; text-transform: uppercase; letter-spacing: .1em; }
+.case-facts dt { font-family: var(--mono); text-transform: uppercase; letter-spacing: .08em; }
+
+/* Footer: the main pages' footer */
+.site-foot { border-top: 1px solid var(--line); padding: 64px 0 32px; background: var(--bg); }
+.site-foot .kicker { color: var(--muted); font-size: 12px; }
+.site-foot .kicker { display: flex; }
+.site-foot .big { font: 600 clamp(40px, 4.6vw, 80px)/1 var(--display); color: var(--text); text-decoration: none; display: flex; align-items: center; width: fit-content; max-width: 100%; min-height: 44px; margin-top: 16px; overflow-wrap: anywhere; }
+.site-foot .big:hover { color: var(--accent); }
+.site-foot .foot-cols { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 32px; margin-top: 64px; }
+.site-foot .foot-cols h4 { font: 500 12px/1.4 var(--mono); text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin: 0 0 16px; }
+.site-foot .foot-cols ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 2px; }
+.site-foot .foot-cols a { color: var(--text); text-decoration: none; display: inline-block; padding: 6px 0; }
+.site-foot .foot-cols a:hover { color: var(--accent); }
+.site-foot .hint { color: var(--muted); font-size: 14px; margin: 0; }
+.site-foot .foot-row { display: flex; justify-content: space-between; gap: 24px; margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+.site-foot .foot-row a { color: inherit; }
+
+/* Phones: heading first, then the dot mark, then the text */
+@media (max-width: 899px) {
+  .cs-hero { min-height: 0; padding: 96px 0 48px; }
+  .cs-grid { grid-template-columns: 1fr; grid-template-areas: "kicker" "title" "art" "lede" "facts" "btns"; }
+  .cs-grid > .art { width: min(70%, 280px); margin-top: 32px; }
+  .site-foot .foot-cols { grid-template-columns: 1fr 1fr; }
+  .site-foot .foot-cols a { display: inline-flex; align-items: center; min-height: 44px; padding: 0; }
+  .site-foot .big { font-size: clamp(26px, 7.6vw, 40px); overflow-wrap: normal; }
+  .site-foot .foot-row { flex-direction: column; }
+}

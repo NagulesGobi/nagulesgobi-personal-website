@@ -41,17 +41,17 @@ export const SHAPES = {
   dotx(x) { x.translate(-10, 40); x.scale(7.4, 7.4); x.strokeStyle = '#D97706'; x.lineWidth = 10; x.lineCap = 'round'; x.lineJoin = 'round';
     x.stroke(new Path2D('M63.44 36.56 L38.69 61.31 A16 16 0 1 1 38.69 38.69 L61.31 61.31 A9 9 0 0 0 76.68 54.95 L76.68 20.00')); },
   // client marks, cut from each project's own cover or logo file
-  chatvertiser: { image: 'assets/img/motion/mark-chatvertiser.png', mode: 'ink' },
-  greenlife: { image: 'assets/img/motion/mark-greenlife.png', mode: 'color' },
-  'puff-count': { image: 'assets/img/motion/mark-puffcount.png', mode: 'color' },
-  pocket: { image: 'assets/img/motion/mark-pocket.png', mode: 'color' },
+  chatvertiser: { image: new URL('../img/motion/mark-chatvertiser.png', import.meta.url).href, mode: 'ink' },
+  greenlife: { image: new URL('../img/motion/mark-greenlife.png', import.meta.url).href, mode: 'color' },
+  'puff-count': { image: new URL('../img/motion/mark-puffcount.png', import.meta.url).href, mode: 'color' },
+  pocket: { image: new URL('../img/motion/mark-pocket.png', import.meta.url).href, mode: 'color' },
   // brand and print: a pen-tool curve with its anchors and handles
   pen(x, k) { x.strokeStyle = grad(x, 60, 560, 580, 80); x.lineWidth = 34; x.lineCap = 'round'; x.beginPath(); x.moveTo(70, 540); x.bezierCurveTo(70, 160, 570, 480, 570, 100); x.stroke();
     x.strokeStyle = k.ink; x.lineWidth = 6; x.beginPath(); x.moveTo(70, 540); x.lineTo(70, 300); x.moveTo(570, 100); x.lineTo(570, 340); x.stroke();
     x.fillStyle = k.ink; for (const [X, Y] of [[70, 540], [570, 100]]) x.fillRect(X - 30, Y - 30, 60, 60); x.fillStyle = k.paper; for (const [X, Y] of [[70, 540], [570, 100]]) x.fillRect(X - 18, Y - 18, 36, 36);
     x.fillStyle = k.ink; for (const [X, Y] of [[70, 300], [570, 340]]) { x.beginPath(); x.arc(X, Y, 22, 0, 7); x.fill(); } },
   ask: glyph('?', 600),
-  portrait: { image: 'assets/img/me/portrait.webp' }
+  portrait: { image: new URL('../img/me/portrait.webp', import.meta.url).href }
 };
 
 function theme() {

@@ -275,7 +275,7 @@ main, .site-foot { position: relative; z-index: 1; }
   .menu-btn[aria-expanded="true"] span::after { transform: translateY(-6px) rotate(-45deg); }
   .stage { min-height: auto; padding-block: var(--s6); }
   .stage > .wrap, .app > .wrap, .head { grid-template-columns: 1fr; gap: var(--s4); }
-  .stage > .wrap > .art { order: -1; width: min(100%, 360px); max-height: none; }
+  .stage > .wrap > .art { width: min(100%, 360px); max-height: none; }
   .art[data-small] { width: 200px; }
   .hero { padding-top: 100px; }
   .hero > .wrap > .art { width: min(78%, 320px); }
@@ -419,3 +419,29 @@ main, .site-foot { position: relative; z-index: 1; }
 .me-chip b { color: var(--text); font-weight: 600; }
 .hero .me-chip + h1 { margin-top: var(--s4); }
 @media (max-width: 899px) { .me-chip { font-size: 15px; align-items: flex-start; } .me-chip img { width: 44px; height: 44px; } }
+
+/* 15. Phones: the heading comes first, then its dot drawing, then the text.
+   The copy column is unwrapped (display: contents) so its children and the drawing can be ordered together. */
+@media (max-width: 899px) {
+  .stage > .wrap { gap: 0; }
+  .stage > .wrap > .copy { display: contents; }
+  .stage > .wrap > * , .stage > .wrap > .copy > * { order: 4; }
+  .stage > .wrap > .copy > .kicker, .stage > .wrap > .copy > .me-chip { order: 1; }
+  .stage > .wrap > .copy > h1, .stage > .wrap > .copy > h2 { order: 2; }
+  .stage > .wrap > .art, .stage.flip > .wrap > .art, .stage > .wrap > .copy > .art { order: 3; margin-block: var(--s4) var(--s1); justify-self: center; }
+  .stage > .wrap > .copy > .art[data-small] { justify-self: start; width: 180px; }
+  .stage > .wrap > .phones { order: 5; margin-top: var(--s5); }
+  .stage > .wrap > .copy > h1, .stage > .wrap > .copy > h2 { max-width: 100%; }
+  .stage > .wrap > .copy > .lead, .stage > .wrap > .copy > p.lead { margin-top: var(--s3); }
+  .hero > .wrap > .art { width: min(72%, 300px); }
+  .faq-stage > .wrap > .copy > .faq { margin-top: var(--s4) !important; }
+  /* hero facts as a 2 x 2 grid */
+  .hero .facts { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s3); }
+  /* touch targets: at least 44 px tall */
+  .foot-cols a { display: inline-flex; align-items: center; min-height: 44px; padding: 0; }
+  .foot-cols ul { gap: 0; }
+  .site-foot .big { display: inline-flex; align-items: center; min-height: 44px; }
+  .dock .dk-item, .dock .dk-item.theme-btn { width: 44px; height: 44px; }
+}
+/* labels never below 12 px */
+.facts span, .wl-jump .mono, .story-photo figcaption, .fx-contrast small, .fx-col small { font-size: 12px; }

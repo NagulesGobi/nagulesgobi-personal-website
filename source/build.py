@@ -17,7 +17,7 @@ E = html.escape
 
 # Cache-busting version: a short hash of the CSS and JS, so browsers fetch fresh files after every change
 import hashlib
-ASSET_V = hashlib.sha1(b''.join(open(os.path.join(HERE, 'assets', f), 'rb').read() for f in ('css/base.css', 'css/pages.css', 'js/site.js'))).hexdigest()[:8]
+ASSET_V = hashlib.sha1(b''.join(open(os.path.join(HERE, 'assets', f), 'rb').read() for f in ('css/base.css', 'css/pages.css', 'js/site.js', 'motion/case.css', 'motion/case-dots.js', 'motion/dots.js'))).hexdigest()[:8]
 
 def img(path, alt, root, cls='', lazy=True, extra=''):
     key = path.replace('.webp', '')
@@ -118,8 +118,6 @@ def chrome(root, active):
     items = ''.join(item(h, t) for h, t in NAV)
     return f"""<div class="curtain" aria-hidden="true"><span class="curtain-label"></span></div>
 <div class="progress" aria-hidden="true"><i></i></div>
-<div class="grain" aria-hidden="true"></div>
-<div class="cursor" aria-hidden="true"><div class="cursor-preview"></div><div class="cursor-ring"><span class="cursor-label"></span></div><div class="cursor-dot"></div></div>
 <header class="dock-wrap">
   <nav class="dock" aria-label="Main" data-dock>
     <a class="dk-item dk-mark" href="{root}index.html"{' aria-current="page"' if active == 'index.html' else ''} aria-label="Nagules Gobi, home" data-label="Home"><span class="dk-tile"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="dkg" gradientUnits="userSpaceOnUse" cx="15" cy="8" r="113">{STOPS}</radialGradient></defs><path fill="url(#dkg)" d="{MARK100}"/></svg></span><span class="dk-tip">Home</span></a>
@@ -142,39 +140,25 @@ def chrome(root, active):
 </div>
 """
 
-def footer(root, cta='Have a product people should love? Let’s build it.'):
-    return f'''<section class="foot-cta">
+def footer(root, cta=None):
+    # The same footer as the main pages (source/motion.py)
+    pages = [('index.html', 'Home'), ('work.html', 'Work'), ('about.html', 'About'), ('dotxline.html', 'dotXline'), ('contact.html', 'Contact')]
+    return f'''<footer class="site-foot">
   <div class="wrap">
-    <div class="foot-cta-grid">
-      <div>
-        <p class="kicker" data-reveal>Available for product design roles and freelance projects</p>
-        <h2 data-split>{E(cta)}</h2>
-        <a class="mail" href="mailto:{EMAIL}" data-reveal><span data-text="{EMAIL}">{EMAIL}</span></a>
-      </div>
-      <a class="orb" href="{root}contact.html" data-magnetic aria-label="Hire me" data-label="Contact">
-        <svg class="orb-ring" viewBox="0 0 200 200" aria-hidden="true"><defs><path id="orb-c" d="M100 100m-78 0a78 78 0 1 1 156 0a78 78 0 1 1-156 0"/></defs><text><textPath href="#orb-c" textLength="488" lengthAdjust="spacing">HIRE ME · LET'S TALK · HIRE ME · LET'S TALK · </textPath></text></svg>
-        <span class="orb-core"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
-      </a>
-    </div>
-  </div>
-</section>
-<footer class="foot">
-  <div class="wrap">
-    <svg class="giant" viewBox="-4 -4 {int(WM_W) + 8} 112" aria-hidden="true"><defs><linearGradient id="gw" x1="0" x2="1"><stop offset="0" stop-color="#FF9124"/><stop offset=".35" stop-color="#FF4A2C"/><stop offset=".6" stop-color="#FF2440"/><stop offset="1" stop-color="#FF008E"/></linearGradient></defs><path d="{WM_D}"/></svg>
+    <p class="kicker">Open to product design roles and freelance projects</p>
+    <a class="big" href="mailto:{EMAIL}">{EMAIL}</a>
     <div class="foot-cols">
-      <div><h4>Pages</h4><ul>{''.join(f'<li><a href="{root}{h}">{t}</a></li>' for h, t in [('index.html', 'Home')] + NAV)}</ul></div>
+      <div><h4>Nagules Gobi</h4><p class="hint">Product designer in the United Kingdom. Director of dotXline LTD.</p></div>
+      <div><h4>Pages</h4><ul>{''.join(f'<li><a href="{root}{h}">{t}</a></li>' for h, t in pages)}</ul></div>
       <div><h4>Case studies</h4><ul>{''.join(f'<li><a href="{root}work/{p["slug"]}.html">{p["title"]}</a></li>' for p in PROJECTS)}</ul></div>
-      <div><h4>Elsewhere</h4><ul><li><a href="https://dotxline.com" target="_blank" rel="noopener">dotxline.com ↗</a></li><li><a href="https://www.behance.net/gallery/224174429/Chatvertiser" target="_blank" rel="noopener">Behance ↗</a></li><li><a href="mailto:{EMAIL}">Email</a></li><li><span>London <time data-clock>--:--</time></span></li></ul></div>
+      <div><h4>Elsewhere</h4><ul><li><a href="https://dotxline.com" target="_blank" rel="noopener">dotxline.com ↗</a></li><li><a href="https://www.behance.net/gallery/224174429/Chatvertiser" target="_blank" rel="noopener">Behance ↗</a></li><li><a href="mailto:{EMAIL}">Email</a></li></ul></div>
     </div>
-    <div class="foot-row">
-      <p>© <span data-year>2026</span> Nagules Gobi · Product designer, United Kingdom</p>
-      <p><a href="#top">Back to top ↑</a></p>
-    </div>
+    <div class="foot-row"><p>© <span data-year>2026</span> Nagules Gobi · Product designer, United Kingdom</p><p><a href="#top">Back to top ↑</a></p></div>
   </div>
 </footer>
 '''
 
-def page(path, title, desc, active, body, intro=False, lightbox=False, cta=None):
+def page(path, title, desc, active, body, intro=False, lightbox=False, cta=None, dots=False):
     root = '../' * path.count('/')
     lb = '''<div class="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer" hidden>
   <div class="lb-bar"><span class="lb-count">01 / 01</span><button class="lb-btn lb-close" type="button" aria-label="Close">✕</button></div>
@@ -182,7 +166,10 @@ def page(path, title, desc, active, body, intro=False, lightbox=False, cta=None)
   <div class="lb-foot"><div class="lb-cap"></div><div class="lb-nav"><button class="lb-btn lb-prev" type="button" aria-label="Previous image">←</button><button class="lb-btn lb-next" type="button" aria-label="Next image">→</button></div></div>
 </div>''' if lightbox else ''
     canonical = '' if path == 'index.html' else path
-    doc = (head(title, desc, root, intro, canonical) + chrome(root, active) +
+    extra = f'<link rel="stylesheet" href="{root}assets/motion/case.css?v={ASSET_V}">\n'
+    if dots:  # the same dot engine as the main pages draws the project's mark in the hero
+        extra += f'<script type="importmap">{{ "imports": {{ "three": "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js" }} }}</script>\n<script type="module" src="{root}assets/motion/case-dots.js?v={ASSET_V}"></script>\n'
+    doc = (head(title, desc, root, intro, canonical).replace('</head>', extra + '</head>') + chrome(root, active) + ('<canvas id="dots" aria-hidden="true"></canvas>\n' if dots else '') +
            f'<main id="main">\n{body.replace("{root}", root)}\n</main>\n' + footer(root, *( [cta] if cta else [] )) + lb + '\n</body>\n</html>\n')
     dst = os.path.join(OUT, path); os.makedirs(os.path.dirname(dst), exist_ok=True)
     open(dst, 'w').write(doc)
@@ -542,11 +529,11 @@ def next_link(slug):
 
 def case(slug, hero_kicker, title_html, lede, fact_items, cover, sections, link=None):
     p = P[slug]
-    body = f'''<section class="page-hero case-hero">
-  <div class="glow" aria-hidden="true"></div>
-  <div class="wrap">
+    body = f'''<section class="page-hero case-hero cs-hero" data-dots="{slug}">
+  <div class="wrap cs-grid">
     <p class="kicker" data-reveal data-hero>{hero_kicker}</p>
     <h1 data-split data-hero>{title_html}</h1>
+    <div class="art" data-art aria-hidden="true"></div>
     <p class="lede" data-reveal data-hero style="--d:.3s">{lede}</p>
     {facts(fact_items)}
     {('<p class="case-store btn-row" data-reveal>' + (store_btn(slug, p['title']) if slug in APP_STORE else '') + (f'<a class="btn" href="{link[1]}" target="_blank" rel="noopener" data-magnetic data-label="{link[0]}"><span>{link[0]} ↗</span></a>' if link else '') + '</p>') if (link or slug in APP_STORE) else ''}
@@ -555,7 +542,7 @@ def case(slug, hero_kicker, title_html, lede, fact_items, cover, sections, link=
 {cover}
 {sections}
 {next_link(slug)}'''
-    page(f'work/{slug}.html', f'{p["title"]} · Nagules Gobi', p['short'], 'work.html', body)
+    page(f'work/{slug}.html', f'{p["title"]} · Nagules Gobi', p['short'], 'work.html', body, dots=True)
 
 def shots(items, root='{root}'):
     """Full-width, labelled sections from a Behance board: [(label, image, alt), ...]"""
