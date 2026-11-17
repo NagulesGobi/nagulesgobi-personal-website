@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <title>Tockbee</title>
+  <g id="icon">
+    <path id="ring" fill="#FF4F5A" fill-rule="evenodd" d="M50 14a36 36 0 1 1 0 72a36 36 0 1 1 0-72zM50 24a26 26 0 1 0 0 52a26 26 0 1 0 0-52z"/>
+    <rect id="hand" x="45" y="45" width="41" height="10" rx="5" transform="rotate(-45 50 50)" fill="#2A1712"/>
+    <circle id="tip" cx="71.92" cy="28.08" r="11" fill="#FFB627"/>
+  </g>
+</svg>

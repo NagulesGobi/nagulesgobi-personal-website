@@ -713,6 +713,9 @@ def dotxline():
 
 # ---------------------------------------------------------------- brand
 GALLERY = [
+  ('board-xpense', 'Xpense', 'App icon and wordmark · dotXline', 'identity', False), ('board-tockbee', 'Tockbee', 'Logo and app icon · dotXline', 'identity', False),
+  ('board-freshbit', 'FreshBit', 'App icon and wordmark · dotXline', 'identity', False), ('board-mistkite', 'Mistkite', 'Logo and app icon · place-search web app', 'identity', False),
+  ('board-ngxo3', 'ngxo3', 'Twitch channel logo', 'identity', False),
   ('logo-hanek', 'Hanek', 'Logo', 'identity', True), ('allura', 'Allura Apparel', 'Brand guide', 'identity', False),
   ('logo-phinaturals', 'PhiNaturals', 'Logo · Nature’s formula', 'identity', True), ('unlucky-ninja', 'Unlucky Ninja', 'Logo and wallpaper', 'identity', False),
   ('turmeric-ad', 'Turmeric Curcumin', 'Social ad · buy one get one', 'campaign', False), ('logo-nation-insure', 'Nation Insure', 'Logo', 'identity', True),
