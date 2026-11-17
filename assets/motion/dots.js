@@ -114,14 +114,30 @@ export async function startDots({ intro = false, lenis = null } = {}) {
 
   let W = 0, H = 0, P = 0, gap = 6, list = [], pos, col, aS, aA, px, py, vx, vy, rnd, delay;
   const ptr = { x: -9999, y: -9999, on: false }, shocks = [];
-  addEventListener('pointermove', e => { ptr.x = e.clientX; ptr.y = e.clientY; ptr.on = true; }, { passive: true });
+  addEventListener('pointermove', e => { if (e.pointerType !== 'mouse') { ptr.on = false; return; } ptr.x = e.clientX; ptr.y = e.clientY; ptr.on = true; }, { passive: true });
   document.addEventListener('pointerleave', () => { ptr.on = false; });
+  addEventListener('pointercancel', () => { ptr.on = false; }, { passive: true });
   addEventListener('pointerdown', e => { if (e.target.closest('a, button, input, textarea, summary')) return; shocks.push({ x: e.clientX, y: e.clientY + (lenis ? lenis.scroll : scrollY), r: 0, f: 9 }); });
 
-  function build() {
-    W = innerWidth; H = innerHeight; renderer.setSize(W, H, false);
+  // Phones only ever show one artwork at a time (they dissolve in place), so the canvas moves into that artwork's
+  // box and scrolls with it. Desktop keeps one fixed canvas so dots can travel between artworks.
+  const PAD = 28; let local = false, host = null;
+  function fullCanvas() {
+    host = null; if (canvas.parentElement !== document.body) document.body.prepend(canvas);
+    canvas.removeAttribute('style'); renderer.setSize(W, H, false);
     camera.left = 0; camera.right = W; camera.top = 0; camera.bottom = -H; camera.updateProjectionMatrix();
-    const phone = W < 900; gap = phone ? 4 : 6; mat.uniforms.uDot.value = gap * .62;
+  }
+  function attach(s) {
+    host = s; const cw = Math.ceil(s.bw + PAD * 2), ch = Math.ceil(s.bh + PAD * 2);
+    s.art.appendChild(canvas);
+    Object.assign(canvas.style, { position: 'absolute', left: -PAD + 'px', top: -PAD + 'px', right: 'auto', bottom: 'auto', inset: 'auto', width: cw + 'px', height: ch + 'px', zIndex: 0 });
+    canvas.style.left = -PAD + 'px'; canvas.style.top = -PAD + 'px';
+    renderer.setSize(cw, ch, false);
+    camera.left = 0; camera.right = cw; camera.top = 0; camera.bottom = -ch; camera.updateProjectionMatrix();
+  }
+  function build() {
+    W = innerWidth; H = innerHeight;
+    const phone = W < 900; local = phone; fullCanvas(); gap = phone ? 4 : 6; mat.uniforms.uDot.value = gap * .62;
     const k = theme(), sy = scrollY;
     list = stages.map(el => {
       // an artwork either sits inside its section, or is a shared pinned box (data-art-ref) that several sections redraw
@@ -129,7 +145,7 @@ export async function startDots({ intro = false, lenis = null } = {}) {
       const art = el.querySelector('[data-art]') || ref || el, r = art.getBoundingClientRect();
       if (!r.width || !r.height && ref) return null; // hidden at this width
       const size = Math.min(r.width, r.height || r.width), bw = r.width, bh = r.height || r.width;
-      const s = { el, key: el.dataset.dots, small: art.hasAttribute('data-small'), cx: r.left + r.width / 2, cy: r.top + sy + r.height / 2, size, shape: sampleShape(el.dataset.dots, size, gap, k, imgs[el.dataset.dots], bw, bh) };
+      const s = { el, art, bx0: r.left, by0: r.top + sy, bw: r.width, bh: r.height || r.width, key: el.dataset.dots, small: art.hasAttribute('data-small'), cx: r.left + r.width / 2, cy: r.top + sy + r.height / 2, size, shape: sampleShape(el.dataset.dots, size, gap, k, imgs[el.dataset.dots], bw, bh) };
       if (ref) { // the pinned box: work out where it sits for any scroll position, so the dots stay locked to it
         const pin = ref.closest('.wl-pin') || ref, box = pin.parentElement.getBoundingClientRect(), pr = pin.getBoundingClientRect();
         s.ref = ref; s.pin = { T: parseFloat(getComputedStyle(pin).top) || 0, lo: box.top + sy, hi: box.bottom + sy - pr.height, off: r.top - pr.top + r.height / 2 };
@@ -188,6 +204,15 @@ export async function startDots({ intro = false, lenis = null } = {}) {
     const dissolve = a !== b && (a.small || b.small || W < 900) && !aOff && !bOff;
     const burst = RM || aOff || bOff || dissolve ? 0 : Math.sin(m * Math.PI), spread = Math.min(a.size, b.size, 600) * (a.ref && a.ref === b.ref ? .16 : .35);
     const R = Math.max(90, W * .09), R2 = R * R;
+    let ox = 0, oy = y; // where the canvas sits on the page
+    if (local) {
+      const want = aOff ? b : bOff ? a : (m < .5 ? a : b);
+      if (want.key === 'off' || !want.art) { renderer.clear(); requestAnimationFrame(frame); return; }
+      if (want !== host) attach(want);
+      // nothing to draw while the artwork is off screen
+      if (want.by0 + want.bh < y - PAD || want.by0 > y + H + PAD) { requestAnimationFrame(frame); return; }
+      ox = Math.round(want.bx0 - PAD); oy = Math.round(want.by0 - PAD);
+    }
     for (let i = 0; i < P; i++) {
       const A = aOff ? b.shape : a.shape, B = bOff ? a.shape : b.shape, ia = i % A.n, ib = i % B.n;
       const ax2 = aOff ? bx : ax, ay2 = aOff ? by : ay, bx2 = bOff ? ax : bx, by2 = bOff ? ay : by;
@@ -209,7 +234,7 @@ export async function startDots({ intro = false, lenis = null } = {}) {
         for (const s of shocks) { const sx = px[i] - s.x, sy2 = py[i] - s.y, sd = Math.sqrt(sx * sx + sy2 * sy2) || 1, band = Math.abs(sd - s.r); if (band < 40) { const f = (1 - band / 40) * s.f; vx[i] += sx / sd * f; vy[i] += sy2 / sd * f; } }
         vx[i] *= .82; vy[i] *= .82; px[i] += vx[i]; py[i] += vy[i];
       }
-      pos[i * 3] = Math.round(px[i]); pos[i * 3 + 1] = -(Math.round(py[i]) - y); pos[i * 3 + 2] = 0;
+      pos[i * 3] = Math.round(px[i] - ox); pos[i * 3 + 1] = -(Math.round(py[i]) - oy); pos[i * 3 + 2] = 0;
     }
     for (let k = shocks.length - 1; k >= 0; k--) { shocks[k].r += 14; shocks[k].f *= .93; if (shocks[k].f < .2) shocks.splice(k, 1); }
     geo.attributes.position.needsUpdate = geo.attributes.color.needsUpdate = geo.attributes.aS.needsUpdate = geo.attributes.aA.needsUpdate = true;

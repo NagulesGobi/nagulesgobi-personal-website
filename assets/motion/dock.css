@@ -128,3 +128,6 @@
 .fd-empty { padding: 26px 20px; color: var(--muted); }
 .fd-foot { display: flex; gap: 18px; padding: 12px 20px; border-top: 1px solid var(--line); color: var(--faint); font-size: 12px; }
 @media (max-width: 600px) { .finder { padding-top: 10vh; } .fd-foot { display: none; } }
+
+/* Phones: the N logo stays in the dock as the Home button (as on the case study pages) */
+@media (max-width: 820px) { .dk-mark { display: block; } .dk-mark + .dk-sep { display: none; } }

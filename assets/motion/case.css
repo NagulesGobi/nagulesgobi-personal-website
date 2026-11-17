@@ -12,7 +12,7 @@ main, .site-foot { position: relative; z-index: 1; }
 .cs-grid > .lede { grid-area: lede; margin-top: 24px; max-width: 44ch; }
 .cs-grid > .case-facts { grid-area: facts; margin-top: 32px; }
 .cs-grid > .case-store { grid-area: btns; margin-top: 32px; }
-.cs-grid > .art { grid-area: art; align-self: center; justify-self: center; width: min(100%, 460px); aspect-ratio: 1; }
+.cs-grid > .art { position: relative; grid-area: art; align-self: center; justify-self: center; width: min(100%, 460px); aspect-ratio: 1; }
 .cs-hero h1 { font: 600 clamp(52px, 6.2vw, 104px)/.9 var(--display); letter-spacing: -.02em; }
 
 /* Headings and labels as on the main pages */
