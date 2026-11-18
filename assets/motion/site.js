@@ -8,7 +8,7 @@ document.documentElement.classList.remove('no-js');
 /* Smooth scroll (off for reduced motion) */
 let lenis = null;
 if (!RM && window.Lenis) {
-  lenis = new Lenis({ lerp: .1, smoothWheel: true });
+  lenis = new Lenis({ lerp: .085, smoothWheel: true });
   (function raf(t) { lenis.raf(t); requestAnimationFrame(raf); })(performance.now());
 }
 $$('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
@@ -63,7 +63,7 @@ if (form) {
     err.textContent = '';
     const want = $$('.chips button[aria-pressed="true"]', form).map(b => b.textContent).join(', ');
     const body = `${msg}\n\n${want ? 'Looking for: ' + want + '\n' : ''}${form.company.value ? 'Company: ' + form.company.value + '\n' : ''}${name}\n${email}`;
-    location.href = `mailto:contact@nagulesgobi.com?subject=${encodeURIComponent('Hello from ' + name)}&body=${encodeURIComponent(body)}`;
+    location.href = `mailto:nagulesgobi@dotxline.com?subject=${encodeURIComponent('Hello from ' + name)}&body=${encodeURIComponent(body)}`;
   });
 }
 $$('[data-copy]').forEach(b => b.addEventListener('click', async () => {

@@ -2,7 +2,6 @@
    The same dots as the live hero logo: small squares on an even grid (6 px apart, 62% filled; 4 px on phones),
    pushed by the cursor and settling back with the same spring. As the page scrolls, the dots leave one artwork
    and rebuild the next. Each artwork sits exactly inside its [data-art] box, so it lines up with the layout. */
-import * as THREE from 'three';
 
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const DARK = matchMedia('(prefers-color-scheme: dark)');
@@ -10,6 +9,7 @@ const C = 640; // drawing canvas size
 const N_D = 'M12.75 8H56.72A30.53 30.53 0 0 1 87.25 38.53V38.53H73.82V38.53A17.1 17.1 0 0 0 56.72 21.43H35.68L73.82 59.57V51.97H87.25V92L26.18 30.93V51.97A17.1 17.1 0 0 0 43.28 69.07H43.28V82.5H43.28A30.53 30.53 0 0 1 12.75 51.97Z';
 const rr = (x, X, Y, W, H, R) => { x.beginPath(); x.roundRect(X, Y, W, H, R); x.fill(); };
 const grad = (x, x0, y0, x1, y1) => { const g = x.createLinearGradient(x0, y0, x1, y1); g.addColorStop(0, '#FF9124'); g.addColorStop(.3, '#FF4A2C'); g.addColorStop(.55, '#FF2440'); g.addColorStop(1, '#FF008E'); return g; };
+const numShape = n => x => { x.fillStyle = grad(x, 80, 120, 560, 520); x.font = '600 560px "Barlow Semi Condensed"'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(n, C / 2, C / 2); };
 const glyph = (txt, size = 520) => (x, k) => { x.fillStyle = k.ink; x.font = `600 ${size}px "Barlow Semi Condensed"`; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(txt, C / 2, C / 2); };
 
 /* The artworks. k = theme colours. Each draws inside a 640 box; it is cropped to its ink and fitted afterwards. */
@@ -51,7 +51,7 @@ export const SHAPES = {
     x.fillStyle = k.ink; for (const [X, Y] of [[70, 540], [570, 100]]) x.fillRect(X - 30, Y - 30, 60, 60); x.fillStyle = k.paper; for (const [X, Y] of [[70, 540], [570, 100]]) x.fillRect(X - 18, Y - 18, 36, 36);
     x.fillStyle = k.ink; for (const [X, Y] of [[70, 300], [570, 340]]) { x.beginPath(); x.arc(X, Y, 22, 0, 7); x.fill(); } },
   ask: glyph('?', 600),
-  portrait: { image: new URL('../img/me/portrait.webp', import.meta.url).href }
+  portrait: { image: new URL('../img/motion/portrait-dots.webp', import.meta.url).href }  // a small greyscale copy: the halftone only needs ~80 dots across
 };
 
 function theme() {
@@ -66,7 +66,7 @@ function sampleShape(key, size, gap, k, img, boxW = size, boxH = size) {
   if (key === 'off') { const z = new Float32Array(1); return { n: 1, x: z, y: z, r: z, g: z, b: z, s: z }; } // dots gather and fade over text-heavy sections
   const cv = document.createElement('canvas'); cv.width = cv.height = C;
   const x = cv.getContext('2d', { willReadFrequently: true });
-  const def = SHAPES[key];
+  const def = SHAPES[key] || (key.startsWith('num:') ? numShape(key.slice(4)) : null);
   let halftone = false, mode = def && def.mode;
   if (def && def.image) {
     if (!img) return null; halftone = !mode;
@@ -96,48 +96,109 @@ function sampleShape(key, size, gap, k, img, boxW = size, boxH = size) {
 }
 
 export async function startDots({ intro = false, lenis = null } = {}) {
-  const canvas = document.getElementById('dots'); if (!canvas) return;
+  let canvas = document.getElementById('dots'); if (!canvas) return;
   const stages = [...document.querySelectorAll('[data-dots]')];
   if (!stages.length) return;
-  await document.fonts.ready;
-  const imgs = {}; for (const key of new Set(stages.map(s => s.dataset.dots))) if (SHAPES[key]?.image) imgs[key] = await loadImg(SHAPES[key].image);
+  // images load in parallel and fonts get a short head start; the drawing refines itself when they arrive
+  const imgs = {}, shapeCache = new Map();
+  const pending = [...new Set(stages.map(s => s.dataset.dots))].filter(k => SHAPES[k]?.image).map(k => loadImg(SHAPES[k].image).then(i => { imgs[k] = i; }));
+  const fontsIn = document.fonts.status === 'loaded';
+  await Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 300))]);
 
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true, powerPreference: 'high-performance' });
-  const PR = Math.min(devicePixelRatio, 2); renderer.setPixelRatio(PR);
-  const scene = new THREE.Scene(), camera = new THREE.OrthographicCamera(0, 1, 0, -1, -100, 100);
-  const geo = new THREE.BufferGeometry();
-  const mat = new THREE.ShaderMaterial({ transparent: true, depthWrite: false, depthTest: false, vertexColors: true,
-    uniforms: { uPR: { value: PR }, uDot: { value: 3.7 } },
-    vertexShader: 'attribute float aS; attribute float aA; varying vec3 vC; varying float vA; uniform float uPR; uniform float uDot; void main(){ vC = color; vA = aA; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.); gl_PointSize = max(0., uDot * aS * uPR); }',
-    fragmentShader: 'varying vec3 vC; varying float vA; void main(){ if (vA < .01) discard; gl_FragColor = vec4(vC, vA); }' });
-  const points = new THREE.Points(geo, mat); points.frustumCulled = false; scene.add(points);
+  // Two ways to draw the same dots. WebGL (a small built-in drawer, no library) when the laptop's graphics allow it; otherwise, or if the
+  // browser takes WebGL away (common after switching pages on some laptops), plain 2D canvas squares.
+  const PR = Math.min(devicePixelRatio, 2);
+  let DR = null, dotPx = 3.7;
+  function make2D() {
+    const old = canvas, c = old.cloneNode(false); old.replaceWith(c); canvas = c;  // a canvas that had WebGL can't switch to 2D
+    const g = canvas.getContext('2d'); let cw = 1, ch = 1;
+    return { kind: '2d',
+      size(w, h) { cw = w; ch = h; canvas.width = Math.round(w * PR); canvas.height = Math.round(h * PR); g.setTransform(PR, 0, 0, PR, 0, 0); },
+      clear() { g.clearRect(0, 0, cw, ch); },
+      buffers() {},
+      draw(n) {
+        g.clearRect(0, 0, cw, ch);
+        for (let i = 0; i < n; i++) {
+          const a = aA[i]; if (a < .01) continue;
+          const sz = Math.max(1, Math.round(dotPx * aS[i])); if (!aS[i]) continue;
+          g.globalAlpha = a > 1 ? 1 : a;
+          g.fillStyle = `rgb(${col[i * 3] * 255 | 0},${col[i * 3 + 1] * 255 | 0},${col[i * 3 + 2] * 255 | 0})`;
+          g.fillRect(pos[i * 3] - sz / 2, -pos[i * 3 + 1] - sz / 2, sz, sz);
+        }
+        g.globalAlpha = 1;
+      } };
+  }
+  function makeGL() {
+    const gl = canvas.getContext('webgl', { alpha: true, antialias: false, premultipliedAlpha: true, depth: false, stencil: false, powerPreference: 'default' });
+    if (!gl) return null;
+    const sh = (type, src) => { const o = gl.createShader(type); gl.shaderSource(o, src); gl.compileShader(o); return o; };
+    const prog = gl.createProgram();
+    gl.attachShader(prog, sh(gl.VERTEX_SHADER, `attribute vec3 p; attribute vec3 c; attribute float s; attribute float a;
+      uniform vec2 res; uniform float px; varying vec3 vc; varying float va;
+      void main() { vc = c; va = a; vec2 z = vec2(p.x, -p.y) / res * 2.0 - 1.0; gl_Position = vec4(z.x, -z.y, 0.0, 1.0);
+        float d = px * s; gl_PointSize = a < 0.01 ? 0.0 : max(1.0, floor(d + 0.5)); }`));
+    gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, `precision mediump float; varying vec3 vc; varying float va;
+      void main() { if (va < 0.01) discard; gl_FragColor = vec4(vc * va, va); }`));
+    gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return null;
+    gl.useProgram(prog);
+    const attr = (name, n) => { const loc = gl.getAttribLocation(prog, name), buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, n, gl.FLOAT, false, 0, 0); return buf; };
+    const bP = attr('p', 3), bC = attr('c', 3), bS = attr('s', 1), bA = attr('a', 1);
+    const uRes = gl.getUniformLocation(prog, 'res'), uPx = gl.getUniformLocation(prog, 'px');
+    gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA); gl.clearColor(0, 0, 0, 0);
+    let cw = 1, ch = 1;
+    const put = (buf, arr) => { gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, arr, gl.DYNAMIC_DRAW); };
+    return { kind: 'gl',
+      size(w, h) { cw = w; ch = h; canvas.width = Math.round(w * PR); canvas.height = Math.round(h * PR); gl.viewport(0, 0, canvas.width, canvas.height); },
+      clear() { gl.clear(gl.COLOR_BUFFER_BIT); },
+      buffers() {},
+      draw(n) {
+        if (gl.isContextLost()) return;
+        put(bP, pos); put(bC, col); put(bS, aS); put(bA, aA);
+        gl.uniform2f(uRes, cw, ch); gl.uniform1f(uPx, dotPx * PR);
+        gl.clear(gl.COLOR_BUFFER_BIT); gl.drawArrays(gl.POINTS, 0, n);
+      } };
+  }
+  DR = makeGL() || make2D();
+  // if the browser takes the WebGL context away and doesn't give it back quickly, carry on in 2D
+  const onLost = e => { e.preventDefault(); clearTimeout(lostT); lostT = setTimeout(() => { if (DR.kind === 'gl') { DR = make2D(); build(); } }, 700); };
+  let lostT; canvas.addEventListener('webglcontextlost', onLost);
+  canvas.addEventListener('webglcontextrestored', () => clearTimeout(lostT));
+  // coming back with the Back button: redraw from scratch so the page is never left blank
+  addEventListener('pageshow', e => { if (e.persisted) build(); });
 
   let W = 0, H = 0, P = 0, gap = 6, list = [], pos, col, aS, aA, px, py, vx, vy, rnd, delay;
   const ptr = { x: -9999, y: -9999, on: false }, shocks = [];
-  addEventListener('pointermove', e => { if (e.pointerType !== 'mouse') { ptr.on = false; return; } ptr.x = e.clientX; ptr.y = e.clientY; ptr.on = true; }, { passive: true });
+  let touchDown = false;
+  addEventListener('pointermove', e => { if (e.pointerType !== 'mouse' && !touchDown) { ptr.on = false; return; } ptr.x = e.clientX; ptr.y = e.clientY; ptr.on = true; }, { passive: true });
   document.addEventListener('pointerleave', () => { ptr.on = false; });
-  addEventListener('pointercancel', () => { ptr.on = false; }, { passive: true });
-  addEventListener('pointerdown', e => { if (e.target.closest('a, button, input, textarea, summary')) return; shocks.push({ x: e.clientX, y: e.clientY + (lenis ? lenis.scroll : scrollY), r: 0, f: 9 }); });
+  addEventListener('pointercancel', () => { touchDown = false; ptr.on = false; }, { passive: true }); // the browser took over to scroll
+  addEventListener('pointerup', e => { if (e.pointerType !== 'mouse') { touchDown = false; ptr.on = false; } }, { passive: true });
+  addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse' && e.target.closest('[data-art]')) { touchDown = true; ptr.x = e.clientX; ptr.y = e.clientY; ptr.on = true; } }, { passive: true });
+  addEventListener('pointerdown', e => { if (e.target.closest('a, button, input, textarea, summary')) return; shocks.push({ x: e.clientX, y: e.clientY + (lenis ? lenis.scroll : scrollY), r: 0, f: 6 }); });
 
   // Phones only ever show one artwork at a time (they dissolve in place), so the canvas moves into that artwork's
   // box and scrolls with it. Desktop keeps one fixed canvas so dots can travel between artworks.
   const PAD = 28; let local = false, host = null;
   function fullCanvas() {
     host = null; if (canvas.parentElement !== document.body) document.body.prepend(canvas);
-    canvas.removeAttribute('style'); renderer.setSize(W, H, false);
-    camera.left = 0; camera.right = W; camera.top = 0; camera.bottom = -H; camera.updateProjectionMatrix();
+    canvas.removeAttribute('style'); DR.size(W, H);
   }
   function attach(s) {
     host = s; const cw = Math.ceil(s.bw + PAD * 2), ch = Math.ceil(s.bh + PAD * 2);
     s.art.appendChild(canvas);
     Object.assign(canvas.style, { position: 'absolute', left: -PAD + 'px', top: -PAD + 'px', right: 'auto', bottom: 'auto', inset: 'auto', width: cw + 'px', height: ch + 'px', zIndex: 0 });
     canvas.style.left = -PAD + 'px'; canvas.style.top = -PAD + 'px';
-    renderer.setSize(cw, ch, false);
-    camera.left = 0; camera.right = cw; camera.top = 0; camera.bottom = -ch; camera.updateProjectionMatrix();
+    DR.size(cw, ch);
+  }
+  function shapeOf(key, size, gap, k, bw, bh) {
+    const id = [key, Math.round(size), Math.round(bw), Math.round(bh), gap, k.dark ? 1 : 0, imgs[key] ? 1 : 0].join('|');
+    if (!shapeCache.has(id)) shapeCache.set(id, sampleShape(key, size, gap, k, imgs[key], bw, bh));
+    return shapeCache.get(id);
   }
   function build() {
     W = innerWidth; H = innerHeight;
-    const phone = W < 900; local = phone; fullCanvas(); gap = phone ? 4 : 6; mat.uniforms.uDot.value = gap * .62;
+    const phone = W < 900; local = phone; fullCanvas(); gap = phone ? 4 : 6; dotPx = gap * .62;
     const k = theme(), sy = scrollY;
     list = stages.map(el => {
       // an artwork either sits inside its section, or is a shared pinned box (data-art-ref) that several sections redraw
@@ -145,9 +206,9 @@ export async function startDots({ intro = false, lenis = null } = {}) {
       const art = el.querySelector('[data-art]') || ref || el, r = art.getBoundingClientRect();
       if (!r.width || !r.height && ref) return null; // hidden at this width
       const size = Math.min(r.width, r.height || r.width), bw = r.width, bh = r.height || r.width;
-      const s = { el, art, bx0: r.left, by0: r.top + sy, bw: r.width, bh: r.height || r.width, key: el.dataset.dots, small: art.hasAttribute('data-small'), cx: r.left + r.width / 2, cy: r.top + sy + r.height / 2, size, shape: sampleShape(el.dataset.dots, size, gap, k, imgs[el.dataset.dots], bw, bh) };
+      const s = { el, art, bx0: r.left, by0: r.top + sy, bw: r.width, bh: r.height || r.width, key: el.dataset.dots, small: art.hasAttribute('data-small'), cx: r.left + r.width / 2, cy: r.top + sy + r.height / 2, size, shape: shapeOf(el.dataset.dots, size, gap, k, bw, bh) };
       if (ref) { // the pinned box: work out where it sits for any scroll position, so the dots stay locked to it
-        const pin = ref.closest('.wl-pin') || ref, box = pin.parentElement.getBoundingClientRect(), pr = pin.getBoundingClientRect();
+        const pin = ref.closest('.wl-pin, [data-pin]') || ref, box = pin.parentElement.getBoundingClientRect(), pr = pin.getBoundingClientRect();
         s.ref = ref; s.pin = { T: parseFloat(getComputedStyle(pin).top) || 0, lo: box.top + sy, hi: box.bottom + sy - pr.height, off: r.top - pr.top + r.height / 2 };
         const e = el.getBoundingClientRect(); s.mid = e.top + sy + Math.min(e.height, H) / 2;
       }
@@ -167,31 +228,67 @@ export async function startDots({ intro = false, lenis = null } = {}) {
         if (oldX && i < oldP) { px[i] = oldX[i]; py[i] = oldY[i]; }
         else { const a = Math.random() * 6.283, rad = Math.max(W, H) * (.6 + Math.random() * .6); px[i] = W / 2 + Math.cos(a) * rad; py[i] = sy + H / 2 + Math.sin(a) * rad; }
       }
-      geo.setAttribute('position', new THREE.BufferAttribute(pos, 3).setUsage(THREE.DynamicDrawUsage));
-      geo.setAttribute('color', new THREE.BufferAttribute(col, 3).setUsage(THREE.DynamicDrawUsage));
-      geo.setAttribute('aS', new THREE.BufferAttribute(aS, 1).setUsage(THREE.DynamicDrawUsage));
-      geo.setAttribute('aA', new THREE.BufferAttribute(aA, 1).setUsage(THREE.DynamicDrawUsage));
+      DR.buffers();
     }
     // the intro builds the first artwork from the top-left corner outward, like the live logo
-    const f = list[0]; if (f) for (let i = 0; i < P; i++) { const j = i % f.shape.n; delay[i] = ((f.shape.x[j] + f.shape.y[j]) / Math.max(1, f.size) + 1) * 450 + Math.random() * 250; }
+    const f = list[0]; if (f) for (let i = 0; i < P; i++) { const j = i % f.shape.n; delay[i] = ((f.shape.x[j] + f.shape.y[j]) / Math.max(1, f.size) + 1) * 300 + Math.random() * 180; }
     if (RM) for (let i = 0; i < P; i++) { px[i] = -9999; }
   }
   let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(build, 180); });
   addEventListener('ng-theme', () => { clearTimeout(rt); rt = setTimeout(build, 30); });
   new ResizeObserver(() => { clearTimeout(rt); rt = setTimeout(build, 180); }).observe(document.body);
   build();
+  Promise.all([document.fonts.ready, ...pending]).then(() => { if (!fontsIn) shapeCache.clear(); build(); });
 
   const born = performance.now() - (intro && !RM ? 0 : 99999);
+  let hostT0 = 0;
+  function phoneFrame(now, t, y) {
+    let best = null, bd = 1e9; const mid = y + H / 2;
+    for (const s of list) {
+      if (s.key === 'off' || !s.art || s.pin) continue;
+      const top = s.by0, bot = s.by0 + s.bh; if (bot < y || top > y + H) continue;
+      const d = Math.abs((top + bot) / 2 - mid); if (d < bd) { bd = d; best = s; }
+    }
+    if (!best) { if (host) DR.clear(); requestAnimationFrame(frame); return; }
+    const S = best.shape;
+    if (best !== host) {
+      attach(best); hostT0 = now;
+      // start from a loose scatter around the new drawing, so every arrival looks the same
+      for (let i = 0; i < P; i++) { const ia = i % S.n; px[i] = best.cx + S.x[ia] * 1.6 + rnd[i * 3] * best.bw * .5; py[i] = best.cy + S.y[ia] * 1.6 + rnd[i * 3 + 1] * best.bh * .5; vx[i] = vy[i] = 0; }
+    }
+    const ox = Math.round(best.bx0 - PAD), oy = Math.round(best.by0 - PAD);
+    const fade = RM ? 1 : Math.min(1, (now - hostT0) / 420), R = 70, R2 = R * R, pyx = ptr.x, pyy = ptr.y + y;
+    for (let i = 0; i < P; i++) {
+      const ia = i % S.n; let tx = best.cx + S.x[ia], ty = best.cy + S.y[ia];
+      aA[i] = (i < S.n ? 1 : 0) * fade; aS[i] = S.s[ia];
+      col[i * 3] = S.r[ia]; col[i * 3 + 1] = S.g[ia]; col[i * 3 + 2] = S.b[ia];
+      if (RM) { px[i] = tx; py[i] = ty; }
+      else if (now - born < delay[i]) { /* waiting for the home intro */ }
+      else {
+        tx += Math.sin(t * 1.4 + rnd[i * 3 + 2]) * .7; ty += Math.cos(t * 1.1 + rnd[i * 3 + 2]) * .7;
+        vx[i] += (tx - px[i]) * .06; vy[i] += (ty - py[i]) * .06;
+        if (ptr.on) { const dx = px[i] - pyx, dy = py[i] - pyy, d2 = dx * dx + dy * dy; if (d2 < R2 && d2 > .01) { const d = Math.sqrt(d2), f = (1 - d / R) * 6; vx[i] += dx / d * f; vy[i] += dy / d * f; } }
+        for (const sh of shocks) { const sx = px[i] - sh.x, sy2 = py[i] - sh.y, sd = Math.sqrt(sx * sx + sy2 * sy2) || 1, band = Math.abs(sd - sh.r); if (band < 30) { const f = (1 - band / 30) * sh.f; vx[i] += sx / sd * f; vy[i] += sy2 / sd * f; } }
+        vx[i] *= .8; vy[i] *= .8; px[i] += vx[i]; py[i] += vy[i];
+      }
+      pos[i * 3] = Math.round(px[i] - ox); pos[i * 3 + 1] = -(Math.round(py[i]) - oy); pos[i * 3 + 2] = 0;
+    }
+    snap = false;
+    for (let k = shocks.length - 1; k >= 0; k--) { shocks[k].r += 9; shocks[k].f *= .92; if (shocks[k].f < .2) shocks.splice(k, 1); }
+    DR.draw(P);
+    requestAnimationFrame(frame);
+  }
+  let snap = !intro; // pages other than the home intro: put every dot near its place on the first frame
   function frame(now) {
     const y = lenis ? lenis.scroll : scrollY, t = now / 1000;
-    if (!list.length) { renderer.clear(); requestAnimationFrame(frame); return; }
+    if (!list.length) { DR.clear(); requestAnimationFrame(frame); return; }
     const pinY = s => s.pin ? Math.min(s.pin.hi, Math.max(s.pin.lo, y + s.pin.T)) + s.pin.off : s.cy;
     // which two artworks are we between, and how far
     let a = list[0], b = list[0], m = 0;
     for (let i = 0; i < list.length - 1; i++) {
       if (y >= list[i].anchor && y <= list[i + 1].anchor) {
         a = list[i]; b = list[i + 1];
-        const f = (y - a.anchor) / Math.max(1, b.anchor - a.anchor), e = Math.min(1, Math.max(0, (f - .3) / .4)); m = e * e * (3 - 2 * e); break;
+        const f = (y - a.anchor) / Math.max(1, b.anchor - a.anchor), e = Math.min(1, Math.max(0, (f - .2) / .6)); m = e * e * e * (e * (e * 6 - 15) + 10); // a wider, softer morph break;
       }
       if (y > list[i + 1].anchor) { a = b = list[i + 1]; }
     }
@@ -202,17 +299,10 @@ export async function startDots({ intro = false, lenis = null } = {}) {
     // fading into a text section: the dots stay on the artwork and fade, they never cross the text
     // small artworks sit next to headings: they dissolve in place instead of flying across the text
     const dissolve = a !== b && (a.small || b.small || W < 900) && !aOff && !bOff;
-    const burst = RM || aOff || bOff || dissolve ? 0 : Math.sin(m * Math.PI), spread = Math.min(a.size, b.size, 600) * (a.ref && a.ref === b.ref ? .16 : .35);
+    const burst = RM || aOff || bOff || dissolve ? 0 : Math.sin(m * Math.PI), spread = Math.min(a.size, b.size, 600) * (a.ref && a.ref === b.ref ? .08 : .14);
     const R = Math.max(90, W * .09), R2 = R * R;
     let ox = 0, oy = y; // where the canvas sits on the page
-    if (local) {
-      const want = aOff ? b : bOff ? a : (m < .5 ? a : b);
-      if (want.key === 'off' || !want.art) { renderer.clear(); requestAnimationFrame(frame); return; }
-      if (want !== host) attach(want);
-      // nothing to draw while the artwork is off screen
-      if (want.by0 + want.bh < y - PAD || want.by0 > y + H + PAD) { requestAnimationFrame(frame); return; }
-      ox = Math.round(want.bx0 - PAD); oy = Math.round(want.by0 - PAD);
-    }
+    if (local) { phoneFrame(now, t, y); return; }
     for (let i = 0; i < P; i++) {
       const A = aOff ? b.shape : a.shape, B = bOff ? a.shape : b.shape, ia = i % A.n, ib = i % B.n;
       const ax2 = aOff ? bx : ax, ay2 = aOff ? by : ay, bx2 = bOff ? ax : bx, by2 = bOff ? ay : by;
@@ -225,20 +315,21 @@ export async function startDots({ intro = false, lenis = null } = {}) {
       if (dissolve && aA[i] < .02) { vx[i] = vy[i] = 0; px[i] = tx; py[i] = ty; } // move only while invisible
       aS[i] = (A.s[ia] * (1 - mm) + B.s[ib] * mm) * (1 + burst * rnd[i * 3 + 1] * .8);
       col[i * 3] = A.r[ia] * (1 - mm) + B.r[ib] * mm; col[i * 3 + 1] = A.g[ia] * (1 - mm) + B.g[ib] * mm; col[i * 3 + 2] = A.b[ia] * (1 - mm) + B.b[ib] * mm;
+      if (snap && !RM && aA[i] > .01) { px[i] = tx + rnd[i * 3] * 24; py[i] = ty + rnd[i * 3 + 1] * 24; vx[i] = vy[i] = 0; }
       if (RM) { px[i] = tx; py[i] = ty; }
       else if (now - born < delay[i]) { /* waiting for the intro */ }
       else {
         tx += Math.sin(t * 1.4 + rnd[i * 3 + 2]) * .9; ty += Math.cos(t * 1.1 + rnd[i * 3 + 2]) * .9;
-        vx[i] += (tx - px[i]) * .045; vy[i] += (ty - py[i]) * .045;
-        if (ptr.on) { const dx = px[i] - pyx, dy = py[i] - pyy, d2 = dx * dx + dy * dy; if (d2 < R2 && d2 > .01) { const d = Math.sqrt(d2), f = (1 - d / R) * 7.5; vx[i] += dx / d * f; vy[i] += dy / d * f; } }
+        vx[i] += (tx - px[i]) * .03; vy[i] += (ty - py[i]) * .03;
+        if (ptr.on) { const dx = px[i] - pyx, dy = py[i] - pyy, d2 = dx * dx + dy * dy; if (d2 < R2 && d2 > .01) { const d = Math.sqrt(d2), f = (1 - d / R) * 4.5; vx[i] += dx / d * f; vy[i] += dy / d * f; } }
         for (const s of shocks) { const sx = px[i] - s.x, sy2 = py[i] - s.y, sd = Math.sqrt(sx * sx + sy2 * sy2) || 1, band = Math.abs(sd - s.r); if (band < 40) { const f = (1 - band / 40) * s.f; vx[i] += sx / sd * f; vy[i] += sy2 / sd * f; } }
-        vx[i] *= .82; vy[i] *= .82; px[i] += vx[i]; py[i] += vy[i];
+        vx[i] *= .85; vy[i] *= .85; px[i] += vx[i]; py[i] += vy[i];
       }
       pos[i * 3] = Math.round(px[i] - ox); pos[i * 3 + 1] = -(Math.round(py[i]) - oy); pos[i * 3 + 2] = 0;
     }
+    snap = false;
     for (let k = shocks.length - 1; k >= 0; k--) { shocks[k].r += 14; shocks[k].f *= .93; if (shocks[k].f < .2) shocks.splice(k, 1); }
-    geo.attributes.position.needsUpdate = geo.attributes.color.needsUpdate = geo.attributes.aS.needsUpdate = geo.attributes.aA.needsUpdate = true;
-    renderer.render(scene, camera);
+    DR.draw(P);
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);

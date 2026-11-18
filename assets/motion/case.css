@@ -6,13 +6,13 @@ main, .site-foot { position: relative; z-index: 1; }
 /* Hero: copy left, the project's mark in dots right */
 .cs-hero { min-height: 92svh; display: flex; align-items: center; padding: 140px 0 72px; background: none; }
 .cs-hero .glow { display: none; }
-.cs-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); grid-template-areas: "kicker art" "title art" "lede art" "facts art" "btns art"; column-gap: clamp(32px, 6vw, 96px); align-content: center; }
+.cs-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); grid-template-areas: "kicker ." "title art" "lede art" "facts art" "btns art"; column-gap: clamp(32px, 6vw, 96px); align-content: center; align-items: start; }
 .cs-grid > .kicker { grid-area: kicker; }
 .cs-grid > h1 { grid-area: title; margin-top: 20px; }
 .cs-grid > .lede { grid-area: lede; margin-top: 24px; max-width: 44ch; }
 .cs-grid > .case-facts { grid-area: facts; margin-top: 32px; }
 .cs-grid > .case-store { grid-area: btns; margin-top: 32px; }
-.cs-grid > .art { position: relative; grid-area: art; align-self: center; justify-self: center; width: min(100%, 460px); aspect-ratio: 1; }
+.cs-grid > .art { position: relative; grid-area: art; align-self: start; margin-top: 20px; justify-self: center; width: min(100%, 460px); aspect-ratio: 1; }
 .cs-hero h1 { font: 600 clamp(52px, 6.2vw, 104px)/.9 var(--display); letter-spacing: -.02em; }
 
 /* Headings and labels as on the main pages */
@@ -46,3 +46,100 @@ main, .site-foot { position: relative; z-index: 1; }
   .site-foot .big { font-size: clamp(26px, 7.6vw, 40px); overflow-wrap: normal; }
   .site-foot .foot-row { flex-direction: column; }
 }
+
+/* ------------------------------------------------------------------ the whole page, not just the hero
+   Same system as the main pages: numbered section heads with big uppercase titles, cards on the surface colour,
+   flat background (no tinted bands), and a "next case study" stage drawn in dots. */
+main { counter-reset: cs; }
+.cs-quiet { height: 0; }
+
+/* section heads: a mono number above a big uppercase title */
+.case-sec, .kit .section-head { counter-increment: cs; }
+.case-sec > h2::before, .kit .section-head h2::before { content: counter(cs, decimal-leading-zero); display: block; margin-bottom: 14px; font: 500 12px/1 var(--mono); letter-spacing: .1em; color: var(--accent); background: none; -webkit-text-fill-color: currentColor; }
+.case-sec > h2, .kit .section-head h2 { font: 600 clamp(40px, 4.6vw, 80px)/.9 var(--display); text-transform: uppercase; letter-spacing: -.005em; }
+.case-sec { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(32px, 6vw, 96px); padding: clamp(72px, 8vw, 112px) 0; border-bottom: 1px solid var(--line); }
+.case-sec > h2 { top: 120px; }
+.case-sec .body { font-size: clamp(17px, 1.3vw, 20px); }
+.case-sec .lead, .case-sec .quote { font: 600 clamp(26px, 2.4vw, 38px)/1.15 var(--display); color: var(--text); }
+.kit .section-head { display: grid; gap: 14px; max-width: 900px; margin-bottom: clamp(32px, 4vw, 56px); }
+.kit .section-head .kicker { order: -1; }
+
+/* bands: the same flat page background as the main pages, separated by a hairline */
+.case-band { background: transparent; border-top: 1px solid var(--line); padding: clamp(72px, 8vw, 112px) 0; }
+.case-band.kit[style] { background: transparent; }
+
+/* points: cards like the About page, with a mono number instead of the gradient square */
+.points { counter-reset: pt; gap: 16px; }
+.points li { counter-increment: pt; background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 28px; }
+.points li::before { content: counter(pt, decimal-leading-zero); position: static; display: block; width: auto; height: auto; margin-bottom: 18px; border-radius: 0; background: none; font: 500 12px/1 var(--mono); letter-spacing: .1em; color: var(--accent); }
+.points li b { font: 600 clamp(20px, 1.6vw, 24px)/1.1 var(--display); text-transform: uppercase; margin-bottom: 8px; }
+
+/* cover panel and media: the main pages' radius */
+.kit-stage, .case-cover, .shot-row .media, .flow-item .shot { border-radius: 20px; }
+
+/* next case study: a stage where the dots draw the next project's mark */
+.cs-next { display: block; padding: clamp(72px, 9vw, 128px) 0; border-top: 1px solid var(--line); text-decoration: none; color: inherit; overflow: visible; }
+.cs-next-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(32px, 6vw, 96px); align-items: center; }
+.cs-next .kicker { display: flex; gap: 10px; color: var(--muted); margin: 0; }
+.cs-next .kicker .n { color: var(--accent); }
+.cs-next h2 { font: 600 clamp(56px, 8vw, 140px)/.86 var(--display); text-transform: uppercase; letter-spacing: -.02em; margin-top: 20px; transition: color .4s var(--ease); }
+.cs-next:hover h2, .cs-next:focus-visible h2 { background: var(--grad-text); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.cs-next-kind { font: 500 12px/1.4 var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-top: 16px; }
+.cs-next-desc { color: var(--muted); font-size: clamp(17px, 1.3vw, 20px); max-width: 44ch; margin-top: 16px; }
+.cs-next .link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin-top: 24px; font: 500 13px/1 var(--mono); text-transform: uppercase; letter-spacing: .07em; }
+.cs-next .link span { text-decoration: underline; text-underline-offset: 6px; text-decoration-thickness: 1px; }
+.cs-next .link i { font-style: normal; transition: translate .35s var(--ease); }
+.cs-next:hover .link i { translate: 4px 0; }
+.cs-next .art { position: relative; width: min(100%, 380px); aspect-ratio: 1; justify-self: center; }
+.cs-next .next-img { display: none; }
+
+@media (max-width: 899px) {
+  .case-sec { grid-template-columns: 1fr; gap: 24px; }
+  .case-sec > h2 { position: static; }
+  .points li { padding: 22px; }
+  /* phones: heading, then the dot mark, then the text, as everywhere else */
+  .cs-next-grid { grid-template-columns: 1fr; gap: 0; }
+  .cs-next-copy { display: contents; }
+  .cs-next .kicker { order: 1; } .cs-next h2 { order: 2; } .cs-next .art { order: 3; width: min(70%, 260px); margin: 32px 0 8px; }
+  .cs-next-kind { order: 4; } .cs-next-desc { order: 5; } .cs-next .link { order: 6; }
+}
+@media (prefers-reduced-motion: reduce) { .cs-next h2, .cs-next .link i { transition: none; } }
+
+/* sections that carry their own label: one line, "03  VIDEOS", like the main pages' kickers */
+.kit .section-head .kicker { margin: 0; color: var(--muted); }
+.kit .section-head .kicker::before { content: counter(cs, decimal-leading-zero); width: auto; height: auto; background: none; border-radius: 0; color: var(--accent); }
+.kit .section-head:has(.kicker) h2::before { display: none; }
+/* the main pages' kickers have no gradient dash */
+.cs-hero .kicker::before, .site-foot .kicker::before, .cs-next .kicker::before { display: none; }
+
+/* ------------------------------------------------------------------ chapters
+   The case study reads as numbered chapters. On the left a pinned rail holds a dot drawing (the chapter number,
+   redrawn as you scroll, like the work page) and an index of every chapter that shows where you are. */
+.cs-flow { min-width: 0; }
+.cs-chapters { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: clamp(40px, 5vw, 72px); align-items: start; }
+.cs-rail { position: sticky; top: 96px; align-self: start; display: grid; gap: 20px; padding-top: clamp(72px, 8vw, 112px); }
+.cs-rail .art { position: relative; width: 100%; aspect-ratio: 1.25; }
+.cs-index-label { font: 500 12px/1 var(--mono); text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin: 0 0 10px; }
+.cs-index ol { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--line); max-height: calc(100svh - 96px - 176px - 140px); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+.cs-index a { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 8px; align-items: center; min-height: 40px; padding: 6px 0; border-bottom: 1px solid var(--line); color: var(--muted); text-decoration: none; font-size: 14px; line-height: 1.25; transition: color .3s var(--ease); }
+.cs-index .n { font: 500 11px/1 var(--mono); letter-spacing: .06em; color: var(--faint, var(--muted)); transition: color .3s var(--ease); }
+.cs-index .t { overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.cs-index a:hover { color: var(--text); }
+.cs-index a[aria-current] { color: var(--text); font-weight: 600; }
+.cs-index a[aria-current] .n { color: var(--accent); }
+
+/* chapters live in the right-hand column: drop the inner page containers */
+.cs-flow .wrap { max-width: none; padding-left: 0; padding-right: 0; margin: 0; width: 100%; }
+.cs-flow > section:first-child, .cs-flow > section:first-child .case-sec { border-top: 0; }
+.cs-flow .case-sec { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); scroll-margin-top: 24px; }
+.cs-flow > section { scroll-margin-top: 24px; }
+.cs-flow .case-sec > h2 { font-size: clamp(36px, 3.6vw, 64px); }
+.cs-flow .kit .section-head h2 { font-size: clamp(36px, 3.6vw, 64px); }
+
+@media (max-width: 899px) {
+  .cs-chapters { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .cs-flow { min-width: 0; }
+  .cs-rail { display: none; }
+  .cs-flow .case-sec { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) { .cs-index a, .cs-index .n { transition: none; } }

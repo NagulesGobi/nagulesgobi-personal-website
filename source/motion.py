@@ -40,7 +40,7 @@ def dock(file):
     for g, t, sub, h in items:
         if g != last: out += f'<li class="fd-group" role="presentation">{g}</li>'; last = g
         out += f'<li role="option"><a href="{h}" data-text="{(t + " " + sub + " " + g).lower()}"><b>{t}</b><span>{sub}</span><i aria-hidden="true">↵</i></a></li>'
-    out += '<li class="fd-group" role="presentation">Actions</li><li role="option"><a href="mailto:contact@nagulesgobi.com" data-text="email contact hire mail"><b>Email me</b><span>contact@nagulesgobi.com</span><i aria-hidden="true">↵</i></a></li>'
+    out += '<li class="fd-group" role="presentation">Actions</li><li role="option"><a href="mailto:nagulesgobi@dotxline.com" data-text="email contact hire mail"><b>Email me</b><span>nagulesgobi@dotxline.com</span><i aria-hidden="true">↵</i></a></li>'
     out += '<li role="option"><button type="button" data-theme-toggle data-text="theme dark light mode switch"><b>Switch theme</b><span>Light or dark</span><i aria-hidden="true">↵</i></button></li>'
     return f'''<header class="dock-wrap">
   <nav class="dock" aria-label="Main" data-dock>
@@ -110,13 +110,14 @@ def page(file, title, desc, body, intro=False):
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
+<link rel="modulepreload" href="assets/motion/dots.js">
+{'<link rel="preload" as="image" href="assets/img/motion/portrait-dots.webp">' if file == 'about.html' else ''}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/motion/motion.css?v={V}">
 <link rel="stylesheet" href="assets/motion/dock.css?v={V}">
 <script src="assets/motion/dock.js?v={V}" defer></script>
-<script type="importmap">{{ "imports": {{ "three": "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js" }} }}</script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
 <script type="module" src="assets/motion/site.js?v={V}"></script>
 </head>
@@ -130,12 +131,12 @@ def page(file, title, desc, body, intro=False):
 <footer class="site-foot">
   <div class="wrap">
     <p class="kicker">Open to product design roles and freelance projects</p>
-    <a class="big" href="mailto:contact@nagulesgobi.com">contact@nagulesgobi.com</a>
+    <a class="big" href="mailto:nagulesgobi@dotxline.com">nagulesgobi@dotxline.com</a>
     <div class="foot-cols">
       <div><h4>Nagules Gobi</h4><p class="hint">Product designer in the United Kingdom. Director of dotXline LTD.</p><p class="hint" style="margin-top:8px">London <span data-clock>--:--</span></p></div>
       <div><h4>Pages</h4><ul>{''.join(f'<li><a href="{f}">{t}</a></li>' for f, t in PAGES)}</ul></div>
       <div><h4>Case studies</h4><ul>{cases}</ul></div>
-      <div><h4>Elsewhere</h4><ul><li><a href="https://dotxline.com" target="_blank" rel="noopener">dotxline.com ↗</a></li><li><a href="https://www.behance.net/gallery/224174429/Chatvertiser" target="_blank" rel="noopener">Behance ↗</a></li><li><a href="mailto:contact@nagulesgobi.com">Email</a></li></ul></div>
+      <div><h4>Elsewhere</h4><ul><li><a href="https://dotxline.com" target="_blank" rel="noopener">dotxline.com ↗</a></li><li><a href="https://www.behance.net/gallery/224174429/Chatvertiser" target="_blank" rel="noopener">Behance ↗</a></li><li><a href="mailto:nagulesgobi@dotxline.com">Email</a></li></ul></div>
     </div>
     <div class="foot-row"><p>© <span data-year>2026</span> Nagules Gobi · Product designer, United Kingdom</p><p>Designed and built by me</p></div>
   </div>
@@ -254,7 +255,7 @@ home = f'''<section class="stage hero" data-dots="n" aria-labelledby="h1">
 <section class="stage" data-dots="hello" aria-labelledby="hi-h">
   <div class="wrap">
     <div class="copy">{k('', 'Available now')}<h2 id="hi-h" class="rv" style="--d:.05s">Let’s work together.</h2><p class="lead rv" style="--d:.1s">Hiring for a product design role, or need a designer for a project? Tell me a little about it and I’ll get back to you.</p>
-      <div class="btns rv" style="--d:.15s"><a class="btn btn-solid" href="contact.html">Start a conversation</a><a class="btn btn-line" href="mailto:contact@nagulesgobi.com">Email me</a></div></div>
+      <div class="btns rv" style="--d:.15s"><a class="btn btn-solid" href="contact.html">Start a conversation</a><a class="btn btn-line" href="mailto:nagulesgobi@dotxline.com">Email me</a></div></div>
     <div class="art" data-art data-wide aria-hidden="true"></div>
   </div>
 </section>'''
@@ -415,7 +416,7 @@ contact = f'''<section class="stage hero" data-dots="at" aria-labelledby="h1">
       <p class="kicker rv"><span class="status">Available now</span></p>
       <h1 id="h1" class="rv" style="--d:.05s">Let’s work <span class="ac">together.</span></h1>
       <p class="lead rv" style="--d:.12s">Hiring for a product design role, or need a designer for a project? Tell me a little about it and I’ll get back to you.</p>
-      <div class="btns rv" style="--d:.2s"><a class="btn btn-solid" href="#write">Write to me</a><button class="btn btn-line" type="button" data-copy="contact@nagulesgobi.com">Copy email</button></div>
+      <div class="btns rv" style="--d:.2s"><a class="btn btn-solid" href="#write">Write to me</a><button class="btn btn-line" type="button" data-copy="nagulesgobi@dotxline.com">Copy email</button></div>
     </div>
     <div class="art" data-art aria-hidden="true"></div>
   </div>
@@ -423,7 +424,7 @@ contact = f'''<section class="stage hero" data-dots="at" aria-labelledby="h1">
 <section class="section" id="write" data-dots="off" aria-labelledby="form-h">
   <div class="wrap head" style="align-items:start">
     <div>{k('', 'Message')}<h2 id="form-h" class="rv">Tell me about it.</h2>
-      <div class="prose rv" style="margin-top:var(--s4)"><p>Or email me directly at <a href="mailto:contact@nagulesgobi.com"><strong>contact@nagulesgobi.com</strong></a>.</p><p>Helpful to include: the role or project, your timeline, and a link to the product if there is one.</p><p>London time <strong data-clock>--:--</strong></p></div></div>
+      <div class="prose rv" style="margin-top:var(--s4)"><p>Or email me directly at <a href="mailto:nagulesgobi@dotxline.com"><strong>nagulesgobi@dotxline.com</strong></a>.</p><p>Helpful to include: the role or project, your timeline, and a link to the product if there is one.</p><p>London time <strong data-clock>--:--</strong></p></div></div>
     <form class="form rv" data-mailform novalidate>
       <fieldset><legend>I’m looking for</legend><div class="chips">{''.join(f'<button type="button" aria-pressed="false">{c}</button>' for c in CHIPS)}</div></fieldset>
       <div class="two"><div class="field"><label for="f-name">Your name</label><input id="f-name" name="name" autocomplete="name" required></div><div class="field"><label for="f-email">Your email</label><input id="f-email" name="email" type="email" autocomplete="email" required></div></div>

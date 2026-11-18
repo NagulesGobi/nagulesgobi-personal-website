@@ -445,3 +445,31 @@ main, .site-foot { position: relative; z-index: 1; }
 }
 /* labels never below 12 px */
 .facts span, .wl-jump .mono, .story-photo figcaption, .fx-contrast small, .fx-col small { font-size: 12px; }
+
+/* 16. Heroes on desktop: the drawing's top lines up with the headline's top, whatever the height of the text column */
+@media (min-width: 900px) {
+  .hero > .wrap { row-gap: 0; align-items: start; }
+  .hero > .wrap > .copy { display: contents; }
+  .hero > .wrap > .copy > * { grid-column: 1; max-width: 560px; }
+  .hero > .wrap > .copy > .kicker, .hero > .wrap > .copy > .me-chip { grid-row: 1; }
+  .hero > .wrap > .copy > h1 { grid-row: 2; }
+  .hero > .wrap > .art { grid-column: 2; grid-row: 2 / span 4; align-self: start; margin-top: var(--s4); }
+}
+
+/* 17. The home hero fits in one screen on laptops: headline size and gaps follow the screen's height as well as its width */
+@media (min-width: 900px) {
+  .hero:has(.me-chip) { padding-top: clamp(84px, 11svh, 120px); padding-bottom: clamp(20px, 3svh, 40px); }
+  .hero:has(.me-chip) h1 { font-size: clamp(52px, min(8.6vw, 10.4svh), 148px); }
+  .hero:has(.me-chip) .lead { max-width: 52ch; }
+  .hero:has(.me-chip) > .wrap > .copy > * { max-width: 600px; }
+  .hero:has(.me-chip) .me-chip + h1 { margin-top: clamp(14px, 2.6svh, 32px); }
+  .hero:has(.me-chip) > .wrap > .art { margin-top: clamp(14px, 2.6svh, 32px); max-height: min(60svh, 600px); }
+  .hero:has(.me-chip) .lead { margin-top: clamp(12px, 2.2svh, 32px); }
+  .hero:has(.me-chip) .btns { margin-top: clamp(16px, 3svh, 48px); }
+  .hero:has(.me-chip) .facts { margin-top: clamp(16px, 3svh, 64px); padding-top: clamp(10px, 1.8svh, 24px); }
+  .hero:has(.me-chip) .facts b { font-size: clamp(26px, 4.2svh, 40px); }
+}
+@media (min-width: 900px) and (max-height: 720px) {
+  .hero:has(.me-chip) { padding-top: 72px; }
+  .hero:has(.me-chip) h1 { font-size: clamp(48px, 9.4svh, 148px); }
+}

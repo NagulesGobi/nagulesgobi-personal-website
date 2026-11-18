@@ -12,7 +12,7 @@ LOGO_VB, MARK60, WORD_D, MARK100 = PARTS
 WM = open(os.path.join(HERE, 'parts', 'wordmark-big.txt')).read()
 WM_W, WM_D = WM.split('|', 1)
 STOPS = '<stop offset="0" stop-color="#FF9124"/><stop offset=".3" stop-color="#FF4A2C"/><stop offset=".55" stop-color="#FF2440"/><stop offset="1" stop-color="#FF008E"/>'
-EMAIL = 'contact@nagulesgobi.com'
+EMAIL = 'nagulesgobi@dotxline.com'
 E = html.escape
 
 # Cache-busting version: a short hash of the CSS and JS, so browsers fetch fresh files after every change
@@ -167,8 +167,12 @@ def page(path, title, desc, active, body, intro=False, lightbox=False, cta=None,
 </div>''' if lightbox else ''
     canonical = '' if path == 'index.html' else path
     extra = f'<link rel="stylesheet" href="{root}assets/motion/case.css?v={ASSET_V}">\n'
+    marks = {'chatvertiser': 'mark-chatvertiser.png', 'greenlife': 'mark-greenlife.png', 'puff-count': 'mark-puffcount.png', 'pocket': 'mark-pocket.png'}
+    slug = path.rsplit('/', 1)[-1][:-5]
+    if dots and slug in marks: extra += f'<link rel="preload" as="image" href="{root}assets/img/motion/{marks[slug]}">\n'
+    if dots: extra += f'<link rel="modulepreload" href="{root}assets/motion/dots.js">\n'
     if dots:  # the same dot engine as the main pages draws the project's mark in the hero
-        extra += f'<script type="importmap">{{ "imports": {{ "three": "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js" }} }}</script>\n<script type="module" src="{root}assets/motion/case-dots.js?v={ASSET_V}"></script>\n'
+        extra += f'<script type="module" src="{root}assets/motion/case-dots.js?v={ASSET_V}"></script>\n'
     doc = (head(title, desc, root, intro, canonical).replace('</head>', extra + '</head>') + chrome(root, active) + ('<canvas id="dots" aria-hidden="true"></canvas>\n' if dots else '') +
            f'<main id="main">\n{body.replace("{root}", root)}\n</main>\n' + footer(root, *( [cta] if cta else [] )) + lb + '\n</body>\n</html>\n')
     dst = os.path.join(OUT, path); os.makedirs(os.path.dirname(dst), exist_ok=True)
@@ -521,10 +525,18 @@ def flow(items, root='{root}'):
 
 def next_link(slug):
     i = [p['slug'] for p in PROJECTS].index(slug); n = PROJECTS[(i + 1) % len(PROJECTS)]
-    pic = img(n['preview'], '', '{root}') if n.get('preview') else f'<div class="case-mock" style="height:100%">{scene(n)}</div>'
-    return f'''<a class="next" href="{{root}}work/{n['slug']}.html" data-label="{n['title']}" data-cursor="Next">
-  <div class="wrap"><p class="kicker">Next case study</p><h2><span>{n['title']}</span></h2></div>
-  <div class="next-img">{pic}</div>
+    j = (i + 1) % len(PROJECTS)
+    return f'''<a class="next cs-next" href="{{root}}work/{n['slug']}.html" data-dots="{n['slug']}" aria-label="Next case study: {n['title']}">
+  <div class="wrap cs-next-grid">
+    <div class="cs-next-copy">
+      <p class="kicker"><span class="n">{j + 1:02d} / {len(PROJECTS):02d}</span>Next case study</p>
+      <h2>{n['title']}</h2>
+      <p class="cs-next-kind">{n['kind']}</p>
+      <p class="cs-next-desc">{n['short']}</p>
+      <span class="link"><span>Read the case study</span><i aria-hidden="true">→</i></span>
+    </div>
+    <div class="art" data-art aria-hidden="true"></div>
+  </div>
 </a>'''
 
 def case(slug, hero_kicker, title_html, lede, fact_items, cover, sections, link=None):
@@ -540,7 +552,15 @@ def case(slug, hero_kicker, title_html, lede, fact_items, cover, sections, link=
   </div>
 </section>
 {cover}
+<div class="wrap cs-chapters">
+  <aside class="cs-rail" data-pin aria-label="Chapters">
+    <div class="art" id="cs-art" aria-hidden="true"></div>
+    <nav class="cs-index" aria-label="Chapters in this case study"><p class="cs-index-label">Chapters</p><ol></ol></nav>
+  </aside>
+  <div class="cs-flow">
 {sections}
+  </div>
+</div>
 {next_link(slug)}'''
     page(f'work/{slug}.html', f'{p["title"]} · Nagules Gobi', p['short'], 'work.html', body, dots=True)
 

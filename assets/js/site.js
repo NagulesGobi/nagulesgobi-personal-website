@@ -511,8 +511,8 @@
       var body = 'Hi Nagules,\n\n' + v('f-msg') + '\n\n' + (picked.length ? 'Looking for: ' + picked.join(', ') + '\n' : '') + (v('f-company') ? 'Company: ' + v('f-company') + '\n' : '') + '\n' + v('f-name') + (v('f-email') ? '\n' + v('f-email') : '');
       var subject = (picked[0] ? picked[0] + ' · ' : '') + 'Hello from ' + v('f-name');
       var st2 = form.querySelector('[data-status]');
-      st2.innerHTML = 'Your email is ready in your mail app. If it did not open, write to <b>contact@nagulesgobi.com</b>.'; st2.className = 'form-status ok';
-      location.href = 'mailto:contact@nagulesgobi.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+      st2.innerHTML = 'Your email is ready in your mail app. If it did not open, write to <b>nagulesgobi@dotxline.com</b>.'; st2.className = 'form-status ok';
+      location.href = 'mailto:nagulesgobi@dotxline.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
     });
   }
 
