@@ -31,10 +31,11 @@ export const SHAPES = {
   xpense(x) { x.scale(.62, .62); x.translate(-80, 30); x.fillStyle = '#A6DCC9'; rr(x, 158, 291, 708, 188, 94); x.fillStyle = '#F5A524'; rr(x, 335, 545, 531, 188, 94); x.fillStyle = '#0F9D7A'; rr(x, 158, 545, 487, 188, 94); },
   tockbee(x, k) { x.scale(6.4, 6.4); x.fillStyle = '#FF4F5A'; x.fill(new Path2D('M50 14a36 36 0 1 1 0 72a36 36 0 1 1 0-72zM50 24a26 26 0 1 0 0 52a26 26 0 1 0 0-52z'), 'evenodd');
     x.save(); x.translate(50, 50); x.rotate(-Math.PI / 4); x.fillStyle = k.dark ? '#F1ECE2' : '#2A1712'; rr(x, -5, -5, 41, 10, 5); x.restore(); x.fillStyle = '#FFB627'; x.beginPath(); x.arc(71.92, 28.08, 11, 0, 7); x.fill(); },
-  // the app icon: violet tile, lime leaf, black bit (FreshBit rebrand, 19 Nov 2026)
-  freshbit(x) { x.scale(.625, .625); const g = x.createLinearGradient(0, 0, 0, 1024); g.addColorStop(0, '#6E45FF'); g.addColorStop(.55, '#4B1FFF'); g.addColorStop(1, '#24107A'); x.fillStyle = g; rr(x, 0, 0, 1024, 1024, 230);
-    x.fillStyle = '#C8F550'; x.fill(new Path2D('M512 205H819V512C819 682 682 819 512 819H205V512C205 342 342 205 512 205Z'));
-    x.fillStyle = '#0A0A0C'; x.fill(new Path2D('M353 630L630 353L681 404L404 681Z')); },
+  // the app icon: the website dock's black tile with its violet glow, the original lime leaf and round black bit
+  freshbit(x) { x.scale(.625, .625); x.save(); x.beginPath(); x.roundRect(0, 0, 1024, 1024, 320); x.clip(); x.fillStyle = '#0A0A0C'; x.fillRect(0, 0, 1024, 1024);
+    for (const [cx, cy, rx, ry, c] of [[205, 1075, 819, 922, '75,31,255'], [922, 1024, 717, 819, '91,43,255']]) { x.save(); x.translate(cx, cy); x.scale(rx / ry, 1); const g = x.createRadialGradient(0, 0, 0, 0, 0, ry); g.addColorStop(0, `rgba(${c},1)`); g.addColorStop(.7, `rgba(${c},0)`); x.fillStyle = g; x.fillRect(-2000, -2000, 4000, 4000); x.restore(); }
+    x.restore(); x.fillStyle = '#C8F550'; x.fill(new Path2D('M512 205H819V512C819 682 682 819 512 819H205V512C205 342 342 205 512 205ZM353 630L630 353L681 404L404 681Z'), 'evenodd');
+    x.strokeStyle = '#0A0A0C'; x.lineWidth = 54; x.lineCap = 'round'; x.beginPath(); x.moveTo(410, 624); x.lineTo(660, 374); x.stroke(); },
   tiles(x, k) { const t = [[20, 20, 300, 230, k.ink], [340, 20, 280, 340, '#0F9D7A'], [20, 270, 300, 350, '#FF4F5A'], [340, 380, 130, 240, '#F5A524'], [490, 380, 130, 240, k.soft]];
     for (const [X, Y, W, H, c] of t) { x.fillStyle = c; rr(x, X, Y, W, H, 22); } },
   hello: glyph('HELLO', 250),
