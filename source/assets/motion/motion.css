@@ -14,7 +14,7 @@
   --text: var(--c-ink); --muted: #5F5A51; --faint: #8D877C; --line: #DCD5C8; --accent: var(--c-red);
   --btn: var(--c-ink); --btn-ink: var(--c-paper); --card: var(--c-paper-2);
   --grad: linear-gradient(120deg, #FF4A2C, #FF2440 45%, #FF008E);
-  --tint-xp: #DCEFE7; --tint-tb: #FCE3D6; --tint-fb: #EEF7CF;
+  --tint-xp: #DCEFE7; --tint-tb: #FCE3D6; --tint-fb: #E6DEFF;
 
   /* Type: one scale, used everywhere */
   --display: "Barlow Semi Condensed", "Arial Narrow", system-ui, sans-serif;
@@ -41,7 +41,7 @@
     --text: #F1ECE2; --muted: #A29C91; --faint: #7A746B; --line: #2E2C28; --accent: var(--c-red-dark);
     --btn: #F1ECE2; --btn-ink: var(--c-ink-2);
     --grad: linear-gradient(120deg, #FF9124, #FF4A2C 30%, #FF2440 55%, #FF008E);
-    --tint-xp: #15302A; --tint-tb: #3A2320; --tint-fb: #2A3317;
+    --tint-xp: #15302A; --tint-tb: #3A2320; --tint-fb: #1E1640;
     color-scheme: dark;
 }
 /* Same rule as the live site: follow the system unless the visitor picked a theme */
@@ -51,7 +51,7 @@
     --text: #F1ECE2; --muted: #A29C91; --faint: #7A746B; --line: #2E2C28; --accent: var(--c-red-dark);
     --btn: #F1ECE2; --btn-ink: var(--c-ink-2);
     --grad: linear-gradient(120deg, #FF9124, #FF4A2C 30%, #FF2440 55%, #FF008E);
-    --tint-xp: #15302A; --tint-tb: #3A2320; --tint-fb: #2A3317;
+    --tint-xp: #15302A; --tint-tb: #3A2320; --tint-fb: #1E1640;
     color-scheme: dark;
   }
 }
@@ -367,10 +367,10 @@ main, .site-foot { position: relative; z-index: 1; }
 .fx-pair div:last-child .mono { color: var(--accent); }
 .fx-pair p:not(.mono) { color: var(--text); font-size: 16px; }
 .fx-vis { height: 132px; border-radius: 14px; background: var(--surface-2); display: flex; align-items: center; justify-content: center; gap: var(--s3); overflow: hidden; }
-/* contrast: the real FreshBit colours, lime #C8F550 and leaf #3D6600 on paper #F6F8F3 */
-.fx-contrast span { display: grid; justify-items: center; gap: 6px; padding: 14px 22px; border-radius: 12px; background: #F6F8F3; font: 600 20px/1 var(--body); }
-.fx-contrast small { font: 500 11px/1 var(--mono); color: #5F5A51; }
-.fx-contrast .bad { color: #C8F550; } .fx-contrast .good { color: #3D6600; }
+/* contrast: the real FreshBit colours, lime #C8F550 and electric violet #5B2BFF on paper #F5F5F7 (rebrand 19 Nov 2026) */
+.fx-contrast span { display: grid; justify-items: center; gap: 6px; padding: 14px 22px; border-radius: 12px; background: #F5F5F7; font: 600 20px/1 var(--body); }
+.fx-contrast small { font: 500 11px/1 var(--mono); color: #55555F; }
+.fx-contrast .bad { color: #C8F550; } .fx-contrast .good { color: #5B2BFF; }
 /* motion: a stiff bounce next to a smooth morph */
 .fx-col { flex: 1; max-width: 42%; height: 100%; display: grid; grid-template-rows: 1fr auto; justify-items: center; align-items: center; padding-bottom: 12px; }
 .fx-col small { font: 500 11px/1 var(--mono); text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }

@@ -31,8 +31,7 @@ export const SHAPES = {
   xpense(x) { x.scale(.62, .62); x.translate(-80, 30); x.fillStyle = '#A6DCC9'; rr(x, 158, 291, 708, 188, 94); x.fillStyle = '#F5A524'; rr(x, 335, 545, 531, 188, 94); x.fillStyle = '#0F9D7A'; rr(x, 158, 545, 487, 188, 94); },
   tockbee(x, k) { x.scale(6.4, 6.4); x.fillStyle = '#FF4F5A'; x.fill(new Path2D('M50 14a36 36 0 1 1 0 72a36 36 0 1 1 0-72zM50 24a26 26 0 1 0 0 52a26 26 0 1 0 0-52z'), 'evenodd');
     x.save(); x.translate(50, 50); x.rotate(-Math.PI / 4); x.fillStyle = k.dark ? '#F1ECE2' : '#2A1712'; rr(x, -5, -5, 41, 10, 5); x.restore(); x.fillStyle = '#FFB627'; x.beginPath(); x.arc(71.92, 28.08, 11, 0, 7); x.fill(); },
-  freshbit(x, k) { x.scale(.625, .625); x.fillStyle = k.dark ? '#F1ECE2' : '#0E1A12'; x.fill(new Path2D('M512 205H819V512C819 682 682 819 512 819H205V512C205 342 342 205 512 205ZM353 630L630 353L681 404L404 681Z'), 'evenodd');
-    x.strokeStyle = '#B9E62E'; x.lineWidth = 58; x.lineCap = 'round'; x.beginPath(); x.moveTo(392, 642); x.lineTo(642, 392); x.stroke(); },
+  freshbit(x, k) { x.scale(.625, .625); x.fillStyle = k.dark ? '#C8F550' : '#5B2BFF'; x.fill(new Path2D('M512 205H819V512C819 682 682 819 512 819H205V512C205 342 342 205 512 205ZM353 630L630 353L681 404L404 681Z'), 'evenodd'); },
   tiles(x, k) { const t = [[20, 20, 300, 230, k.ink], [340, 20, 280, 340, '#0F9D7A'], [20, 270, 300, 350, '#FF4F5A'], [340, 380, 130, 240, '#F5A524'], [490, 380, 130, 240, k.soft]];
     for (const [X, Y, W, H, c] of t) { x.fillStyle = c; rr(x, X, Y, W, H, 22); } },
   hello: glyph('HELLO', 250),

@@ -337,10 +337,10 @@ def release_tockbee():
 
 
 def release_freshbit():
-    return f'''<article class="release" style="--acc:#8FC21F" id="freshbit">
+    return f'''<article class="release" style="--acc:#5B2BFF" id="freshbit">
       <div class="rel-info" data-reveal>
         <p class="rel-tag mono">My product · dotXline</p>
-        <div class="rel-name">{img('kit/fb-icon.webp', '', '{root}')}<h3>FreshBit</h3></div>
+        <div class="rel-name">{'<img src="{root}assets/img/kit/fb2-icon-light.webp" alt="" width="1024" height="1024" loading="lazy" decoding="async">'}<h3>FreshBit</h3></div>
         <p class="rel-sub">News that checks first.</p>
         <dl class="rel-meta mono"><div><dt>Platform</dt><dd>iPhone, iPad and Mac</dd></div><div><dt>Built with</dt><dd>Expo, React Native, SwiftUI</dd></div><div><dt>Status</dt><dd>In TestFlight testing</dd></div><div><dt>Role</dt><dd>Designed and built</dd></div></dl>
         <p class="rel-desc">Confirmed news for designers and developers. It reads 51 trusted sources, groups stories about the same event and scores each one out of 100.</p>
@@ -348,7 +348,7 @@ def release_freshbit():
         <div class="rel-ctas"><a class="store fb-site" href="{kit.FB_SITE}" target="_blank" rel="noopener"><span><small>Visit the</small>FreshBit website</span></a><a class="link" href="{{root}}work/freshbit.html" data-label="FreshBit">Read the case study <span aria-hidden="true">→</span></a></div>
       </div>
       <div class="rel-stage fb-rel" data-reveal style="--d:.1s">
-        <div class="fb-pair">{kit.fb_shot('today-light', 'FreshBit Today screen: the top story is confirmed by 5 sources').replace(' data-reveal', '')}{kit.fb_shot('story-dark', 'FreshBit story screen in dark mode: the brief and a Read on Google DeepMind button').replace(' data-reveal', '')}</div>
+        <div class="fb-pair">{kit.fb_phone('phone-light', kit.TODAY_L).replace(' data-reveal', '')}{kit.fb_phone('phone-dark', kit.TODAY_D).replace(' data-reveal', '')}</div>
         <p class="demo-hint mono" aria-hidden="true">Real screens · light and dark</p>
       </div>
     </article>'''
@@ -622,7 +622,8 @@ def cases():
          sec('Tested on a real iPhone', points([
              ('11 TestFlight builds', 'The app was reviewed from screen recordings of real use, and fixed build by build.'),
              ('The folding header went native', 'A custom bouncing animation became Apple’s Liquid Glass morph, so it feels like the system.'),
-             ('Lime stopped being text on glass', 'Lime on the light tab bar measured about 1.2:1. Light mode now tints the selected tab in the dark brand green, 6.8:1.'),
+             ('Lime stopped being text on glass', 'Lime on the light tab bar measured about 1.2:1, so lime became a fill only, always with black text on it.'),
+             ('A rebrand in layers', 'On 19 November 2026 the whole app moved to black, electric violet and lime, painted together: violet on black, lime on top.'),
              ('Built for $0 a month', 'Supabase on the free plan, rare-word matching and free meaning search. Designed and built with AI-assisted development.')]) +
              f'<p><a class="link" href="{kit.FB_SITE}" target="_blank" rel="noopener">Visit the FreshBit website ↗</a></p>'),
          link=('Visit the FreshBit website', kit.FB_SITE))
@@ -699,11 +700,11 @@ def dotxline():
 </section>
 <section class="wrap app-sec">
   <div>
-    <div class="app-id" data-reveal>{img('kit/fb-icon.webp', '', '{root}')}<div><b>FreshBit</b><br><span style="color:var(--muted)">by dotXline · in testing</span></div></div>
+    <div class="app-id" data-reveal>{'<img src="{root}assets/img/kit/fb2-icon-light.webp" alt="" width="1024" height="1024" loading="lazy" decoding="async">'}<div><b>FreshBit</b><br><span style="color:var(--muted)">by dotXline · in testing</span></div></div>
     <h2 data-split>News that checks first.</h2>
     <div class="body" data-reveal><p>Confirmed news for designers and developers. FreshBit reads 51 trusted sources, groups the articles about the same event and scores each story out of 100.</p><div class="tags"><span>iPhone, iPad and Mac</span><span>Expo and SwiftUI</span><span>In TestFlight testing</span><span>No ads, no tracking</span></div><p class="btn-row"><a class="btn" href="{{root}}work/freshbit.html" data-magnetic data-label="FreshBit"><span>Read the case study</span></a><a class="btn btn-ghost" href="{kit.FB_SITE}" target="_blank" rel="noopener" data-label="FreshBit website"><span>Visit the website ↗</span></a></p></div>
   </div>
-  <div class="stack" data-reveal>{''.join(f'<div class="shot fb-st">{img(x, "FreshBit screen", "{root}")}</div>' for x in ['kit/fb-explore-light.webp', 'kit/fb-today-light.webp', 'kit/fb-story-dark.webp'])}</div>
+  <div class="stack" data-reveal>{''.join(f'<div class="shot fb-st"><img src="{{root}}assets/img/kit/fb2-{x}.webp" alt="FreshBit Today screen, {x[6:]} mode" width="460" height="1000" loading="lazy" decoding="async"></div>' for x in ['phone-light', 'phone-dark'])}</div>
 </section>
 <section class="section alt">
   <div class="wrap">
@@ -721,7 +722,7 @@ def dotxline():
 # ---------------------------------------------------------------- brand
 GALLERY = [
   ('board-xpense', 'Xpense', 'Logo and layered app icon · dotXline', 'identity', False), ('board-tockbee', 'Tockbee', 'Logo and app icon · dotXline', 'identity', False),
-  ('board-freshbit', 'FreshBit', 'App icon and wordmark · dotXline', 'identity', False), ('board-mistkite', 'Mistkite', 'Logo and app icon · place-search web app', 'identity', False),
+  ('board-freshbit', 'FreshBit', 'Brand board · black, violet and lime · dotXline', 'identity', False), ('board-mistkite', 'Mistkite', 'Logo and app icon · place-search web app', 'identity', False),
   ('board-ngxo3', 'ngxo3', 'Twitch channel logo', 'identity', False),
   ('logo-hanek', 'Hanek', 'Logo', 'identity', True), ('allura', 'Allura Apparel', 'Brand guide', 'identity', False),
   ('logo-phinaturals', 'PhiNaturals', 'Logo · Nature’s formula', 'identity', True), ('unlucky-ninja', 'Unlucky Ninja', 'Logo and wallpaper', 'identity', False),

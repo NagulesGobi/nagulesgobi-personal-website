@@ -83,7 +83,7 @@ def phones(kind, shots, label, reveal=True):
 
 XP = [M + 'xp-screen-1.webp', M + 'xp-screen-3.webp']
 TB = [A + 'apps/tockbee-today.webp', A + 'apps/tockbee-shifts.webp']
-FB = [M + 'fb-today.webp', M + 'fb-explore.webp']
+FB = [A + 'kit/fb2-phone-light.webp', A + 'kit/fb2-phone-dark.webp']   # real FreshBit renders, full size, same 402:874 shape
 
 
 def page(file, title, desc, body, intro=False):
@@ -317,8 +317,8 @@ work = f'''<section class="worklist" aria-labelledby="h1">
 # The fixes are the ones recorded in the FreshBit case study (TestFlight testing on a real iPhone).
 # Every story comes from a real fix: the FreshBit case study, and the commit history of the Xpense and Tockbee apps.
 MOTION_VIS = '<div class="fx-vis fx-motion" aria-hidden="true"><span class="fx-col"><span class="fx-bar"></span><small>Custom bounce</small></span><span class="fx-col"><span class="fx-bar"></span><small>Native morph</small></span></div>'
-CONTRAST_VIS = '<div class="fx-vis fx-contrast" aria-hidden="true"><span class="bad">Today<small>1.2:1</small></span><span class="good">Today<small>6.8:1</small></span></div>'
-APP_ICON = {'Xpense': A + 'apps/xpense-icon.webp', 'Tockbee': A + 'apps/tockbee-icon.webp', 'FreshBit': A + 'kit/fb-icon.webp'}
+CONTRAST_VIS = '<div class="fx-vis fx-contrast" aria-hidden="true"><span class="bad">Today<small>1.2:1</small></span><span class="good">Today<small>6.5:1</small></span></div>'
+APP_ICON = {'Xpense': A + 'apps/xpense-icon.webp', 'Tockbee': A + 'apps/tockbee-icon.webp', 'FreshBit': A + 'kit/fb2-icon-light.webp'}
 CAT = {'ux': 'User experience', 'ui': 'User interface', 'product': 'Product'}
 FIXES = [
   ('ux', 'Xpense', 'The budget that never saved.',
@@ -332,7 +332,7 @@ FIXES = [
    'It now accepts codes of 6 to 8 digits.', ''),
   ('ui', 'FreshBit', 'Lime text you could hardly read.',
    'The selected tab on the light tab bar was lime on a light background: about 1.2:1.',
-   'Light mode now tints the selected tab in the dark brand green, 6.8:1. My rule since: never lime for text on a light background.', CONTRAST_VIS),
+   'Lime became a fill only, always with black text, and electric violet carries text on light backgrounds, 6.5:1. My rule since: never lime for text on a light background.', CONTRAST_VIS),
   ('ui', 'FreshBit', 'A header that felt custom, not native.',
    'The folding header used a custom bouncing animation I had made.',
    'I replaced it with Apple’s Liquid Glass morph, so it feels like part of the system.', MOTION_VIS),

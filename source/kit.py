@@ -363,27 +363,30 @@ def gl_sections():
             + section('Help and confirmation.', phones(sc[8:], 'Live chat and order placed')))
 
 # ------------------------------------------------------------------ FreshBit (dotXline, in TestFlight testing)
-# Screens are FreshBit's own rendered press screens (freshbit.dotxline.com press kit), already in a device frame.
+# Assets are the real files from the FreshBit app project (branding/brand-board, 19 Nov 2026 rebrand),
+# converted to lossless WebP at full size: never cropped or resized.
 FB_FONT = '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&amp;display=swap">'
 FB_SITE = 'https://freshbit.dotxline.com'
 
-def fb_shot(name, alt, caption='', lazy=True):
-    cap = f'<figcaption>{E(caption)}</figcaption>' if caption else ''
+def fb_img(name, alt, w, h, cls='', lazy=True):
     ld = ' loading="lazy"' if lazy else ''
-    return (f'<figure class="fb-shot" data-reveal><img src="{{root}}assets/img/kit/fb-{name}.webp" alt="{E(alt)}" width="400" height="800"{ld} decoding="async">{cap}</figure>')
+    c = f' class="{cls}"' if cls else ''
+    return f'<img src="{{root}}assets/img/kit/fb2-{name}.webp" alt="{E(alt)}" width="{w}" height="{h}"{c}{ld} decoding="async">'
 
-def fb_row(items, label):
-    return f'<div class="kit-block"><p class="kit-label mono">{E(label)}</p><div class="kit-phones fb-row" tabindex="0" aria-label="{E(label)}, scroll sideways">{"".join(items)}</div></div>'
+def fb_phone(name, alt, caption='', lazy=True):
+    cap = f'<figcaption>{E(caption)}</figcaption>' if caption else ''
+    return f'<figure class="fb-phone" data-reveal>{fb_img(name, alt, 460, 1000, lazy=lazy)}{cap}</figure>'
+
+TODAY_L = 'FreshBit Today screen in light mode: 52 confirmed, the top story Google DeepMind, Confirmed'
+TODAY_D = 'FreshBit Today screen in dark mode: 52 confirmed, the top story Google DeepMind, Confirmed'
 
 def fb_cover():
-    return stage('<div class="ks-brand fb-brand"><img src="{root}assets/img/kit/fb-icon-dark.webp" alt="" width="240" height="240"><b>FreshBit</b>'
-                 '<span>Confirmed news for designers and developers.</span></div>'
-                 '<div class="ks-phones">' + fb_shot('today-light', 'FreshBit Today screen: the top story is confirmed by 5 sources', lazy=False)
-                 + fb_shot('story-dark', 'FreshBit story screen in dark mode: the brief and a Read on Google DeepMind button', lazy=False) + '</div>', 'fb-stage')
+    return stage('<div class="ks-brand fb-brand">' + fb_img('icon-light', '', 1024, 1024, lazy=False) + '<b>FreshBit</b>'
+                 '<span>The news app that only shows a story once trusted sources confirm it.</span></div>'
+                 '<div class="ks-phones">' + fb_phone('phone-light', TODAY_L, lazy=False) + fb_phone('phone-dark', TODAY_D, lazy=False) + '</div>', 'fb-stage')
 
 def fb_card_inner():
-    return ('<div class="ks-mini fb-mini"><img src="{root}assets/img/kit/fb-today-light.webp" alt="" width="400" height="800" loading="lazy" decoding="async">'
-            '<img src="{root}assets/img/kit/fb-story-dark.webp" alt="" width="400" height="800" loading="lazy" decoding="async"></div>')
+    return '<div class="ks-mini fb-mini">' + fb_img('phone-light', '', 460, 1000) + fb_img('phone-dark', '', 460, 1000) + '</div>'
 
 def fb_steps():
     def step(n, k, title, text, chips):
@@ -401,24 +404,20 @@ def fb_logo():
           ('3', 'The f', 'A lowercase f whose crossbar ends in a separate square.'),
           ('4', 'Rising Dots', 'Three dots growing toward the newest story.')]
     cards = ''.join(f'<div class="fb-concept{" on" if i == "1" else ""}" data-reveal style="--d:{int(i) * .06:.2f}s"><i><img src="{{root}}assets/img/kit/fb-concept-{i}.svg" alt="" width="100" height="100"></i><b>{E(t)}</b><span>{E(d)}</span></div>' for i, t, d in cs)
-    return (f'<div class="kit-block"><p class="kit-label mono">The icon: four concepts, all tested at 16 px</p><div class="fb-concepts">{cards}</div>'
-            '<div class="fb-icons"><img src="{root}assets/img/kit/fb-icon.webp" alt="FreshBit app icon, light" width="240" height="240"><img src="{root}assets/img/kit/fb-icon-dark.webp" alt="FreshBit app icon, dark" width="240" height="240">'
-            '<p>Leaf Bit stayed clearest at the smallest sizes. It was rebuilt in Apple’s Icon Composer as two layers, the leaf and the bit, so iOS 26 renders it with Liquid Glass in the default, dark, clear and tinted styles.</p></div></div>')
+    return ('<div class="kit-block"><p class="kit-label mono">The app icon, light and dark</p><div class="fb-icons">'
+            + fb_img('icon-light', 'FreshBit app icon, light: a lime leaf with a black bit on a violet-to-black tile', 1024, 1024)
+            + fb_img('icon-dark', 'FreshBit app icon, dark', 1024, 1024)
+            + '<p>Leaf Bit, the leaf whose vein is the / from code, is built in Apple’s Icon Composer as layers, so iOS 26 renders it with Liquid Glass. The leaf is always lime, with a black bit, over a violet glow on black.</p></div></div>'
+            + f'<div class="kit-block"><p class="kit-label mono">Where it started: four concepts, all tested at 16 px</p><div class="fb-concepts">{cards}</div></div>')
 
 def fb_sections():
-    light = [('today-light', 'Today', 'Today: the most-confirmed story on top, then everything else, newest first'),
-             ('story-light', 'Story', 'Story: brief in FreshBit’s own words, the facts and the credibility score'),
-             ('explore-light', 'Explore', 'Explore: topics, trending tags and events'),
-             ('widgets-light', 'Widgets', 'Home Screen widgets with the most-confirmed stories'),
-             ('settings-light', 'Settings', 'Settings: account, topics, alerts and feed'),
-             ('alerts', 'Lock Screen', 'Lock Screen: alerts and widgets')]
-    dark = [(n.replace('light', 'dark'), c, a.replace(':', ' in dark mode:', 1)) for n, c, a in light if 'light' in n]
     return (section('Read. Match. Score. Then publish.', fb_steps()
-                    + '<p class="kit-note">Nothing reaches the feed until it passes the credibility check, and every score comes with its reasons in plain words.</p>', 'How it works', '#7FB800')
-            + section('Five places, one calm feed.', fb_row([fb_shot(n, a, c) for n, c, a in light], 'The app, screen by screen'), 'Real screens', '#7FB800')
-            + section('Dark mode isn’t an inverted light mode.', fb_row([fb_shot(n, a, c) for n, c, a in dark], 'The same screens, dark')
-                      + palette_jobs([('C8F550', 'Lime', 'Brand, Confirmed badge, active filter. Fills only'), ('0E1A12', 'Ink', 'Text on light, 16.7:1'), ('F6F8F3', 'Paper', 'Light background'),
-                                      ('0B120D', 'Night', 'Dark background'), ('3D6600', 'Leaf', 'Links on light, 6.8:1'), ('EEF5EA', 'Mist', 'Text on dark, 17.1:1')], 'Two tuned palettes'), 'Light and dark', '#7FB800')
-            + section('Swiss minimal, with one loud colour.', typeface('"Montserrat", system-ui, sans-serif', 'Montserrat', weights='Bold 700 · brand title and the large “Today” only', tint='var(--text)')
-                      + '<p class="kit-note">Reading text uses SF Pro with Dynamic Type, so it follows the size each person sets. Three rules: never lime for text on a light background, never a credibility state shown by colour alone, and no emoji as icons.</p>'
-                      + fb_logo(), 'The brand', '#7FB800'))
+                    + '<p class="kit-note">Nothing reaches the feed until it passes the credibility check, and every score comes with its reasons in plain words.</p>', 'How it works', '#5B2BFF')
+            + section('Black, electric violet and lime.', '<div class="kit-block fb-board" data-reveal>' + fb_img('brand-board', 'The FreshBit brand board: the layers, the leaf bit, Today on iPhone in dark and light, Montserrat type, the app icon, the palette, controls, positioning and three don’ts', 1440, 1650) + '</div>'
+                      + '<p class="kit-note">The 19 November 2026 rebrand. Black is the stage, electric violet is the atmosphere and lime is the signal: violet glows on black, lime on top. Lime always carries black text, and text on violet is always white.</p>', 'The brand board', '#5B2BFF')
+            + section('One Today, two tuned palettes.', '<div class="kit-block"><div class="kit-phones fb-row">' + fb_phone('phone-light', TODAY_L, 'Light') + fb_phone('phone-dark', TODAY_D, 'Dark') + '</div></div>'
+                      + palette_jobs([('0A0A0C', 'Ink Black', 'The stage, and the only text colour on lime'), ('5B2BFF', 'Electric Violet', 'Layers, glows, links on light. White text, 6.5:1'), ('C8F550', 'Lime', 'Every main control, on top. Black text, 15.7:1'),
+                                      ('F5F5F7', 'Paper', 'Light mode page'), ('55555F', 'Slate', 'Secondary text on light'), ('141418', 'Ink Light', 'Dark mode cards')], 'Colour palette'), 'Light and dark', '#5B2BFF')
+            + section('A leaf that is also a slash.', typeface('"Montserrat", system-ui, sans-serif', 'Montserrat', weights='ExtraBold 800 · wordmark, display titles and covers', tint='var(--text)')
+                      + '<p class="kit-note">SF Pro with Dynamic Type for reading. Three don’ts: no lime text or thin lines on light backgrounds, no violet flood without black under it and lime on top, no lime fading straight into black.</p>'
+                      + fb_logo(), 'Type and icon', '#5B2BFF'))
