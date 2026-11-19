@@ -373,9 +373,13 @@ def fb_img(name, alt, w, h, cls='', lazy=True):
     c = f' class="{cls}"' if cls else ''
     return f'<img src="{{root}}assets/img/kit/fb2-{name}.webp" alt="{E(alt)}" width="{w}" height="{h}"{c}{ld} decoding="async">'
 
+def iphone(inner):
+    # iPhone 17 Pro proportions: body 71.9 x 150 mm, bezel 3.7% of width, screen corner 14.3%, Dynamic Island 125 x 37 pt at 11 pt
+    return f'<div class="iph"><div class="iph-scr">{inner}<i class="iph-island" aria-hidden="true"></i></div></div>'
+
 def fb_phone(name, alt, caption='', lazy=True):
     cap = f'<figcaption>{E(caption)}</figcaption>' if caption else ''
-    return f'<figure class="fb-phone" data-reveal>{fb_img(name, alt, 460, 1000, lazy=lazy)}{cap}</figure>'
+    return f'<figure class="fb-phone" data-reveal>{iphone(fb_img(name, alt, 460, 1000, lazy=lazy))}{cap}</figure>'
 
 TODAY_L = 'FreshBit Today screen in light mode: 52 confirmed, the top story Google DeepMind, Confirmed'
 TODAY_D = 'FreshBit Today screen in dark mode: 52 confirmed, the top story Google DeepMind, Confirmed'
@@ -386,7 +390,7 @@ def fb_cover():
                  '<div class="ks-phones">' + fb_phone('phone-light', TODAY_L, lazy=False) + fb_phone('phone-dark', TODAY_D, lazy=False) + '</div>', 'fb-stage')
 
 def fb_card_inner():
-    return '<div class="ks-mini fb-mini">' + fb_img('phone-light', '', 460, 1000) + fb_img('phone-dark', '', 460, 1000) + '</div>'
+    return '<div class="ks-mini fb-mini">' + iphone(fb_img('phone-light', '', 460, 1000)) + iphone(fb_img('phone-dark', '', 460, 1000)) + '</div>'
 
 def fb_steps():
     def step(n, k, title, text, chips):
@@ -399,11 +403,14 @@ def fb_steps():
             + '</div>')
 
 def fb_logo():
-    cs = [('1', 'Leaf Bit · chosen', 'A pixel square shaped like a leaf. The cut is the leaf’s vein and the / from code.'),
+    cs = [('1', 'Leaf Bit · chosen', 'A pixel square shaped like a leaf. The cut is the leaf’s vein and the / from code. Shown here as the icon it became.'),
           ('2', 'New Bit', 'A small square popping out of a big one, like a new story arriving.'),
           ('3', 'The f', 'A lowercase f whose crossbar ends in a separate square.'),
           ('4', 'Rising Dots', 'Three dots growing toward the newest story.')]
-    cards = ''.join(f'<div class="fb-concept{" on" if i == "1" else ""}" data-reveal style="--d:{int(i) * .06:.2f}s"><i><img src="{{root}}assets/img/kit/fb-concept-{i}.svg" alt="" width="100" height="100"></i><b>{E(t)}</b><span>{E(d)}</span></div>' for i, t, d in cs)
+    def tile(i):
+        if i == '1': return '<i class="now">' + fb_img('icon-light', 'The chosen Leaf Bit as the app icon today', 1024, 1024) + '</i>'
+        return f'<i><img src="{{root}}assets/img/kit/fb-concept-{i}.svg" alt="" width="100" height="100"></i>'
+    cards = ''.join(f'<div class="fb-concept{" on" if i == "1" else ""}" data-reveal style="--d:{int(i) * .06:.2f}s">{tile(i)}<b>{E(t)}</b><span>{E(d)}</span></div>' for i, t, d in cs)
     return ('<div class="kit-block"><p class="kit-label mono">The app icon, light and dark</p><div class="fb-icons">'
             + fb_img('icon-light', 'FreshBit app icon, light: a lime leaf with a black bit on a violet-to-black tile', 1024, 1024)
             + fb_img('icon-dark', 'FreshBit app icon, dark', 1024, 1024)

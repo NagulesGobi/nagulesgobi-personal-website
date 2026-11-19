@@ -473,3 +473,6 @@ main, .site-foot { position: relative; z-index: 1; }
   .hero:has(.me-chip) { padding-top: 72px; }
   .hero:has(.me-chip) h1 { font-size: clamp(48px, 9.4svh, 148px); }
 }
+/* FreshBit's real renders have no Dynamic Island: draw it at iPhone 17 Pro size (125 x 37 pt at 11 pt) */
+.phones.fb .phone { position: relative; }
+.phones.fb .phone::after { content: ""; position: absolute; left: calc(var(--pw) * .3561); top: calc(var(--pw) * .0627); width: calc(var(--pw) * .2878); height: calc(var(--pw) * .0851); border-radius: 999px; background: #000; }

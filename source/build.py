@@ -704,7 +704,7 @@ def dotxline():
     <h2 data-split>News that checks first.</h2>
     <div class="body" data-reveal><p>Confirmed news for designers and developers. FreshBit reads 51 trusted sources, groups the articles about the same event and scores each story out of 100.</p><div class="tags"><span>iPhone, iPad and Mac</span><span>Expo and SwiftUI</span><span>In TestFlight testing</span><span>No ads, no tracking</span></div><p class="btn-row"><a class="btn" href="{{root}}work/freshbit.html" data-magnetic data-label="FreshBit"><span>Read the case study</span></a><a class="btn btn-ghost" href="{kit.FB_SITE}" target="_blank" rel="noopener" data-label="FreshBit website"><span>Visit the website ↗</span></a></p></div>
   </div>
-  <div class="stack" data-reveal>{''.join(f'<div class="shot fb-st"><img src="{{root}}assets/img/kit/fb2-{x}.webp" alt="FreshBit Today screen, {x[6:]} mode" width="460" height="1000" loading="lazy" decoding="async"></div>' for x in ['phone-light', 'phone-dark'])}</div>
+  <div class="stack" data-reveal>{''.join(f'<div class="shot fb-st">{kit.iphone(f'<img src="{{root}}assets/img/kit/fb2-{x}.webp" alt="FreshBit Today screen, {x[6:]} mode" width="460" height="1000" loading="lazy" decoding="async">')}</div>' for x in ['phone-light', 'phone-dark'])}</div>
 </section>
 <section class="section alt">
   <div class="wrap">
