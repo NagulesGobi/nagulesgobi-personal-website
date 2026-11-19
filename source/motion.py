@@ -319,7 +319,11 @@ work = f'''<section class="worklist" aria-labelledby="h1">
 MOTION_VIS = '<div class="fx-vis fx-motion" aria-hidden="true"><span class="fx-col"><span class="fx-bar"></span><small>Custom bounce</small></span><span class="fx-col"><span class="fx-bar"></span><small>Native morph</small></span></div>'
 CONTRAST_VIS = '<div class="fx-vis fx-contrast" aria-hidden="true"><span class="bad">Today<small>1.2:1</small></span><span class="good">Today<small>6.5:1</small></span></div>'
 APP_ICON = {'Xpense': A + 'apps/xpense-icon.webp', 'Tockbee': A + 'apps/tockbee-icon.webp', 'FreshBit': A + 'kit/fb2-icon-light.webp'}
-CAT = {'ux': 'User experience', 'ui': 'User interface', 'product': 'Product'}
+CAT = {'ux': 'User experience', 'ui': 'User interface', 'product': 'Product', 'brand': 'Brand'}
+# Before and after of the FreshBit rebrand: the old palette from the case study's first version, the new one from the 19 Nov 2026 brand board.
+BRAND_VIS = ('<div class="fx-vis fx-brand" aria-hidden="true">'
+             '<span class="fx-pal"><small>Before</small><i style="--c:#0B120D"></i><i style="--c:#F6F8F3"></i><i style="--c:#C8F550"></i><i style="--c:#3D6600"></i></span>'
+             '<span class="fx-pal"><small>After</small><i style="--c:#0A0A0C"></i><i class="big" style="--c:#5B2BFF"></i><i style="--c:#C8F550"></i></span></div>')
 FIXES = [
   ('ux', 'Xpense', 'The budget that never saved.',
    'The monthly budget used the decimal keypad, which has no Done key, and leaving Settings didn’t end the edit. The limit people typed was never saved.',
@@ -345,6 +349,9 @@ FIXES = [
   ('product', 'Tockbee', 'Asking before every clock-in.',
    'Arriving at work by location or Wi-Fi brought a question before Tockbee would clock you in.',
    'It now clocks you in and out automatically and sends a notification with Undo: fast by default, easy to reverse.', ''),
+  ('brand', 'FreshBit', 'One loud colour, and nothing in between.',
+   'The first FreshBit brand was lime on green-tinted black and paper. Lime is too light to carry text on a light background, so links fell back to a dull dark green that didn’t feel like FreshBit, and the screens had no colour for depth: anything that wasn’t a lime control was plain neutral.',
+   'The 19 November 2026 rebrand added electric violet between black and lime. Violet is the atmosphere: layers, glows and links, with white text at 6.5:1. Lime stays the signal on top, always with black text. Black is the stage, and the icon became a lime leaf over a violet glow, built in layers for Liquid Glass.', BRAND_VIS),
   ('product', 'Tockbee', 'Hours that went missing.',
    'Some genuine departures were dropped as repeats, and an old Undo could block the next day. For a pay tracker, a missed shift is missed money.',
    'Departures are no longer dropped, an old Undo no longer blocks the next day, sites are watched at 200 m or more, and the app checks your position when it opens to catch anything missed.', ''),

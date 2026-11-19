@@ -23,11 +23,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/motion/motion.css?v=00d8d255">
-<link rel="stylesheet" href="assets/motion/dock.css?v=00d8d255">
-<script src="assets/motion/dock.js?v=00d8d255" defer></script>
+<link rel="stylesheet" href="assets/motion/motion.css?v=f884267d">
+<link rel="stylesheet" href="assets/motion/dock.css?v=f884267d">
+<script src="assets/motion/dock.js?v=f884267d" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
-<script type="module" src="assets/motion/site.js?v=00d8d255"></script>
+<script type="module" src="assets/motion/site.js?v=f884267d"></script>
 </head>
 <body data-intro="off">
 <a class="skip" href="#main">Skip to content</a>
@@ -84,7 +84,7 @@
       <div><p class="kicker rv">What went wrong, and how I fixed it</p><h2 id="fx-h" class="rv">I test my own work until it’s right.</h2></div>
       <p class="rv">Real problems from Xpense, Tockbee and FreshBit, the apps I design and build at dotXline, and what I changed. I review recordings of real use on an iPhone and fix things build by build: FreshBit alone went through <strong>11 TestFlight builds</strong>.</p>
     </div>
-    <div class="filters rv" role="group" aria-label="Filter the fixes" data-filter-group="#fx-list"><button type="button" data-filter="all" aria-pressed="true">All · 9</button><button type="button" data-filter="ux" aria-pressed="false">User experience · 3</button><button type="button" data-filter="ui" aria-pressed="false">User interface · 4</button><button type="button" data-filter="product" aria-pressed="false">Product · 2</button></div>
+    <div class="filters rv" role="group" aria-label="Filter the fixes" data-filter-group="#fx-list"><button type="button" data-filter="all" aria-pressed="true">All · 10</button><button type="button" data-filter="ux" aria-pressed="false">User experience · 3</button><button type="button" data-filter="ui" aria-pressed="false">User interface · 4</button><button type="button" data-filter="product" aria-pressed="false">Product · 2</button><button type="button" data-filter="brand" aria-pressed="false">Brand · 1</button></div>
     <ol class="fx-list" id="fx-list"><li class="fx" data-cat="ux">
   <p class="fx-n mono"><span class="n">01</span><span>User experience</span><span class="fx-app"><img src="assets/img/apps/xpense-icon.webp" alt="" width="20" height="20" loading="lazy">Xpense</span></p>
   <h3>The budget that never saved.</h3>
@@ -125,8 +125,13 @@
   <h3>Asking before every clock-in.</h3>
   
   <div class="fx-pair"><div><p class="mono">What went wrong</p><p>Arriving at work by location or Wi-Fi brought a question before Tockbee would clock you in.</p></div><div><p class="mono">How I made it right</p><p>It now clocks you in and out automatically and sends a notification with Undo: fast by default, easy to reverse.</p></div></div>
+</li><li class="fx" data-cat="brand">
+  <p class="fx-n mono"><span class="n">09</span><span>Brand</span><span class="fx-app"><img src="assets/img/kit/fb2-icon-light.webp" alt="" width="20" height="20" loading="lazy">FreshBit</span></p>
+  <h3>One loud colour, and nothing in between.</h3>
+  <div class="fx-vis fx-brand" aria-hidden="true"><span class="fx-pal"><small>Before</small><i style="--c:#0B120D"></i><i style="--c:#F6F8F3"></i><i style="--c:#C8F550"></i><i style="--c:#3D6600"></i></span><span class="fx-pal"><small>After</small><i style="--c:#0A0A0C"></i><i class="big" style="--c:#5B2BFF"></i><i style="--c:#C8F550"></i></span></div>
+  <div class="fx-pair"><div><p class="mono">What went wrong</p><p>The first FreshBit brand was lime on green-tinted black and paper. Lime is too light to carry text on a light background, so links fell back to a dull dark green that didn’t feel like FreshBit, and the screens had no colour for depth: anything that wasn’t a lime control was plain neutral.</p></div><div><p class="mono">How I made it right</p><p>The 19 November 2026 rebrand added electric violet between black and lime. Violet is the atmosphere: layers, glows and links, with white text at 6.5:1. Lime stays the signal on top, always with black text. Black is the stage, and the icon became a lime leaf over a violet glow, built in layers for Liquid Glass.</p></div></div>
 </li><li class="fx" data-cat="product">
-  <p class="fx-n mono"><span class="n">09</span><span>Product</span><span class="fx-app"><img src="assets/img/apps/tockbee-icon.webp" alt="" width="20" height="20" loading="lazy">Tockbee</span></p>
+  <p class="fx-n mono"><span class="n">10</span><span>Product</span><span class="fx-app"><img src="assets/img/apps/tockbee-icon.webp" alt="" width="20" height="20" loading="lazy">Tockbee</span></p>
   <h3>Hours that went missing.</h3>
   
   <div class="fx-pair"><div><p class="mono">What went wrong</p><p>Some genuine departures were dropped as repeats, and an old Undo could block the next day. For a pay tracker, a missed shift is missed money.</p></div><div><p class="mono">How I made it right</p><p>Departures are no longer dropped, an old Undo no longer blocks the next day, sites are watched at 200 m or more, and the app checks your position when it opens to catch anything missed.</p></div></div>

@@ -371,6 +371,11 @@ main, .site-foot { position: relative; z-index: 1; }
 .fx-contrast span { display: grid; justify-items: center; gap: 6px; padding: 14px 22px; border-radius: 12px; background: #F5F5F7; font: 600 20px/1 var(--body); }
 .fx-contrast small { font: 500 11px/1 var(--mono); color: #55555F; }
 .fx-contrast .bad { color: #C8F550; } .fx-contrast .good { color: #5B2BFF; }
+.fx-brand { flex-direction: column; align-items: stretch; justify-content: center; gap: 10px; padding: 0 var(--s3); }
+.fx-pal { display: grid; grid-template-columns: 52px 1fr 1fr 1fr 1fr; align-items: center; gap: 6px; }
+.fx-pal small { font: 500 12px/1 var(--mono); color: var(--muted); }
+.fx-pal i { height: 34px; border-radius: 8px; background: var(--c); box-shadow: inset 0 0 0 1px rgba(127,127,127,.25); }
+.fx-pal i.big { grid-column: span 2; }
 /* motion: a stiff bounce next to a smooth morph */
 .fx-col { flex: 1; max-width: 42%; height: 100%; display: grid; grid-template-rows: 1fr auto; justify-items: center; align-items: center; padding-bottom: 12px; }
 .fx-col small { font: 500 11px/1 var(--mono); text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
